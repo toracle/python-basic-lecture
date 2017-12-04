@@ -117,16 +117,23 @@ Python이나 R을 배우다 보면, 모든 것을 Python이나 R로 만들어보
 아마 지금쯤 Anaconda가 모두 다운로드 되었을 것 같네요. 실행하여 설치해줍니다.
 
 
+*** Spyder 사용하기
+
+Anaconda에서 기본적으로 제공되는 Spyder라는 편집기를 사용해서 파이썬 파일을 작성해봅시다.
+
+
 ** Python 언어의 기초
 
-설치가 진행되는 동안, Python 언어의 기초적인 내용에 대해 알아봅시다.
+우선, Python 언어의 기초적인 내용에 대해 알아봅시다.
 
 여러분이 어느 하나의 프로그래밍 언어에 익숙하다면, 새로운 언어를 배우는데 유리합니다. 기본적으로 공유하는 개념들이 있기 때문이지요. 이런 경우, [[https://learnxinyminutes.com/][Learn X in Y minutes]] 사이트를 활용하면 새로운 언어의 특징을 한 눈에 살펴보기 좋습니다. 
 
 
 *** 출력문
 
-우선 간단한 것들부터 살펴보지요. 우선 출력문과 간단한 사칙연산입니다.
+우선 간단한 것들부터 살펴보지요. 우선 출력문과 간단한 사칙연산자입니다.
+
+=helloworld.py= 라는 파일을 만들고, 아래와 같이 입력하세요.
 
 #+BEGIN_SRC python :results output :exports both
 # -*- coding: utf-8 -*-
@@ -135,15 +142,17 @@ Python이나 R을 배우다 보면, 모든 것을 Python이나 R로 만들어보
 print('Hello')
 print('안녕하세요?')
 # 더하기
-print(1+1)
+print(1 + 1)
 # 빼기
-print(3-2)
+print(3 - 2)
 # 곱하기
-print(2*3)
+print(2 * 3)
 # 나누기
-print(10/4)
+print(10 / 4)
 # 나머지
-print(10//4)
+print(10 % 3)
+# 몫
+print(10 // 3)
 #+END_SRC
 
 #+RESULTS:
@@ -153,47 +162,195 @@ print(10//4)
 : 1
 : 6
 : 2.5
-: 2
+: 1
+: 3
 
 쉽지요?
 
-*** 타입 소개
-
+위에서 살펴본 사칙연산자 이외에도, =and=, =or=, =not= 과 같은 부울 연산자도 있습니다.
 
 #+BEGIN_SRC python :results output :exports both
 # -*- coding: utf-8 -*-
 
+print(True)
+print(False)
+print(True and False)
+print(True or False)
+print(not True)
+print(not False)
 #+END_SRC
+
+#+RESULTS:
+: True
+: False
+: False
+: True
+: False
+: True
 
 
 *** 변수 할당
 
+값을 기억해두고 재사용하려면 변수를 활용합니다.
+
+#+BEGIN_SRC python :results output :exports both
+# -*- coding: utf-8 -*-
+
+a = 10
+b = 20
+print(a + b)
+
+c = 10
+c = c + 20
+c = c + 30
+c = c + 40
+c = c + 50
+c = c / 5
+print(c)
+#+END_SRC
+
+#+RESULTS:
+: 30
+: 30.0
+
 *** 반복문: for, while, break
 
-*** 조건문, if
+일정한 행동들을 반복해서 하게 하는 명령입니다.
+
+기본적으로 가장 많이 사용하는 =for= 구문의 형태는 아래와 같습니다.
+
+#+BEGIN_SRC python :results output :exports both
+# -*- coding: utf-8 -*-
+
+for i in range(10):
+   print(i, end=' ')
+#+END_SRC
+
+#+RESULTS:
+: 0 1 2 3 4 5 6 7 8 9 
+
+=for= 문은 =for A in B= 형태로 이루어집니다. =in= 뒤에 오는 B 부분에는 반복할 수 있는 값이 올 수 있고, 각 원소를 반복하며 그 값이 =A= 에 저장됩니다.
+
+ex. 위 코드를 변경해서 1~50까지의 숫자를 출력해보세요.
+
+=while= 문은 조건이 참일 동안 블럭 안의 내용을 반복해서 수행합니다.
+
+#+BEGIN_SRC python :results output :exports both
+# -*- coding: utf-8 -*-
+
+import random
+s = 0
+
+while s < 50:
+  s = s + random.randint(0, 10)
+
+print(s)
+#+END_SRC
+
+#+RESULTS:
+: 52
+
+*** 조건문: if
+
+특정한 조건을 만족할 때만 일련의 행동들을 수행하게 하는 명령입니다.
+
+
 
 *** 함수
 
 *** 클래스
 
-** Spyder 사용하기
+*** 자료형 (Type)
 
+Python3에는 아래와 같은 주요 자료형(type)이 있습니다.
+
+ - Boolean types: None, True, False
+ - Numeric types: int, float
+ - Sequence types: list, tuple
+ - Text sequence types: str
+ - Byte sequence types: bytes
+
+#+BEGIN_SRC python :results output :exports both
+# -*- coding: utf-8 -*-
+True
+#+END_SRC
+
+#+RESULTS:
+
+*** 파일 읽기
+
+텍스트 파일을 열어 한줄씩 읽어들이는 구문은 아래와 같습니다. (아래 코드를 실행하기 전에 먼저 [[file:assets/day1-example-read.txt][텍스트 파일]]을 assets 디렉토리 아래에 저장해야 합니다.)
+
+#+BEGIN_SRC python :results output :exports both
+# -*- coding: utf-8 -*-
+
+fin = open('assets/day1-example-read.txt')
+for line in fin:
+   print(line, end='')
+fin.close()
+#+END_SRC
+
+#+RESULTS:
+: 1,M,25,5,3,3,2,1
+: 2,F,27,3,2,4,1,1
+: 3,F,24,2,1,1,5,4
+: 4,F,25,4,4,2,2,5
+: 1,M,32,3,2,5,3,2
+
+위 예제는 아래와 같이 줄여서 쓸 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+# -*- coding: utf-8 -*-
+
+with open('assets/day1-example-read.txt') as fin:
+   for line in fin:
+      print(line, end='')
+#+END_SRC
+
+여기서 =with A as B= 구문이 등장하는데, =with= 구문은 자신의 범위를 벗어난 경우 적절한 리소스 반환 작업을 수행합니다. (모든 리소스에 =with= 구문을 사용할 수 있는 것은 아닙니다.)
+
+
+#+BEGIN_EXAMPLE
+Python에서는 공백이 매우 중요합니다. 같은 층위의 코드들은 공백이나 탭의 갯수가 동일해야 합니다. 공백이나 탭의 갯수가 서로 일치하지 않는 경우, 'IndentationError: unexpected indent' 오류가 발생합니다.
+#+END_EXAMPLE
+
+
+*** 문자열 인코딩
+
+
+** 연습문제
+
+뭘 할까...?
+
+ - 설문조사한 것 통계내기?
+   - 성별에 따른 프로그래밍 경험 유무 빈도 및 비율
+   - 연령대에 따른 프로그래밍 경험 유무 빈도 및 비율
+   - 프로그래밍 경험 유무에 따른 파이썬 경험 유무 비율
+ - 웹 크롤링?
+
+if, for, encoding
+
+#+BEGIN_SRC python :results output
+
+#+END_SRC
 
 
 ** Jupyter notebook 실행하기
 
 Jupyter notebook은, 대화형으로 데이터 분석 등의 작업을 용이하게 하기 위해서 만들어진 개발 환경입니다.[fn:jupyter-ipython]
 
-[fn:jupyter-ipython] Jupyter라는 이름은 중간에 바뀐 이름이고, 그 이전에는 IPython (Interactive Python)이라는 이름을 사용했습니다. 그래서 현재 Jupyter에도 IPython 시절의 흔적들이 많이 남아있습니다. Jupyter notebook 파일의 이름도 .ipynb 확장자를 사용하는데, IPython Notebook의 줄임말입니다.
+우선, Anaconda Prompt를 실행합니다. Anaconda를 설치하면 시작 메뉴에 아래와 같은 메뉴 항목이 등록됩니다.
 
-우선, Anaconda Prompt를 실행합니다.
+[[file:assets/python-basic-day1-anaconda-prompt-menu.png]]
 
-[[file:./assets/]]
+프롬프트를 띄웁니다.
 
-그리고 Jupyter Notebook을 실행합니다.
+[[file:assets/python-basic-day1-anaconda-prompt-console.png]]
+
+아래 명령을 타이핑하여 Jupyter Notebook을 실행합니다.
 
 #+BEGIN_EXAMPLE
-(C:\Users\torac\Anaconda3) C:\Users\torac>jupyter notebook
+> jupyter notebook
 #+END_EXAMPLE
 
 아래와 같은 내용이 출력되면서, 웹브라우저가 열립니다. 웹브라우저가 열리지 않을 경우에는, 아래에서 볼 수 있는 URL (이 경우에는 =http://localhost:8889/?token=cba5e423ed44d8c6d9a2b2bb46ffa1383b7c88ad5bc1c9b7= 이고, 실행 환경마다 값은 다릅니다.)을 자주 사용하는 웹브라우저에서 열어줍니다.
@@ -216,4 +373,33 @@ Known labextensions:
         http://localhost:8889/?token=cba5e423ed44d8c6d9a2b2bb46ffa1383b7c88ad5bc1c9b7
 [I 10:47:30.775 NotebookApp] Accepting one-time-token-authenticated connection from ::1
 #+END_EXAMPLE
+
+그러면 아래와 같은 Jupyter Notebook 화면을 볼 수 있습니다.
+
+[[file:assets/python-basic-day1-jupyter-directory-listing.png]]
+
+가장 처음 나오는 화면은 홈 디렉토리에 존재하는 파일 목록입니다. 위 화면에서처럼 New 아이콘을 클릭하여 새로운 노트북을 만들어봅시다.
+
+아래와 같은 화면을 볼 수 있습니다.
+
+=In [ ]= 옆에 텍스트를 입력할 수 있는 란이 있습니다. 그 하나의 단위를 Cell이라고 합니다. Cell에는 Python 코드를 적을 수도 있고, Markdown 형식으로 글을 적을 수도 있습니다. 상단 메뉴 중 Cell이라는 메뉴가 있고, 그 하위 메뉴에 Cell Type이 있습니다. 그 하위에는 Code와 Markdown이 있습니다. 이 메뉴를 사용하여 Cell의 종류를 변경할 수 있습니다.
+
+[[file:assets/python-basic-day1-jupyter-new-notebook.png]]
+
+
+
+** 문자열 다루기
+
+ - split
+ - contains(in)
+ - find, rfind
+ - regex
+ - slicing
+ - encoding
+ - startswith
+
+
+
+
+[fn:jupyter-ipython] Jupyter라는 이름은 중간에 바뀐 이름이고, 그 이전에는 IPython (Interactive Python)이라는 이름을 사용했습니다. 그래서 현재 Jupyter에도 IPython 시절의 흔적들이 많이 남아있습니다. Jupyter notebook 파일의 이름도 .ipynb 확장자를 사용하는데, IPython Notebook의 줄임말입니다.
 
