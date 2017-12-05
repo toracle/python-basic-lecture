@@ -486,18 +486,18 @@ for row in a_list:
  - split
  - contains(in)
  - find, rfind
- - regex
  - slicing
- - encoding
  - startswith
+ - regex
+ - encoding
 
 #+BEGIN_SRC python :results output :exports both
-'Hello' + ' World' == 'Hello World'                                 # 두 개의 문자열을 합친 새 문자열을 반환
-'Hello Python World!'.split(' ') == ['Hello', 'Python', 'World!']   # 문자열을 구분자를 기준으로 잘라 리스트로 반환
-'Hello' in 'Hello World' is True                                    # 특정 문자열이 포함되어 있는지 여부를 확인
+'Hello' + ' World' == 'Hello World'                               # 두 개의 문자열을 합친 새 문자열을 반환
+'Hello Python World!'.split(' ') == ['Hello', 'Python', 'World!'] # 문자열을 구분자를 기준으로 잘라 리스트로 반환
+'Hello' in 'Hello World' is True                                  # 특정 문자열이 포함되어 있는지 여부를 확인
 
-'Tom, Hello, World!'.find(',') == 3                                 # 특정 문자 또는 문자열이 처음 등장하는 위치를 반환
-'Tom, Hello, World!'.find(',') == 10                                # 특정 문자 또는 문자열이 처음 등장하는 위치를 반환
+'Tom, Hello, World!'.find(',') == 3                               # 특정 문자 또는 문자열이 처음 등장하는 위치를 반환
+'Tom, Hello, World!'.find(',') == 10                              # 특정 문자 또는 문자열이 처음 등장하는 위치를 반환
 
 'Hello Python World!'[6] == 'P'                # 특정 위치의 문자를 반환 (list와 비슷)
 'Hello Python World!'[6:12] == 'Python'        # 특정 범위의 문자열을 반환
@@ -568,9 +568,6 @@ with open('assets/day1-example-read.txt') as fin:
 
  if, for, encoding
 
- #+BEGIN_SRC python :results output
-
- #+END_SRC
 
 *** 함수
 
