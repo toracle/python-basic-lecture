@@ -206,6 +206,30 @@ print(not False)
 : False
 : True
 
+아래와 같은 Equality check를 위한 연산자들도 있습니다.
+
+ - ==
+ - !=
+ - >
+ - <
+ - >=
+ - <=
+
+#+BEGIN_SRC python :results output :exports both
+a = True
+print(10 == 10)
+print(10 != 10)
+print(10 > 5)
+print(10 < 5)
+print(a is True)
+#+END_SRC
+
+#+RESULTS:
+: True
+: False
+: True
+: False
+: True
 
 *** 변수 할당
 
