@@ -299,7 +299,7 @@ print(s)
   - 노드 이름 부여하기
   - 
 
-#+BEGIN_SRC ipython :session :exports both :results raw
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/day1-example-nx.png 
 %matplotlib inline
 import networkx as nx
 
@@ -311,7 +311,7 @@ nx.draw(G)
 #+END_SRC
 
 #+RESULTS:
-[[file:./obipy-resources/20173ysu.png]]
+[[file:outputs/day1-example-nx.png]]
 
 
 
