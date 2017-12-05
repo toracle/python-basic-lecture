@@ -344,12 +344,11 @@ G.add_node(2)
 G.add_edge(1, 2)
 
 pos = nx.spring_layout(G)
-nx.draw_networkx_edges(G, pos, alpha=0.2)
-nx.draw_networkx_nodes(G, pos, node_size=50)
+nx.draw_networkx_edges(G, pos, alpha=0.2);
+nx.draw_networkx_nodes(G, pos, node_size=50);
 #+END_SRC
 
 #+RESULTS:
-: <matplotlib.collections.PathCollection at 0x7f50de58a860>
 [[file:outputs/day1-example-nx.png]]
 
 위의 예제를 아래와 같이 변경해보세요.
@@ -370,12 +369,11 @@ for i in range(100):
    G.add_edge(random.randint(0, 50), random.randint(0, 50))
 
 pos = nx.spring_layout(G)
-nx.draw_networkx_edges(G, pos, alpha=0.2)
-nx.draw_networkx_nodes(G, pos, node_size=50)
+nx.draw_networkx_edges(G, pos, alpha=0.2);
+nx.draw_networkx_nodes(G, pos, node_size=50);
 #+END_SRC
 
 #+RESULTS:
-: <matplotlib.collections.PathCollection at 0x7f50de3f4550>
 [[file:outputs/day1-exercise-1.png]]
 
 
