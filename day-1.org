@@ -255,7 +255,7 @@ print(c)
 : 30
 : 30.0
 
-*** 반복문: for, while, break
+*** 반복문: for, while, continue, break
 
 일정한 행동들을 반복해서 하게 하는 명령입니다.
 
@@ -308,7 +308,12 @@ print(s)
 #+RESULTS:
 : 53
 
-만약 =for= 문이나 =while= 문을 수행하는 도중에 반복 구문을 벗어나려면 =break= 구문을 사용합니다. 다음 섹션의 조건문에서 활용 사례를 보겠습니다.
+만약 =for= 문이나 =while= 문을 수행하는 도중에 반복 구문을 벗어나려면 =break= 구문을 사용합니다. =continue= 구문은 반복 구문을 완전히 벗어나는 대신, 해당 차수의 반복을 건너뜁니다.
+
+위 코드에서 새로 등장한 예약어로 =import= 라는 것이 있는데, 이것은 '확장 기능(모듈)을 불러오는 것'이라고 생각하시면 됩니다. 여기서는 무작위에 대한 기능을 제공해주는 =random= 이라는 모듈을 불러와 사용할 수 있게 합니다.
+
+=random= 모듈의 =randint= 함수는 무작위로 선정할 정수의 [시작, 끝] 범위를 지정하기 위해 두 개의 숫자를 인자로 받습니다.
+
 
 *** 조건문: if
 
@@ -329,6 +334,7 @@ while True:
 
 #+RESULTS:
 : 3 7 17 25 34 40 40 45 
+
 
 *** 연습문제
 
@@ -366,7 +372,9 @@ for n in range(50):
    G.add_node(n)
 
 for i in range(100):
-   G.add_edge(random.randint(0, 50), random.randint(0, 50))
+   node_a = random.randint(0, 50)
+   node_b = random.randint(0, 50)
+   G.add_edge(node_a, node_b)
 
 pos = nx.spring_layout(G)
 nx.draw_networkx_edges(G, pos, alpha=0.2);
@@ -409,28 +417,33 @@ float(10)  # to float
 #+BEGIN_SRC python :results output :exports code
 a_list = [1, 2, 3, 4, 5]   # list
 b_list = (1, 2, 3, 4, 5)
+c_list = [6, 7, 8]
 
-a_list[2]            # 특정 위치의 원소 참조. 참조번호는 0번부터 시작.
-a_list[2:4]          # 참조번호 2부터 4까지를 잘라서 반환함. 원본은 변경하지 않고 복사본을 반환.
-1 in a_list          # 1이라는 값이 리스트에 존재하는지 여부를 반환
+a_list[2] == 3              # 특정 위치의 원소 참조. 참조번호는 0번부터 시작.
+a_list[-1] == 5             # 음수인 경우, 뒤에서부터 접근.
+a_list[2:4] == [3,4,5]      # 참조번호 2부터 4까지를 잘라서(slice) 반환함.
+a_list[2:] == [3,4,5]       # 참조번호 2부터 끝까지를 잘라서(slice) 반환함.
+1 in a_list == True         # 1이라는 값이 리스트에 존재하는지 여부를 반환.
+a_list + c_list == [1, 2, 3, 4, 5, 6, 7, 8]     # 두 리스트를 합친 새 리스트 반환.
 
-a_list.append(6)     # 맨 뒤에 6이라는 새 원소를 추가
-a_list.insert(0, -1) # 0번째 참조번호에 -1이라는 새 원소를 추가
-a_list.pop(0)        # 0번째 원소를 리스트에서 제거
+a_list.append(6)     # 맨 뒤에 6이라는 새 원소를 추가.
+a_list.insert(0, -1) # 0번째 참조번호에 -1이라는 새 원소를 추가.
+a_list.pop(0)        # 0번째 원소를 리스트에서 제거.
 #+END_SRC
+
 
 =tuple= 에 대해서는 변경을 가할 수 없기 때문에, =append=, =insert=, =pop= 등의 조작은 할 수 없습니다. 
 
 =list= 및 =tuple= 에는 숫자 뿐 아니라 모든 자료형을 담을 수 있으며, 원소끼리 동질의 자료형을 가지지 않아도 됩니다.
 
 #+BEGIN_SRC python :results output :exports code
-['Tom', 'Chris', 'Timothy', 'Dan', 'Esther']     # 문자열의 리스트
-['a', 1, 'c', 2, 'e', 3]                         # 여러 타입이 섞인 리스트
-[['a', 1], ['c', 2], ['e', 3]]                   # 리스트로 이루어진 리스트
+['Tom', 'Chris', 'Timothy', 'Dan', 'Esther']     # 문자열의 리스트.
+['a', 1, 'c', 2, 'e', 3]                         # 여러 타입이 섞인 리스트.
+[['a', 1], ['c', 2], ['e', 3]]                   # 리스트로 이루어진 리스트.
 
 [['Tom', 'M', 15, True], 
  ['Chris', 'F', 28, True], 
- ['Timothy', 'M', 32, False]]                    # 리스트로 이루어진 리스트 (2)
+ ['Timothy', 'M', 32, False]]                    # 리스트로 이루어진 리스트.
 #+END_SRC
 
 =list= 및 =tuple= 은 =for= 구문과 함께 사용할 수 있습니다.
@@ -448,20 +461,61 @@ for name in name_list:
 : Dan
 : Esther
 
+다음과 같이 일종의 행과 열로 이루어진 반복도 가능합니다.
+
+#+BEGIN_SRC python :results output :exports both
+a_list = [['Tom', 'M', 15, True], 
+          ['Chris', 'F', 28, True], 
+          ['Timothy', 'M', 32, False]]
+
+for row in a_list:
+    if row[2] > 20:
+        print(row)
+#+END_SRC
+
+#+RESULTS:
+: ['Chris', 'F', 28, True]
+: ['Timothy', 'M', 32, False]
+
 
 *** 문자열 다루기
 
 데이터 분석을 하면서 가장 많이 사용하게 될 작업 중 하나가 문자열을 다루는 것입니다. 여기서는 문자열에 대해서 조금 더 자세히 살펴봅시다.
 
+ - concat
+ - split
+ - contains(in)
+ - find, rfind
+ - regex
+ - slicing
+ - encoding
+ - startswith
 
+#+BEGIN_SRC python :results output :exports both
+'Hello' + ' World' == 'Hello World'                                 # 두 개의 문자열을 합친 새 문자열을 반환
+'Hello Python World!'.split(' ') == ['Hello', 'Python', 'World!']   # 문자열을 구분자를 기준으로 잘라 리스트로 반환
+'Hello' in 'Hello World' is True                                    # 특정 문자열이 포함되어 있는지 여부를 확인
 
-  - split
-  - contains(in)
-  - find, rfind
-  - regex
-  - slicing
-  - encoding
-  - startswith
+'Tom, Hello, World!'.find(',') == 3                                 # 특정 문자 또는 문자열이 처음 등장하는 위치를 반환
+'Tom, Hello, World!'.find(',') == 10                                # 특정 문자 또는 문자열이 처음 등장하는 위치를 반환
+
+'Hello Python World!'[6] == 'P'                # 특정 위치의 문자를 반환 (list와 비슷)
+'Hello Python World!'[6:12] == 'Python'        # 특정 범위의 문자열을 반환
+'Hello Python World!'[6:] == 'Python World!'   # 특정 범위의 문자열을 반환
+
+len('Hello') == 5                              # 문자열의 길이를 반환
+'Hello'.startswith('He') is True               # 문자열이 특정 문자열로 시작하는지 여부를 반환
+'Hello'.endswith('lo') is True                 # 문자열이 특정 문자열로 끝나는지 여부를 반환
+'   Hello World    '.strip() == 'Hello World'  # 문자열의 앞뒤에 있는 공백 및 개행을 제거하여 반환
+'Hello World'.lower() == 'hello world'         # 문자열을 소문자로 변환하여 반환
+'Hello World'.upper() == 'HELLO WORLD'         # 문자열을 대문자로 변환하여 반환
+
+# 템플릿을 바탕으로 문자열을 생성하여 반환
+'Hey {}, Welcome to {} World!'.format('Tom', 'Python') == 'Hey Tom, Welcome to Python World!'
+
+# 리스트에 담긴 문자열들 구분자를 사용하여 하나의 문자열로 결합하여 반환
+' '.join(['Welcome', 'to', 'Python', 'World']) == 'Welcome to Python World'
+#+END_SRC
 
 
 *** 파일 다루기
