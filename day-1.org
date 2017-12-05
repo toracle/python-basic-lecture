@@ -146,9 +146,9 @@ print('hello')
 
 여러분이 어느 하나의 프로그래밍 언어에 익숙하다면, 새로운 언어를 배우는데 유리합니다. 기본적으로 공유하는 개념들이 있기 때문이지요. 이런 경우, [[https://learnxinyminutes.com/][Learn X in Y minutes]] 사이트를 활용하면 새로운 언어의 특징을 한 눈에 살펴보기 좋습니다.
 
-이 워크샵 이후에 Python을 종합적이고 체계적으로 학습하기 원한다면, [[https://docs.python.org/3/index.html][Python 공식문서]]의 [[https://docs.python.org/3/tutorial/index.html][튜토리얼]]을 권합니다.
+이 워크샵 이후에 Python을 종합적이고 체계적으로 학습하기 원한다면, [[https://docs.python.org/3/index.html][Python 공식문서]]의 [[https://docs.python.org/3/tutorial/index.html][튜토리얼]]을 권합니다. Python은 문서화가 매우 잘 되어 있기 때문에, 공식문서에 익숙해지는 것이 좋습니다. ('익숙해진다'는 것은, 궁금한 것을 구글 등으로 찾았을 때, '아, 공식문서네? 다른 어떤 문서보다 더 정확하고 풍부한 정보가 담겨있겠군' 하고 생각하고 문서를 읽어볼 수 있어야 한다는 것입니다.)
 
-기본적인 Python 언어에 익숙해졌다면, 주요한 라이브러리들을 익힐 차례입니다. [[https://docs.python.org/3/library/index.html][Python 표준 라이브러리]] 문서를 둘러보셔도 좋고, 워크샵 3-4일차에 데이터를 다루는데 주요하게 활용할 라이브러리인 [[https://pandas.pydata.org/pandas-docs/stable/][Pandas의 문서]]를 둘러보셔도 좋습니다.
+기본적인 Python 언어에 익숙해졌다면, 주요한 라이브러리들을 익힐 차례입니다. [[https://docs.python.org/3/library/index.html][Python 표준 라이브러리]] 문서를 둘러보셔도 좋고, 워크샵 3-4일차에 데이터를 다루는데 주요하게 활용할 라이브러리인 [[https://pandas.pydata.org/pandas-docs/stable/][Pandas 패키지의 문서]]를 둘러보셔도 좋습니다.
 
 *** 출력문
 
