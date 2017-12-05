@@ -308,11 +308,7 @@ while True:
 
 *** 연습문제
 
- NetworkX 사용해서
-
-  - for문 사용해서 노드 추가하기
-  - 노드 이름 부여하기
-  - 
+이쯤해서 NetworkX 사용해서 네트워크 그래프를 한번 그려봅시다.
 
 #+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/day1-example-nx.png 
 %matplotlib inline
@@ -322,36 +318,44 @@ G = nx.Graph()
 G.add_node(1)
 G.add_node(2)
 G.add_edge(1, 2)
-nx.draw(G)
+
+pos = nx.spring_layout(G)
+nx.draw_networkx_edges(G, pos, alpha=0.2)
+nx.draw_networkx_nodes(G, pos, node_size=50)
 #+END_SRC
 
 #+RESULTS:
+: <matplotlib.collections.PathCollection at 0x7f50de58a860>
 [[file:outputs/day1-example-nx.png]]
 
 위의 예제를 아래와 같이 변경해보세요.
 
- - =for= 문을 사용하여 노드를 50개 추가하기
-
+ - =for= 문을 사용하여 node를 50개 추가하기
+ - =random.randint()= 를 사용하여 edge 100개 추가하기
 
 #+BEGIN_SRC ipython :session :exports results :results raw :ipyfile outputs/day1-exercise-1.png
 %matplotlib inline
 import networkx as nx
+import random
 
 G = nx.Graph()
-for i in range(50):
-   G.add_node(i)
-   if i > 0:
-      G.add_edge(i, i-1)
-nx.draw(G)
+for n in range(50):
+   G.add_node(n)
+
+for i in range(100):
+   G.add_edge(random.randint(0, 50), random.randint(0, 50))
+
+pos = nx.spring_layout(G)
+nx.draw_networkx_edges(G, pos, alpha=0.2)
+nx.draw_networkx_nodes(G, pos, node_size=50)
 #+END_SRC
 
 #+RESULTS:
+: <matplotlib.collections.PathCollection at 0x7f50de3f4550>
 [[file:outputs/day1-exercise-1.png]]
 
 
-** Python 언어의 기초 2
-
-*** 자료형 (Type)
+** Python 언어의 기초 2: 자료형
 
 Python3에는 아래와 같은 주요 자료형(type)이 있습니다.
 
