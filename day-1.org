@@ -389,22 +389,72 @@ Python3에는 아래와 같은 주요 자료형(type)이 있습니다.
  - Text sequence types: str
  - Byte sequence types: bytes
 
+*** 상수형 자료형
+
+우선, 아래와 같은 상수형 자료형들이 있습니다.
+
 #+BEGIN_SRC python :results output :exports both
 # -*- coding: utf-8 -*-
+# boolean
 True
+False
+10         # int
+10.5       # float
+int(10.5)  # to integer
+float(10)  # to float
+#+END_SRC
+
+*** list, tuple
+
+그리고 배열 형태의 자료형으로는 =list= 와 =tuple= 이 대표적입니다. =list= 와 =tuple= 은 거의 비슷하게 사용할 수 있으나, =list= 는 처음 생성한 이후에도 원소를 추가, 제거하는 등 변경을 가할 수 있지만, =tuple= 은 원소에 변경을 가할 수 없습니다.
+
+#+BEGIN_SRC python :results output :exports code
+a_list = [1, 2, 3, 4, 5]   # list
+b_list = (1, 2, 3, 4, 5)
+
+a_list[2]            # 특정 위치의 원소 참조. 참조번호는 0번부터 시작.
+a_list[2:4]          # 참조번호 2부터 4까지를 잘라서 반환함. 원본은 변경하지 않고 복사본을 반환.
+1 in a_list          # 1이라는 값이 리스트에 존재하는지 여부를 반환
+
+a_list.append(6)     # 맨 뒤에 6이라는 새 원소를 추가
+a_list.insert(0, -1) # 0번째 참조번호에 -1이라는 새 원소를 추가
+a_list.pop(0)        # 0번째 원소를 리스트에서 제거
+#+END_SRC
+
+=tuple= 에 대해서는 변경을 가할 수 없기 때문에, =append=, =insert=, =pop= 등의 조작은 할 수 없습니다. 
+
+=list= 및 =tuple= 에는 숫자 뿐 아니라 모든 자료형을 담을 수 있으며, 원소끼리 동질의 자료형을 가지지 않아도 됩니다.
+
+#+BEGIN_SRC python :results output :exports code
+['Tom', 'Chris', 'Timothy', 'Dan', 'Esther']     # 문자열의 리스트
+['a', 1, 'c', 2, 'e', 3]                         # 여러 타입이 섞인 리스트
+[['a', 1], ['c', 2], ['e', 3]]                   # 리스트로 이루어진 리스트
+[['Tom', 'M', 15, True], 
+ ['Chris', 'F', 28, True], 
+ ['Timothy', 'M', 32, False]]                    # 리스트로 이루어진 리스트 (2)
+#+END_SRC
+
+=list= 및 =tuple= 은 =for= 구문과 함께 사용할 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+name_list = ('Tom', 'Chris', 'Timothy', 'Dan', 'Esther')
+for name in name_list:
+    print(name)
 #+END_SRC
 
 #+RESULTS:
+: Tom
+: Chris
+: Timothy
+: Dan
+: Esther
 
-*** 함수
 
+*** 파일 다루기
 
-*** 클래스
+이번에는 파일을 읽고 쓰는 방법을 알아봅시다.
 
-
-*** 파일 읽기
-
-텍스트 파일을 열어 한줄씩 읽어들이는 구문은 아래와 같습니다. (아래 코드를 실행하기 전에 먼저 [[file:assets/day1-example-read.txt][텍스트 파일]]을 assets 디렉토리 아래에 저장해야 합니다.)
+텍스트 파일을 열어 한줄씩 읽어들이는 구문은 아래와 같습니다. (아래 코드를 실행하기 전에, 먼저 파이썬 소스 파일과 같은 디렉토리에 =assets= 디렉토리를 만들고, [[file:assets/day1-example-read.txt][텍스트 파일]]을 =assets= 디렉토리 안에 저장해야 합니다.)
 
 #+BEGIN_SRC python :results output :exports both
 # -*- coding: utf-8 -*-
