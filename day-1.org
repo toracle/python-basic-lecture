@@ -290,6 +290,21 @@ print(s)
 
 특정한 조건을 만족할 때만 일련의 행동들을 수행하게 하는 명령입니다.
 
+#+BEGIN_SRC python :results output :exports both
+# -*- coding: utf-8 -*-
+
+import random
+s = 0
+
+while True:
+  s = s + random.randint(0, 10)
+  if s > 50:
+    break
+  print(s, end=' ')
+#+END_SRC
+
+#+RESULTS:
+: 3 7 17 25 34 40 40 45 
 
 *** 연습문제
 
@@ -304,16 +319,34 @@ print(s)
 import networkx as nx
 
 G = nx.Graph()
-G.add_node('1')
-G.add_node('2')
-G.add_edge('1', '2')
+G.add_node(1)
+G.add_node(2)
+G.add_edge(1, 2)
 nx.draw(G)
 #+END_SRC
 
 #+RESULTS:
 [[file:outputs/day1-example-nx.png]]
 
+위의 예제를 아래와 같이 변경해보세요.
 
+ - =for= 문을 사용하여 노드를 50개 추가하기
+
+
+#+BEGIN_SRC ipython :session :exports results :results raw :ipyfile outputs/day1-exercise-1.png
+%matplotlib inline
+import networkx as nx
+
+G = nx.Graph()
+for i in range(50):
+   G.add_node(i)
+   if i > 0:
+      G.add_edge(i, i-1)
+nx.draw(G)
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/day1-exercise-1.png]]
 
 
 ** Python 언어의 기초 2
