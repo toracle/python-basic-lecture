@@ -449,6 +449,21 @@ for name in name_list:
 : Esther
 
 
+*** 문자열 다루기
+
+데이터 분석을 하면서 가장 많이 사용하게 될 작업 중 하나가 문자열을 다루는 것입니다. 여기서는 문자열에 대해서 조금 더 자세히 살펴봅시다.
+
+
+
+  - split
+  - contains(in)
+  - find, rfind
+  - regex
+  - slicing
+  - encoding
+  - startswith
+
+
 *** 파일 다루기
 
 이번에는 파일을 읽고 쓰는 방법을 알아봅시다.
@@ -485,18 +500,7 @@ with open('assets/day1-example-read.txt') as fin:
 
 여기서 =with A as B= 구문이 등장하는데, =with= 구문은 자신의 범위를 벗어난 경우 적절한 리소스 반환 작업을 수행합니다. (모든 리소스에 =with= 구문을 사용할 수 있는 것은 아닙니다.)
 
-
-
-
-*** 문자열 다루기
-
-  - split
-  - contains(in)
-  - find, rfind
-  - regex
-  - slicing
-  - encoding
-  - startswith
+=open= 함수에 대해 조금 더 살펴봅시다.
 
 *** 연습문제
 
