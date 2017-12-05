@@ -515,6 +515,11 @@ with open('assets/day1-example-read.txt') as fin:
 
  #+END_SRC
 
+*** 함수
+
+
+*** 클래스
+
 
 
 ** Jupyter notebook 실행하기
