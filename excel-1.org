@@ -88,12 +88,12 @@ pd.pivot_table(df, index='성별', columns='즐기는 음식', values='몸무게
   matplotlib.rc('font', family='Noto Sans CJK KR')
 #+END_SRC
 
-#+BEGIN_SRC ipython :session :exports both :results raw
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot1.png
   df.plot();
 #+END_SRC
 
 #+RESULTS:
-[[file:./obipy-resources/20173DSX.png]]
+[[file:outputs/excel-1-plot1.png]]
 
 
 ** 컬럼 추가, 변형
