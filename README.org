@@ -20,11 +20,11 @@ Python 프로그래밍 언어를 5일 과정에 모두 완벽하게 배우는것
 
 [[file:day-1.org][1일차]]
 
- - 설치, 스크립트 실행하기
- - 개발 환경(Spyder)에 익숙해지기
- - 출력문, 반복문, 조건문, 변수, 함수, 클래스
- - 데이터 구조: list, tuple, set, dict
- - 파일로부터 읽고 쓰기
+ - [[file:python-overview.org][Python이란?]]
+ - [[file:installation.org][개발 환경(Spyder)에 익숙해지기]]
+ - [[file:language-basic-1.org][Python 기초 1]]: 출력문, 변수, 반복문, 조건문
+ - [[file:language-basic-2.org][Python 기초 2]]: 자료형. list, tuple, dict, set, str
+ - [[file:language-basic-3.org][Python 기초 3]]: 파일 다루기, 함수, 클래스
 
 2일차
 

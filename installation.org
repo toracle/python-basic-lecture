@@ -1,0 +1,37 @@
+* 개발환경 구축하기
+
+5일간 진행되는 본 강의에서는, [[https://www.anaconda.com][Anaconda]]를 사용하여 수업을 진행할 예정입니다. Anaconda는 기본 Python 환경에 데이터 분석을 위해 필요한 여러 도구들을 추가한, 일종의 모음집(배포본, distribution)입니다. 이후의 수업을 진행하기에 앞서, Anaconda를 먼저 다운로드 받고 시작합시다.
+
+Anaconda는 [[https://www.anaconda.com/download/][공식 홈페이지]]에서 설치할 수 있는데, 한국에서 받기에는 속도가 다소 느립니다. 중국 칭화대에서 제공하는 [[https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/][미러사이트]]를 이용하면 더 빠르게 받을 수 있습니다.
+
+** Py2 or Py3?
+
+Python을 사용할 때는, 2017년 현재 기준으로, 버전을 선택해야 합니다. 보통 python2를 선택할 것이냐 python3를 선택할 것이냐를 결정해야 하는데, 본 강의에서는 python3 버전을 사용하도록 하겠습니다. Anaconda에서도 python 버전에 따라 적절한 배포본을 사용할 수 있도록 구분하여 제공하고 있습니다. 
+
+** 32bit or 64bit?
+
+그 다음으로는, 32bit를 사용할 것인지 64bit를 사용할 것인지 선택해야 합니다. 대개의 경우 64bit를 선택해도 무방하나, 간혹 외부 패키지를 사용할 때 32bit만을 지원하는 패키지들이 있는 경우에는 32bit를 사용해야 합니다.
+
+본 강의에서는 특별히 32bit의 제한을 받는 외부 라이브러리를 사용하지 않기 때문에 64bit를 설치하시면 됩니다.
+
+** Anaconda 설치하고 Spyder 사용하기
+
+다운로드 받은 Anaconda 설치 파일을 실행하여 설치해줍니다.
+
+Anaconda에서 기본적으로 제공되는 Spyder라는 편집기를 사용해서 파이썬 파일을 작성해봅시다. 우선, 시작 메뉴에서 Spyder를 찾아 실행해줍니다.
+
+[[file:assets/python-basic-day1-spyder-launch.png]]
+
+아래와 같은 화면을 볼 수 있습니다.
+
+[[file:assets/python-basic-day1-spyder-window.png]]
+
+좌측에는 파일을 편집할 수 있는 에디터가 있고, 오른쪽 아래에는 코드를 실행해볼 수 있는 창이 있습니다.
+
+좌측에 아래와 같은 코드를 적고, 키보드에서 =F5= 를 눌러 실행해봅시다.
+
+#+BEGIN_SRC python
+print('hello')
+#+END_SRC
+
+그러면 우하단의 콘솔 창에 실행 결과가 나타납니다.
