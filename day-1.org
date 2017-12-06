@@ -483,6 +483,79 @@ for row in a_list:
 : ['Timothy', 'M', 32, False]
 
 
+*** dict
+
+이번에는 =dict= 에 대해 알아봅니다.
+
+=dict= 는, 특정한 key에 대해 value를 기억하는 자료형입니다. 우선 =dict= 에 값을 저장하고 인출하는 기본적인 동작을 알아봅시다.
+
+#+BEGIN_SRC python :results output :exports both
+a_dict = dict()     # dict를 생성
+a_dict = {}         # dict를 생성 (위와 동일)
+
+a_dict['0'] = 3          # '0'이라는 공간(key)에 3이라는 값을 저장
+a_dict['Tom'] = 'M'      # 'Tom'이라는 공간에 'M'이라는 값을 저장
+
+# a_dict['Heidi']          # KeyError 발생
+a_dict.get('Heidi')      # None 반환
+a_dict.get('Heidi', '?') # '?' 반환
+
+b_dict = {'0': 3, 'Tom': 'M'}   # {} 표현형으로 dict 정의
+
+a_dict == b_dict         # 값을 하나씩 넣어서 구성한 dict와, {} 표현형으로 정의한 dict는 결과가 동일
+
+print(a_dict)
+#+END_SRC
+
+#+RESULTS:
+: {'Tom': 'M', '0': 3}
+
+이어서, 조금 더 복잡한 사용법을 알아봅시다.
+
+#+BEGIN_SRC python :results output :exports both
+a_dict = {'Tom': 15, 'Chris': 28, 'Timothy': 32}
+
+'Tom' in a_dict == True           # dict에 'Tom'이라는 키가 존재하는지 확인
+a_dict.setdefault('Jenny', 20)    # Jenny라는 공간(key)이 없었다면 공간을 마련하고 20을 할당
+a_dict.setdefault('Tom', 20)      # Tom이라는 공간(key)이 없었다면 공간을 마련하고 20을 할당, 아니라면 무시
+
+print(a_dict['Jenny'] == 20)
+print(a_dict['Tom'] == 15)
+#+END_SRC
+
+#+RESULTS:
+: True
+: True
+
+#+BEGIN_SRC python :results output :exports both
+a_dict = {'Tom': 15, 'Chris': 28, 'Timothy': 32}
+
+print(a_dict.keys())   # dict에 마련된 공간 이름(key) 목록을 리스트로 반환
+print(a_dict.values()) # dict에 저장된 값의 목록을 리스트로 반환
+print(a_dict.items())  # dict에 저장된 공간 이름과 값의 목록을 중첩된 리스트로 반환
+#+END_SRC
+
+#+RESULTS:
+: dict_keys(['Timothy', 'Tom', 'Chris'])
+: dict_values([32, 15, 28])
+: dict_items([('Timothy', 32), ('Tom', 15), ('Chris', 28)])
+
+
+#+BEGIN_SRC python :results output :exports code
+a_dict = {'Tom': 15, 'Chris': 28, 'Timothy': 32}
+
+a_dict.pop('Tom')       # dict에서 'Tom' 공간을 제거하면서 그 값을 반환
+del a_dict['Tom']       # dict에서 'Tom' 공간을 제거
+#+END_SRC
+
+
+*** set
+
+이번에는 =set= 에 대해 알아봅시다.
+
+
+
+
 *** 문자열 다루기
 
 데이터 분석을 하면서 가장 많이 사용하게 될 작업 중 하나가 문자열을 다루는 것입니다. 여기서는 문자열에 대해서 조금 더 자세히 살펴봅시다.
