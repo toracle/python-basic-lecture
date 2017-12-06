@@ -1,18 +1,4 @@
-#+TITLE: 1일차
-
-교육목표
-
- - Python 개발 환경을 구축할 수 있다.
- - 기초적인 Python 스크립트를 작성하고 실행할 수 있다.
-
-
-** 학습 목표 공유
-
-각자 이 워크샵을 수강할 때 기대했던 바 및 목표를 공유해봅시다.
-
-
-
-** Jupyter notebook 실행하기
+* Jupyter Notebook에 익숙해지기
 
 Jupyter notebook은, 대화형으로 데이터 분석 등의 작업을 용이하게 하기 위해서 만들어진 개발 환경입니다.[fn:jupyter-ipython]
 

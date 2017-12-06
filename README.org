@@ -18,8 +18,9 @@ Python 프로그래밍 언어를 5일 과정에 모두 완벽하게 배우는것
 
 ** 과정 개요
 
-[[file:day-1.org][1일차]]
+1일차
 
+ - 학습 목표 공유
  - [[file:python-overview.org][Python이란?]]
  - [[file:installation.org][개발 환경(Spyder)에 익숙해지기]]
  - [[file:language-basic-1.org][Python 기초 1]]: 출력문, 변수, 반복문, 조건문
@@ -34,7 +35,7 @@ Python 프로그래밍 언어를 5일 과정에 모두 완벽하게 배우는것
 
 3일차
 
- - Jupyter Notebook에 익숙해지기
+ - [[file:jupyter-install.org][Jupyter Notebook에 익숙해지기]]
  - 데이터 분석 기초: pandas, numpy
  - [[file:pandas.org][Pandas 소개]]
  - [[file:excel-1.org][엑셀 파일 다루기 1]]: 탐색하기
