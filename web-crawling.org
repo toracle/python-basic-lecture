@@ -1,0 +1,232 @@
+* 웹페이지 수집하기
+
+지금까지 Python에 대한 것들을 살펴봤는데, 이 모든 것들을 종합적으로 활용할 수 있는 분야가 웹페이지 수집인 것 같습니다.
+
+그래서 이번에는 웹페이지를 수집해오고, 문서 요소를 추출하는 방법을 학습합니다.
+
+데이터 분석은 대략적으로 수집 - 정제 - 추출 (구조화) - 분석의 과정을 거칩니다.
+
+ 1. 수집
+ 2. 정제
+ 3. 추출 (구조화)
+ 4. 분석
+
+들어가는 노력의 크기도 순서대로입니다. 수집 단계가 가장 노력이 많이 들어가고, 정제가 그 다음, 추출이 그 다음으로 노력이 많이 들어갑니다. 분석 단계에 들어가면 노력이 많이 들어간다기보다는 이런 저런 분석들을 탐색적으로 수행해보면서 반복적인 작업을 많이 하게 되지요.
+
+수집이 이루어지는 대상도 일반적인 웹페이지를 비롯하여 트위터처럼 API가 제공되는 경우 등 다양하고, 데이터의 종류, 대상 서비스의 특성 등 다양한 변수가 존재합니다. 물론 수작업으로 수집을 하는 경우도 있겠네요.
+
+이번에는 웹페이지를 수집하는 방법을 중점적으로 살펴봅니다.
+
+** 웹페이지 수집 - Crawling & Scraping
+
+#+BEGIN_EXAMPLE
+주의: 웹페이지를 수집하는 행위는 법적으로 허용된 범위 내에서 해야 합니다. 다른 사람이나 기업의 지적 재산권을 침해하거나, 과다한 접속으로 서비스 및 업무에 지장을 줄 수 있습니다.
+#+END_EXAMPLE
+
+웹페이지를 수집하는데에는 많은 난관이 존재합니다. 로그인이 걸려있는 웹 페이지도 있고, 짧은 시간에 많은 접속을 하는 클라이언트를 접속 거부하는 서비스들도 있습니다. 어떤 웹페이지는 데이터가 Javascript를 사용해서 동적으로 로딩되는 경우도 있습니다.
+
+웹페이지를 snowbowling 식으로 무조건 수집하는 행위를 crawling이라고 합니다. 
+반면에, 특정 사이트의 형식 특징을 활용하여 데이터를 수집하는 행위를 scraping이라고 합니다.
+
+
+예제로, 영화 배우 네트워크 데이터를 수집해서 한국의 케빈 베이컨 게임을 만들어봅시다.
+
+http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR
+
+위 웹페이지는, N사의 영화 정보 웹페이지입니다. 국적이 한국인 배우들의 목록을 보여줍니다.
+웹페이지 하단에 보면 페이지 번호가 있습니다. 2번 페이지를 클릭해보면, 다음과 같은 URL로 변경됩니다.
+
+http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=2
+
+여기서 유추할 수 있는 것은, 뒤에 &page=숫자 를 넣으면 해당 페이지의 결과를 보여준다는 것입니다.
+몇 페이지까지 있는지 확인해볼까요? 한번 충분한 숫자를 넣어봅시다. 100을 넣어볼까요?
+
+http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=100
+
+웹페이지는 정상적으로 출력되었는데, 하단의 페이지 숫자를 보면 90페이지가 마지막 페이지인 것을 알 수 있습니다.
+
+그러면 page를 1부터 90까지 증가해가면서 저 URL을 요청하면 모든 한국 배우들의 목록을 가져올 수 있을 것입니다.
+
+** 영화인 목록 가져오기
+
+우선 첫번째 페이지를 가져오는 것부터 해봅시다.
+
+http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1
+
+
+#+BEGIN_SRC python :results output :exports both
+  # -*- coding: utf-8 -*-
+  import requests
+
+  def fetch_one_page():
+      response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1')
+      for line in response.iter_lines():
+          decoded_line = line.decode('euc-kr')   # 네이버 영화 웹페이지는 한글이 EUC-KR 인코딩으로 기록되어 있습니다.
+          if not decoded_line.strip():           # 앞뒤 공백을 제거한 후, 빈 줄이면 해당 줄은 건너뜁니다.
+             continue
+          print(decoded_line)
+
+  fetch_one_page()
+#+END_SRC
+
+
+출력된 결과를 자세히 살펴보면, 우리가 뽑아내고 싶은 대상인, 배우들의 목록이 다음과 같은 규칙성을 가진채 출력되고 있음을 알 수 있습니다.
+
+
+#+BEGIN_SRC html
+  <li>
+      <a href="/movie/bi/pi/basic.nhn?code=310941"> 박은선</a>
+      <ul class="detail">
+      <li><a href='?nation=KR' class='green'><b>한국</b></a></li> 
+      </ul>
+  </li>
+
+  <li>
+      <a href="/movie/bi/pi/basic.nhn?code=131804">C.S. 리 (C.S. Lee)</a>
+      <ul class="detail">
+      <li><a href='?nation=KR&year=1970' class='green'>1971</a><a href='?nation=KR&year=19711230' class='green'>.12.30</a></li><li><a href='?nation=KR' class='green'><b>한국</b></a></li> 
+      </ul>
+  </li>
+#+END_SRC
+
+여기서 우리는 배우의 이름이 나와있는 한 줄을 가져오면 됩니다. =str= 에 대해 =in= 연산자를 사용하여, ~<a href="/movie/bi/pi/basic.nhn?code=~ 라는 문자열을 포함하는 줄만을 뽑아낼 수 있습니다.
+
+
+#+BEGIN_SRC python :results output :export both
+# -*- coding: utf-8 -*-
+import requests
+
+def fetch_one_page():
+    response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1')
+    for line in response.iter_lines():
+        decoded_line = line.decode('euc-kr')
+        if not decoded_line.strip():
+           continue
+        if not '<a href="/movie/bi/pi/basic.nhn?code=' in decoded_line:
+           continue
+        print(decoded_line.strip())
+
+fetch_one_page()
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+<a href="/movie/bi/pi/basic.nhn?code=131804">C.S. 리 (C.S. Lee)</a>
+<a href="/movie/bi/pi/basic.nhn?code=1671">김란</a>
+<a href="/movie/bi/pi/basic.nhn?code=1899">김동주</a>
+<a href="/movie/bi/pi/basic.nhn?code=2311">김윤</a>
+<a href="/movie/bi/pi/basic.nhn?code=54817">김태용</a>
+<a href="/movie/bi/pi/basic.nhn?code=58580">금동현</a>
+<a href="/movie/bi/pi/basic.nhn?code=63528">김동령 (Kim Dong Ryung)</a>
+<a href="/movie/bi/pi/basic.nhn?code=71377">김지아</a>
+<a href="/movie/bi/pi/basic.nhn?code=71547">김은진</a>
+<a href="/movie/bi/pi/basic.nhn?code=74390">김태준 (KIM Tae-joon)</a>
+<a href="/movie/bi/pi/basic.nhn?code=75887">김기훈</a>
+<a href="/movie/bi/pi/basic.nhn?code=75890">김동우</a>
+<a href="/movie/bi/pi/basic.nhn?code=76857">김문일</a>
+<a href="/movie/bi/pi/basic.nhn?code=78312">김정우</a>
+<a href="/movie/bi/pi/basic.nhn?code=80433">김용완 (Kim Yongwan)</a>
+<a href="/movie/bi/pi/basic.nhn?code=81261">김광빈 (KIM Kwang-bin)</a>
+<a href="/movie/bi/pi/basic.nhn?code=83431">권정은</a>
+<a href="/movie/bi/pi/basic.nhn?code=84960">김필재</a>
+<a href="/movie/bi/pi/basic.nhn?code=85457">김선하</a>
+<a href="/movie/bi/pi/basic.nhn?code=86620">김효정</a>
+#+end_example
+
+사람 이름은 동명이인이 있을 수도 있으니, 사람 일련번호도 함께 추출해야 합니다.
+
+사람 일련번호는 ~code=~ 라는 문자열부터 처음 ~"~ 라는 문자를 만날 때까지 추출하면 되고, 사람 이름은 ~>~ 라는 문자부터 처음 ~<~ 문자를 만날 때까지 추출하면 됩니다.
+
+~str~ 에는 ~find~ 라는 메소드가 있습니다. 대상 문자열이 원본 문자열 상에서 몇번째 위치에 등장하는지를 알려주는 메소드입니다.
+
+
+#+BEGIN_SRC python :results output :export both
+  # -*- coding: utf-8 -*-
+  import requests
+
+  def fetch_one_page():
+      response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1')
+      actor_id_list = []
+      for line in response.iter_lines():
+          decoded_line = line.decode('euc-kr')
+          if not decoded_line.strip():
+             continue
+          if '<a href="/movie/bi/pi/basic.nhn?code=' not in decoded_line:
+             continue
+          _line = decoded_line.strip()
+          id_start = _line.find('code=')                  # 'code='가 처음 등장하는 위치를 기억
+          id_end = _line.find('"', id_start)              # 'code=' 위치 이후에 처음 "가 등장하는 위치를 기억
+          actor_id = _line[id_start+len('code='):id_end]  # 'code=' 이후부터 처음 " 등장 이전까지 문자열을 slice
+          actor_id_list.append({'id': actor_id, 'name': ''})
+      return actor_id_list
+
+  actor_id_list = fetch_one_page()
+  print(actor_id_list)
+#+END_SRC
+
+#+RESULTS:
+: [{'id': '131804', 'name': ''}, {'id': '1671', 'name': ''}, {'id': '1899', 'name': ''}, {'id': '2311', 'name': ''}, {'id': '54817', 'name': ''}, {'id': '58580', 'name': ''}, {'id': '63528', 'name': ''}, {'id': '71377', 'name': ''}, {'id': '71547', 'name': ''}, {'id': '74390', 'name': ''}, {'id': '75887', 'name': ''}, {'id': '75890', 'name': ''}, {'id': '76857', 'name': ''}, {'id': '78312', 'name': ''}, {'id': '80433', 'name': ''}, {'id': '81261', 'name': ''}, {'id': '83431', 'name': ''}, {'id': '84960', 'name': ''}, {'id': '85457', 'name': ''}, {'id': '86620', 'name': ''}]
+
+
+** 연습문제
+
+위 코드는 사람 일련번호를 추출하여 출력합니다. 사람 이름은 여러분이 해보세요.
+
+그리고 위 코드에서 ~page=1~ 부분을 수정하여, for문을 사용해서 페이지를 1부터 90까지 증가시켜가면서 URL을 요청하도록 해보세요. 그리고 이 작업을 수행하는 부분을 함수로 만들어놓도록 합시다. ~fetch_person_list~ 라고 하면 될 것 같네요.
+
+(잘 안되는 분들은 [[][제가 작성한 코드]]를 참고하세요.)
+
+
+** 영화 목록 가져오기
+
+이제 사람 일련번호와 이름을 모두 추출했으니, 그 사람들이 어떤 영화에 출연했는지 알아봅시다.
+
+http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
+
+위 URL은, 사람 일련번호가 73436인 배우가 출연한 영화의 목록을 보여줍니다.
+
+여기에서 영화 일련번호와 영화 제목을 추출해보세요.
+
+그리고 여기에서도 URL의 페이지 번호를 증가시켜가면서 요청을 해보세요. (단, 이 경우에는 배우들마다 출연 영화 정보 페이지가 몇 페이지까지 있는지 일일이 미리 알 수 없습니다. 프로그램이 판단하도록 해야 합니다. 마지막 페이지에 도달했을 때를 프로그램이 어떻게 판단할 수 있을지 생각해보세요.)
+
+
+#+BEGIN_SRC python :results output :export both
+  # -*- coding: utf-8 -*-
+  import requests
+
+  def get_id(line):
+      id_start = line.find('code=')                  # 'code='가 처음 등장하는 위치를 기억
+      id_end = line.find('"', id_start)              # 'code=' 위치 이후에 처음 "가 등장하는 위치를 기억
+      return line[id_start+len('code='):id_end]      # 'code=' 이후부터 처음 " 등장 이전까지 문자열을 slice
+
+  def get_name(line):
+      name_start = line.find('">')
+      name_end = line.find('<', name_start+1)
+      return line[name_start+2:name_end]
+
+  def fetch_movie_list(actor_id):
+      page = 1
+      has_next_page = True
+      movie_list = []
+      while has_next_page is True:
+          has_next_page = False
+          url = 'http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode={}&page={}'.format(actor_id, page)
+          response = requests.get(url)
+          for line in response.iter_lines():
+              decoded_line = line.decode('utf8')
+              if '<em>다음</em>' in decoded_line:
+                  has_next_page = True
+              if '<a href="/movie/bi/mi/basic.nhn?code=' not in decoded_line or \
+                 'pilmo_thumb' in decoded_line:
+                  continue
+              _id = get_id(decoded_line)
+              _name = get_name(decoded_line)
+              movie_list.append({'id': _id, 'name': _name})
+          page = page + 1
+      return movie_list
+
+  print(fetch_movie_list('1794'))
+#+END_SRC
+
+#+RESULTS:
+: [{'id': '145778', 'name': '동네변호사 조들호'}, {'id': '146940', 'name': '배우학교'}, {'id': '91073', 'name': '박수건달'}, {'id': '80664', 'name': '미쓰GO'}, {'id': '78945', 'name': '싸인'}, {'id': '84275', 'name': '다시 보고 싶은 SBS 드라마 10선'}, {'id': '50216', 'name': '바람의 화원'}, {'id': '68934', 'name': '우린 액션배우다'}, {'id': '65856', 'name': '쩐의 전쟁'}, {'id': '43493', 'name': '눈부신 날에'}, {'id': '37908', 'name': '달마야, 서울 가자'}, {'id': '38814', 'name': '파리의 연인'}, {'id': '37853', 'name': '범죄의 재구성'}, {'id': '35904', 'name': '4인용 식탁'}, {'id': '31922', 'name': '달마야 놀자'}, {'id': '31405', 'name': '인디안 썸머'}, {'id': '29042', 'name': '킬리만자로'}, {'id': '75707', 'name': '깡패와 건달로 본 한국 100년'}, {'id': '23860', 'name': '화이트 발렌타인'}, {'id': '19456', 'name': '약속'}, {'id': '42545', 'name': '내 마음을 뺏어봐'}, {'id': '18611', 'name': '편지'}, {'id': '18592', 'name': '모텔 선인장'}, {'id': '18167', 'name': '쁘아종'}, {'id': '41280', 'name': '사랑한다면'}, {'id': '17195', 'name': '유리'}, {'id': '13591', 'name': '사랑하고 싶은 여자 & 결혼하고 싶은 여자'}, {'id': '47778', 'name': '가변차선'}]
