@@ -39,13 +39,13 @@ http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR
 http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=2
 
 여기서 유추할 수 있는 것은, 뒤에 &page=숫자 를 넣으면 해당 페이지의 결과를 보여준다는 것입니다.
-몇 페이지까지 있는지 확인해볼까요? 한번 충분한 숫자를 넣어봅시다. 100을 넣어볼까요?
+몇 페이지까지 있는지 확인해볼까요? 한번 충분한 숫자를 넣어봅시다. 500을 넣어볼까요?
 
-http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=100
+http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=500
 
-웹페이지는 정상적으로 출력되었는데, 하단의 페이지 숫자를 보면 90페이지가 마지막 페이지인 것을 알 수 있습니다.
+웹페이지는 정상적으로 출력되었는데, 하단의 페이지 숫자를 보면 211페이지가 마지막 페이지인 것을 알 수 있습니다.
 
-그러면 page를 1부터 90까지 증가해가면서 저 URL을 요청하면 모든 한국 배우들의 목록을 가져올 수 있을 것입니다.
+그러면 page를 1부터 211까지 증가해가면서 저 URL을 요청하면 모든 한국 배우들의 목록을 가져올 수 있을 것입니다.
 
 ** 영화인 목록 가져오기
 
@@ -172,7 +172,7 @@ fetch_one_page()
 
 위 코드는 사람 일련번호를 추출하여 출력합니다. 사람 이름은 여러분이 해보세요.
 
-그리고 위 코드에서 ~page=1~ 부분을 수정하여, for문을 사용해서 페이지를 1부터 90까지 증가시켜가면서 URL을 요청하도록 해보세요. 그리고 이 작업을 수행하는 부분을 함수로 만들어놓도록 합시다. ~fetch_person_list~ 라고 하면 될 것 같네요.
+그리고 위 코드에서 ~page=1~ 부분을 수정하여, for문을 사용해서 페이지를 1부터 211까지 증가시켜가면서 URL을 요청하도록 해보세요. 그리고 이 작업을 수행하는 부분을 함수로 만들어놓도록 합시다. ~fetch_person_list~ 라고 하면 될 것 같네요.
 
 (잘 안되는 분들은 [[][제가 작성한 코드]]를 참고하세요.)
 
@@ -208,7 +208,7 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
       page = 1
       has_next_page = True
       movie_list = []
-      while has_next_page is True:
+      while has_next_page is True:                   # 다음 페이지로의 링크가 있는 경우에만 반복
           has_next_page = False
           url = 'http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode={}&page={}'.format(actor_id, page)
           response = requests.get(url)
