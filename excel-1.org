@@ -1,43 +1,69 @@
 * 엑셀 대체하기
 
+여기서 사용한 일부 데이터는, 통계청 산하 통계교육원의 [[https://sti.kostat.go.kr/coresti/site/board/StudentBoardViewList.do][이러닝 실습 자료]]를 사용하였습니다.
+
+
+#+BEGIN_SRC ipython :session :exports none
+%matplotlib inline
+from tabulate import tabulate
+
+def tab(df):
+    print(tabulate(df, headers='keys', tablefmt='orgtbl'))
+#+END_SRC
+
+#+RESULTS:
+
 ** 피벗 테이블
 
  - 빈도 분석
  - 비율 계산
 
-#+BEGIN_SRC ipython :session :exports both :results raw
-%matplotlib inline
+#+BEGIN_SRC ipython :session :exports code :results raw
 import pandas as pd
 
 df = pd.read_excel('assets/엑셀과정실습생.xlsx', sheet_name='Sheet1')
 df
 #+END_SRC
 
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(df)
+#+END_SRC
+
+#+RESULTS:
+|    | 번호 | 나이 | 성별 | 신장(cm) | 몸무게(kg) | 즐기는 음식 |
+|----+------+------+------+----------+------------+-------------|
+|  0 |    1 |   30 |    1 |      183 |         82 |           1 |
+|  1 |    2 |   28 |    2 |      160 |         62 |           3 |
+|  2 |    3 |   27 |    1 |      178 |         77 |           2 |
+|  3 |    4 |   23 |    1 |      172 |         70 |           2 |
+|  4 |    5 |   25 |    1 |      168 |         72 |           3 |
+|  5 |    6 |   27 |    1 |      179 |         77 |           1 |
+|  6 |    7 |   26 |    1 |      169 |         71 |           1 |
+|  7 |    8 |   29 |    1 |      171 |         75 |           3 |
+|  8 |    9 |   34 |    2 |      158 |         60 |           2 |
+|  9 |   10 |   31 |    1 |      183 |         77 |           3 |
+| 10 |   11 |   26 |    2 |      162 |         59 |           1 |
+| 11 |   12 |   26 |    1 |      173 |         70 |           2 |
+| 12 |   13 |   35 |    1 |      173 |         68 |           3 |
+| 13 |   14 |   24 |    1 |      176 |         66 |           3 |
+| 14 |   15 |   29 |    2 |      170 |         70 |           2 |
+| 15 |   16 |   33 |    1 |      177 |         72 |           2 |
+| 16 |   17 |   38 |    2 |      159 |         55 |           1 |
+| 17 |   18 |   26 |    1 |      166 |         69 |           3 |
+| 18 |   19 |   26 |    1 |      169 |         66 |           2 |
+| 19 |   20 |   28 |    2 |      159 |         60 |           2 |
+
+
+#+BEGIN_SRC ipython :session :exports both :results raw
+pd.value_counts(df['성별'])
+#+END_SRC
+
 #+RESULTS:
 #+BEGIN_EXAMPLE
-    번호  나이  성별  신장(cm)  몸무게(kg)  즐기는 음식
-  0    1  30   1     183       82       1
-  1    2  28   2     160       62       3
-  2    3  27   1     178       77       2
-  3    4  23   1     172       70       2
-  4    5  25   1     168       72       3
-  5    6  27   1     179       77       1
-  6    7  26   1     169       71       1
-  7    8  29   1     171       75       3
-  8    9  34   2     158       60       2
-  9   10  31   1     183       77       3
-  10  11  26   2     162       59       1
-  11  12  26   1     173       70       2
-  12  13  35   1     173       68       3
-  13  14  24   1     176       66       3
-  14  15  29   2     170       70       2
-  15  16  33   1     177       72       2
-  16  17  38   2     159       55       1
-  17  18  26   1     166       69       3
-  18  19  26   1     169       66       2
-  19  20  28   2     159       60       2
+  1    14
+  2     6
+  Name: 성별, dtype: int64
 #+END_EXAMPLE
-
 
 #+BEGIN_SRC ipython :session :exports both :results raw
 pd.value_counts(df['성별'], normalize=True)
@@ -50,31 +76,55 @@ pd.value_counts(df['성별'], normalize=True)
   Name: 성별, dtype: float64
 #+END_EXAMPLE
 
+#+BEGIN_SRC ipython :session :exports code :results raw
+freq = pd.value_counts(df['성별'])
+ratio = pd.value_counts(df['성별'], normalize=True)
+df_freq = pd.DataFrame([freq, ratio * 100], index=['빈도', '비율'])
+df_freq
+#+END_SRC
 
-#+BEGIN_SRC ipython :session :exports both :results raw
-pd.pivot_table(df, index='성별')
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(df_freq)
 #+END_SRC
 
 #+RESULTS:
-#+BEGIN_EXAMPLE
-             나이    몸무게(kg)         번호      신장(cm)    즐기는 음식
-  성별                                                       
-  1   27.714286  72.285714   9.714286  174.071429  2.214286
-  2   30.500000  61.000000  12.333333  161.333333  1.833333
-#+END_EXAMPLE
+|      |  1 |  2 |
+|------+----+----|
+| 빈도 | 14 |  6 |
+| 비율 | 70 | 30 |
 
 
 #+BEGIN_SRC ipython :session :exports both :results raw
-pd.pivot_table(df, index='성별', columns='즐기는 음식', values='몸무게(kg)')
+df_pv_1 = df.pivot_table(df, index='성별')
+df_pv_1
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(df_pv_1)
 #+END_SRC
 
 #+RESULTS:
-#+BEGIN_EXAMPLE
-  즐기는 음식          1          2          3
-  성별                                     
-  1       76.666667  71.000000  71.166667
-  2       57.000000  63.333333  62.000000
-#+END_EXAMPLE
+| 성별 |    나이 | 몸무게(kg) |    번호 | 신장(cm) | 즐기는 음식 |
+|------+---------+------------+---------+----------+-------------|
+|    1 | 27.7143 |    72.2857 | 9.71429 |  174.071 |     2.21429 |
+|    2 |    30.5 |         61 | 12.3333 |  161.333 |     1.83333 |
+
+
+#+BEGIN_SRC ipython :session :exports both :results raw
+df_pv_2 = df.pivot_table(index='즐기는 음식', columns='성별')
+df_pv_2
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(df_pv_2)
+#+END_SRC
+
+#+RESULTS:
+| 즐기는 음식 | ('나이', 1) | ('나이', 2) | ('몸무게(kg)', 1) | ('몸무게(kg)', 2) | ('번호', 1) | ('번호', 2) | ('신장(cm)', 1) | ('신장(cm)', 2) |
+|-------------+-------------+-------------+-------------------+-------------------+-------------+-------------+-----------------+-----------------|
+|           1 |     27.6667 |          32 |           76.6667 |                57 |     4.66667 |          14 |             177 |           160.5 |
+|           2 |          27 |     30.3333 |                71 |           63.3333 |        10.8 |     14.6667 |           173.8 |         162.333 |
+|           3 |     28.3333 |          28 |           71.1667 |                62 |     11.3333 |           2 |         172.833 |             160 |
 
 ** 그래프 그리기
 
@@ -94,7 +144,6 @@ pd.pivot_table(df, index='성별', columns='즐기는 음식', values='몸무게
 
 #+RESULTS:
 [[file:outputs/excel-1-plot1.png]]
-
 
 ** 컬럼 추가, 변형
 
