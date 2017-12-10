@@ -1,7 +1,8 @@
 * 엑셀 대체하기
 
-여기서 사용한 일부 데이터는, 통계청 산하 통계교육원의 [[https://sti.kostat.go.kr/coresti/site/board/StudentBoardViewList.do][이러닝 실습 자료]]를 사용하였습니다.
+그러면 본격적으로 엑셀로 하던 작업을 pandas를 사용하여 수행해봅시다.
 
+(여기서 사용한 일부 데이터는, 통계청 산하 통계교육원의 [[https://sti.kostat.go.kr/coresti/site/board/StudentBoardViewList.do][이러닝 실습 자료]]를 사용하였습니다.)
 
 #+BEGIN_SRC ipython :session :exports none
 %matplotlib inline
@@ -13,10 +14,9 @@ def tab(df):
 
 #+RESULTS:
 
-** 피벗 테이블
+** 엑셀 파일 읽어들이기
 
- - 빈도 분석
- - 비율 계산
+우선, 데이터로 사용할 엑셀 파일을 jupyter notebook으로 읽어들입니다.
 
 #+BEGIN_SRC ipython :session :exports code :results raw
 import pandas as pd
@@ -54,6 +54,12 @@ tab(df)
 | 19 |   20 |   28 |    2 |      159 |         60 |           2 |
 
 
+** 빈도 분석
+
+우선 데이터에 대해 간단히 현황을 살펴보려 합니다. 데이터별로 빈도가 어떻게 되는지 살펴봅시다.
+
+우선 성별 비율이 어떻게 되는지 살펴봅니다. 성별 각각의 빈도는 아래와 같이 살펴볼 수 있습니다.
+
 #+BEGIN_SRC ipython :session :exports both :results raw
 pd.value_counts(df['성별'])
 #+END_SRC
@@ -64,6 +70,8 @@ pd.value_counts(df['성별'])
   2     6
   Name: 성별, dtype: int64
 #+END_EXAMPLE
+
+빈도 대신 비율을 살펴보려면 아래와 같이 합니다. 최대 1의 값을 가지는 소숫점이 나오고, 100을 곱하면 퍼센트로 나타낼 수 있습니다.
 
 #+BEGIN_SRC ipython :session :exports both :results raw
 pd.value_counts(df['성별'], normalize=True)
@@ -79,7 +87,7 @@ pd.value_counts(df['성별'], normalize=True)
 #+BEGIN_SRC ipython :session :exports code :results raw
 freq = pd.value_counts(df['성별'])
 ratio = pd.value_counts(df['성별'], normalize=True)
-df_freq = pd.DataFrame([freq, ratio * 100], index=['빈도', '비율'])
+df_freq = pd.DataFrame([freq, ratio * 100], index=['빈도', '비율(%)'])
 df_freq
 #+END_SRC
 
@@ -93,6 +101,12 @@ tab(df_freq)
 | 빈도 | 14 |  6 |
 | 비율 | 70 | 30 |
 
+
+** 피벗 테이블
+
+엑셀에서 편리하게 사용하는 기능 중 하나가 피벗 테이블입니다. pandas로는 피벗 테이블을 어떻게 만들까요?
+
+아래와 같이 성별에 따른 값의 차이를 피벗 테이블로 살펴봅시다.
 
 #+BEGIN_SRC ipython :session :exports both :results raw
 df_pv_1 = df.pivot_table(df, index='성별')
@@ -127,6 +141,7 @@ tab(df_pv_2)
 |           3 |     28.3333 |          28 |           71.1667 |                62 |     11.3333 |           2 |         172.833 |             160 |
 
 ** 그래프 그리기
+
 
 
 #+BEGIN_SRC ipython :session :exports none
