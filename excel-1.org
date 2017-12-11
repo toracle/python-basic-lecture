@@ -51,10 +51,31 @@ tab(df)
 | 18 |   19 |   26 |    1 |      169 |         66 |           2 |
 | 19 |   20 |   28 |    2 |      159 |         60 |           2 |
 
+** 기초 통계
+
+가장 간단히, 수강생들의 키에 대한 최소, 최대, 평균과 표준편차 등을 알아봅시다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw
+df['신장(cm)'].describe()
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+  count     20.00000
+  mean     170.25000
+  std        7.81951
+  min      158.00000
+  25%      165.00000
+  50%      170.50000
+  75%      176.25000
+  max      183.00000
+  Name: 신장(cm), dtype: float64
+#+END_EXAMPLE
+
 
 ** 빈도 분석
 
-우선 데이터에 대해 간단히 현황을 살펴보려 합니다. 데이터별로 빈도가 어떻게 되는지 살펴봅시다.
+이번에는, 데이터별로 빈도가 어떻게 되는지 살펴봅시다.
 
 우선 성별 비율이 어떻게 되는지 살펴봅니다. 성별 각각의 빈도는 아래와 같이 살펴볼 수 있습니다.
 
@@ -215,7 +236,7 @@ tab(df_pv_3.apply(lambda x: round(x, 1)))
 #+RESULTS:
 [[file:outputs/excel-1-plot1.png]]
 
-나이, 몸무게, 키 각각에 대해 그래프를 그려볼까요?
+나이에 대해서만 그래프를 그려볼까요?
 
 
 #+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot2-age.png
@@ -234,7 +255,6 @@ tab(df_pv_3.apply(lambda x: round(x, 1)))
 
 #+RESULTS:
 [[file:outputs/excel-1-plot2-age-bar.png]]
-
 
 ** 컬럼 추가, 변형
 
