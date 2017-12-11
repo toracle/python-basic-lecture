@@ -465,3 +465,24 @@ tab(df_cat_pv.apply(lambda x: round(x, 1)))
 
 
 ** Row 필터링
+
+
+
+
+#+BEGIN_SRC ipython :session :exports result :results raw
+import scipy.stats
+scipy.stats.ttest_ind(df['성별'], df['몸무게(kg)'], equal_var=False)
+#+END_SRC
+
+#+RESULTS:
+: Ttest_indResult(statistic=-42.709060696135886, pvalue=1.784997631146937e-20)
+
+
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot-sex-weight-scatter.png
+df.plot.scatter(x='성별', y='몸무게(kg)');
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-1-plot-sex-weight-scatter.png]]
+
