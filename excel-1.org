@@ -364,6 +364,7 @@ tab(df_dtype.corr())
 
 이제 연속된 값을 나타내는 컬럼에 대해서만 상관관계를 구한 것을 볼 수 있습니다.
 
+앞서 살펴보았던 피벗테이블도 어떻게 달라졌는지 살펴볼까요?
 
 #+BEGIN_SRC ipython :session :exports code :results raw
 pd.pivot_table(df_dtype, index='성별')
@@ -379,6 +380,9 @@ tab(pd.pivot_table(df_dtype, index='성별'))
 |    1 | 27.7143 |    72.2857 |  174.071 |
 |    2 | 30.5000 |    61.0000 |  161.333 |
 
+역시 연속값을 가지는 컬럼들만 대상으로 피벗테이블을 만듭니다.
+
+여러 층위의 index에 대해서도 그러합니다.
 
 #+BEGIN_SRC ipython :session :exports code :results raw
 pd.pivot_table(df_dtype, index=['성별', '즐기는 음식'])
@@ -401,6 +405,63 @@ tab(pd.pivot_table(df_dtype, index=['성별', '즐기는 음식']))
 
 ** 컬럼 추가, 변형
 
+종종 연속된 값을 일정 범주로 구분해야 하는 경우가 있습니다. 이를테면 13세를 10대, 23세를 20대 이렇게 말이죠. 이런건 어떻게 처리할까요?
+
  - 날짜 범주화, 연령대 범주화
+
+
+#+BEGIN_SRC ipython :session :exports code :results raw
+def categorize_age(age):
+    return '{}~{}세'.format(age // 5 * 5, (age // 5 + 1) * 5-1)
+
+df_dtype['연령대'] = df_dtype['나이'].apply(categorize_age)
+df_dtype
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(df_dtype)
+#+END_SRC
+
+#+RESULTS:
+| 번호 | 나이 | 성별 | 신장(cm) | 몸무게(kg) | 즐기는 음식 | 연령대  |
+|------+------+------+----------+------------+-------------+---------|
+|    1 |   30 |    1 |      183 |         82 |           1 | 30~34세 |
+|    2 |   28 |    2 |      160 |         62 |           3 | 25~29세 |
+|    3 |   27 |    1 |      178 |         77 |           2 | 25~29세 |
+|    4 |   23 |    1 |      172 |         70 |           2 | 20~24세 |
+|    5 |   25 |    1 |      168 |         72 |           3 | 25~29세 |
+|    6 |   27 |    1 |      179 |         77 |           1 | 25~29세 |
+|    7 |   26 |    1 |      169 |         71 |           1 | 25~29세 |
+|    8 |   29 |    1 |      171 |         75 |           3 | 25~29세 |
+|    9 |   34 |    2 |      158 |         60 |           2 | 30~34세 |
+|   10 |   31 |    1 |      183 |         77 |           3 | 30~34세 |
+|   11 |   26 |    2 |      162 |         59 |           1 | 25~29세 |
+|   12 |   26 |    1 |      173 |         70 |           2 | 25~29세 |
+|   13 |   35 |    1 |      173 |         68 |           3 | 35~39세 |
+|   14 |   24 |    1 |      176 |         66 |           3 | 20~24세 |
+|   15 |   29 |    2 |      170 |         70 |           2 | 25~29세 |
+|   16 |   33 |    1 |      177 |         72 |           2 | 30~34세 |
+|   17 |   38 |    2 |      159 |         55 |           1 | 35~39세 |
+|   18 |   26 |    1 |      166 |         69 |           3 | 25~29세 |
+|   19 |   26 |    1 |      169 |         66 |           2 | 25~29세 |
+|   20 |   28 |    2 |      159 |         60 |           2 | 25~29세 |
+
+
+#+BEGIN_SRC ipython :session :exports code :results raw
+df_cat_pv = pd.pivot_table(df_dtype, index='연령대', columns='즐기는 음식', values='몸무게(kg)')
+df_cat_pv.apply(lambda x: round(x, 1))
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(df_cat_pv.apply(lambda x: round(x, 1)))
+#+END_SRC
+#+RESULTS:
+| 연령대  |    1 |    2 |    3 |
+|---------+------+------+------|
+| 20~24세 |  nan | 70.0 | 66.0 |
+| 25~29세 | 69.0 | 68.6 | 69.5 |
+| 30~34세 | 82.0 | 66.0 | 77.0 |
+| 35~39세 | 55.0 |  nan | 68.0 |
+
 
 ** Row 필터링
