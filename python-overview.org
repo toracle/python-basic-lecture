@@ -1,4 +1,12 @@
-#+TITLE: Python이란?
+* Python이란?
+
+#+BEGIN_SRC ipython :session :exports none
+%matplotlib inline
+from tabulate import tabulate
+
+def tab(df):
+    print(tabulate(df, headers='keys', tablefmt='orgtbl'))
+#+END_SRC
 
 Python은 범용 프로그래밍 언어 중 하나입니다. Guido van Rossum에 의해 [[http://python-history.blogspot.kr/2009/01/brief-timeline-of-python.html][1990년에 발표]]되었습니다. 처음에는 '[[https://www.python.org/doc/essays/cp4e/][모두를 위한 컴퓨터 프로그래밍]]'을 표방하며 일종의 교육용 언어로 출발했지만, 대중적 인기를 얻으며 범용 프로그래밍 언어로 발달했습니다. 현재는 많은 소프트웨어 개발자들에게 [[https://insights.stackoverflow.com/survey/2017#most-loved-dreaded-and-wanted][사랑받는 언어]] 중 하나이고, 특히 데이터 분석/과학분야에서도 많이 활용되고 있습니다.
 
@@ -31,7 +39,7 @@ Python은 범용 프로그래밍 언어 중 하나입니다. Guido van Rossum에
 
 아래는 무작위의 10개의 숫자를 생성하는 코드입니다.
 
-#+BEGIN_SRC ipython :session :exports both :results raw
+#+BEGIN_SRC ipython :session :exports code :results raw
 %matplotlib inline
 import numpy as np
 import pandas as pd
@@ -41,9 +49,13 @@ df = pd.Series(np.random.randint(1, 100, size=10))
 df
 #+END_SRC
 
+#+BEGIN_SRC ipython :session :exports result :results raw
+tab(df)
+#+END_SRC
+
 #+RESULTS:
 #+BEGIN_EXAMPLE
-0    61
+  0    61
   1    72
   2    42
   3    53
