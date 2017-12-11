@@ -151,7 +151,7 @@ tab(df_pv_1.apply(lambda x: round(x, 2)))
 | 성별 |  나이 | 몸무게(kg) |  번호 | 신장(cm) | 즐기는 음식 |
 |------+-------+------------+-------+----------+-------------|
 |    1 | 27.71 |      72.29 |  9.71 |   174.07 |        2.21 |
-|    2 |  30.5 |         61 | 12.33 |   161.33 |        1.83 |
+|    2 | 30.50 |      61.00 | 12.33 |   161.33 |        1.83 |
 
 ~apply~ 함수는 ~DataFrame~ 의 각 셀에 인자로 오는 함수를 적용한 결과로 이루어진 새 ~DataFrame~ 을 반환합니다.
 
@@ -159,22 +159,22 @@ tab(df_pv_1.apply(lambda x: round(x, 2)))
 
 #+BEGIN_SRC ipython :session :exports code :results raw 
 df_pv_2 = df.pivot_table(df, index=['성별', '즐기는 음식'])
-df_pv_2
+df_pv_2.apply(lambda x: round(x, 2))
 #+END_SRC
 
 #+BEGIN_SRC ipython :session :exports result :results output raw
-tab(df_pv_2)
+tab(df_pv_2.apply(lambda x: round(x, 1)))
 #+END_SRC
 
 #+RESULTS:
-|        |    나이 | 몸무게(kg) |    번호 | 신장(cm) |
-|--------+---------+------------+---------+----------|
-| (1, 1) | 27.6667 |    76.6667 | 4.66667 |      177 |
-| (1, 2) |      27 |         71 |    10.8 |    173.8 |
-| (1, 3) | 28.3333 |    71.1667 | 11.3333 |  172.833 |
-| (2, 1) |      32 |         57 |      14 |    160.5 |
-| (2, 2) | 30.3333 |    63.3333 | 14.6667 |  162.333 |
-| (2, 3) |      28 |         62 |       2 |      160 |
+|        | 나이 | 몸무게(kg) | 번호 | 신장(cm) |
+|--------+------+------------+------+----------|
+| (1, 1) | 27.7 |       76.7 |  4.7 |    177.0 |
+| (1, 2) | 27.0 |       71.0 | 10.8 |    173.8 |
+| (1, 3) | 28.3 |       71.2 | 11.3 |    172.8 |
+| (2, 1) | 32.0 |       57.0 | 14.0 |    160.5 |
+| (2, 2) | 30.3 |       63.3 | 14.7 |    162.3 |
+| (2, 3) | 28.0 |       62.0 |  2.0 |    160.0 |
 
 #+BEGIN_SRC ipython :session :exports both :results raw
 df_pv_3 = df.pivot_table(index='성별', columns='즐기는 음식', values='몸무게(kg)')
@@ -182,14 +182,14 @@ df_pv_3.apply(lambda x: round(x))
 #+END_SRC
 
 #+BEGIN_SRC ipython :session :exports result :results output raw
-tab(df_pv_3.apply(lambda x: round(x)))
+tab(df_pv_3.apply(lambda x: round(x, 1)))
 #+END_SRC
 
 #+RESULTS:
-| 성별 |  1 |  2 |  3 |
-|------+----+----+----|
-|    1 | 77 | 71 | 71 |
-|    2 | 57 | 63 | 62 |
+| 성별 |    1 |    2 |    3 |
+|------+------+------+------|
+|    1 | 76.7 | 71.0 | 71.2 |
+|    2 | 57.0 | 63.3 | 62.0 |
 
 
 ** 그래프 그리기
