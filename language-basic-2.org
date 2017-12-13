@@ -352,7 +352,7 @@ len('Hello') == 5                              # 문자열의 길이를 반환
 원래 의미망 분석을 하려면, 문장에 대해 형태소 분석을 하고, 접속사나 부사 등 불필요한 말들은 제거하는 등의 작업을 거칩니다. 하지만, 여기서는 단순히 어절 단위로만 잘라서, 의미망을 이런 식으로 그리는구나 하는 정도만 맛보도록 하겠습니다.
 
 
-#+BEGIN_SRC ipython :session :export none
+#+BEGIN_SRC ipython :session :exports none
   %matplotlib inline
 
   import matplotlib
@@ -361,7 +361,7 @@ len('Hello') == 5                              # 문자열의 길이를 반환
   matplotlib.rc('font', family='Noto Sans CJK KR')
 #+END_SRC
 
-#+BEGIN_SRC ipython :session :results raw :export both :ipyfile outputs/language-basic-2-word-map.png
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/language-basic-2-word-map.png
   # -*- coding: utf-8 -*-
 
   import networkx as nx
