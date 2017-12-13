@@ -29,8 +29,7 @@ Python 프로그래밍 언어를 5일 과정에 모두 완벽하게 배우는것
 
 *** 2일차: Python에 익숙해지기
 
- - Python 조금 더 활용해보기
- - Python 기초 4: 모듈
+ - [[file:language-basic-4.org][Python 기초 4]]: 모듈, Lambda
  - [[file:web-crawling.org][웹페이지 수집하기]]
  - BeautifulSoup
  - Regex
@@ -39,7 +38,7 @@ Python 프로그래밍 언어를 5일 과정에 모두 완벽하게 배우는것
 
  - [[file:jupyter-install.org][Jupyter Notebook에 익숙해지기]]
  - [[file:excel-1.org][엑셀 파일 다루기 1]]: 데이터 다루기
- - 엑셀 파일 다루기 2: 그래프 그리기
+ - [[file:excel-2.org][엑셀 파일 다루기 2]]: 그래프 그리기
  - [[file:pandas.org][Pandas 깊이 배우기]]
 
 *** 4일차
