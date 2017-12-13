@@ -296,7 +296,7 @@ len('Hello') == 5                              # 문자열의 길이를 반환
 
 우선 인코딩이란 무엇일까요?
 
-https://en.wikipedia.org/wiki/Morse_code#/media/File:International_Morse_Code.svg
+[[https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/International_Morse_Code.svg/465px-International_Morse_Code.svg.png]]
 
 모르스 부호는 '짧다'와 '길다', 즉, 0과 1을 사용해서 [[https://cryptii.com/morse-code-translator][문자의 조합을 숫자의 조합으로 표현]]합니다.
 
@@ -304,7 +304,7 @@ https://en.wikipedia.org/wiki/Morse_code#/media/File:International_Morse_Code.sv
 
 컴퓨터도 문자를 나타내기 위해서 각 문자들을 숫자로 대응시킵니다. 'A'는 65, 'B'는 66, 'a'는 97, 'b'는 98 이런 식으로요. '모르스 부호'처럼, 컴퓨터에서 사용하는 부호 체계 중 대표적인 것으로 ASCII(아스키 코드: American Standard Code for Information Interchange)가 있습니다.
 
-[[https://simple.wikipedia.org/wiki/ASCII#/media/File:ASCII-Table-wide.svg]]
+[[https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/ASCII-Table-wide.svg/1000px-ASCII-Table-wide.svg.png]]
 
 이러한 부호 체계의 종류를 '인코딩(encoding)'이라고 부릅니다. 그런데 ASCII는 미국에서 만들어졌기 때문에, 영어에서 사용하는 알파벳과 몇 가지의 기호들만 포함되어 있습니다. 그러면 한글은 어떻게 표시할까요? 한글 역시 한글을 사용하는 사람들끼리 일정한 코드표를 만들어서 정해진 규칙에 따라 코드로 표현하고, 또 코드로 표현된 것을 한글로 간주하고 읽으면 되겠죠. 그런데 여기서, 컴퓨터와 한글 처리의 역사가 개입합니다.
 
