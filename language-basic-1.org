@@ -184,21 +184,79 @@ print(s)
 
 특정한 조건을 만족할 때만 일련의 행동들을 수행하게 하는 명령입니다.
 
+가장 간단하게는 ~if A:~ 형태로 사용합니다.
+
 #+BEGIN_SRC python :results output :exports both
-# -*- coding: utf-8 -*-
+  # -*- coding: utf-8 -*-
 
-import random
-s = 0
+  import random
+  s = 0
 
-while True:
-  s = s + random.randint(0, 10)
-  if s > 50:
-    break
-  print(s, end=' ')
+  while True:
+    s = s + random.randint(0, 10)
+    if s > 50:
+      break
+    print(s, end=' ')
 #+END_SRC
 
 #+RESULTS:
 : 3 7 17 25 34 40 40 45 
+
+조금 더 복잡한 형태로는 ~if A: ... else: ...~ 형태가 있습니다.
+
+
+#+BEGIN_SRC python :results output :exports both
+  # -*- coding: utf-8 -*-
+
+  import random
+
+  for number in range(10):
+      if number == 0:
+          continue
+      if number % 2 == 0:
+          print('{}: even'.format(number))
+      else:
+          print('{}: odd'.format(number))
+#+END_SRC
+
+#+RESULTS:
+: 1: odd
+: 2: even
+: 3: odd
+: 4: even
+: 5: odd
+: 6: even
+: 7: odd
+: 8: even
+: 9: odd
+
+
+~if~ 조건을 여러개 사용하고 싶은 경우에는 ~if A: ... elif B: ... elif C: ... else: ...~ 형태를 사용할 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+  # -*- coding: utf-8 -*-
+
+  import random
+
+  for number in range(10):
+      if number == 0:
+          continue
+      elif number % 2 == 0 and number % 3 == 0:
+          print('{}: multiplier of 6'.format(number))
+      elif number % 2 == 0:
+          print('{}: multiplier of 2'.format(number))
+      elif number % 3 == 0:
+          print('{}: multiplier of 3'.format(number))
+
+#+END_SRC
+
+#+RESULTS:
+: 2: multiplier of 2
+: 3: multiplier of 3
+: 4: multiplier of 2
+: 6: multiplier of 6
+: 8: multiplier of 2
+: 9: multiplier of 3
 
 
 ** 연습문제
