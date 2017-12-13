@@ -93,7 +93,7 @@ for row in a_list:
 : ['Chris', 'F', 28, True]
 : ['Timothy', 'M', 32, False]
 
-~list~ 및 ~tuple~ 에 대해서는, 각 원소를 풀어헤쳐서 이름 있는 변수에 할당할 수 있습니다.
+~list~ 및 ~tuple~ 에 대해서는, 각 원소를 풀어헤쳐서 이름 있는 변수에 할당할 수 있습니다. (destructuring이라고 합니다.)
 
 #+BEGIN_SRC python :results output :exports both
 a_list = [['Tom', 'M', 15, True], 
