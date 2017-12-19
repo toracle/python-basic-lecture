@@ -48,8 +48,7 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
 *** 3일차: Excel 데이터 분석하기
 
  - [[file:jupyter-install.org][Jupyter Notebook에 익숙해지기]]
- - [[file:excel-1.org][엑셀 파일 다루기 1]]: 데이터 다루기
- - [[file:excel-2.org][엑셀 파일 다루기 2]]: 그래프 그리기
+ - [[file:excel-1.org][엑셀 파일 다루기]]
  - [[file:pandas.org][Pandas 깊이 배우기]]
 
 *** 4일차
