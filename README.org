@@ -68,6 +68,7 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
  - NumPy 배우기
  - SciPy 배우기
  - Bokeh
+ - HTML: CSS Selector
  - BeautifulSoup
  - Regex
  - 패키지 만들기
