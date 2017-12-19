@@ -435,6 +435,7 @@ bytes.fromhex('ec 95 88 eb 85 95') == b'\xec\x95\x88\xeb\x85\x95'
   widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
   nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1);
   nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR'); # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+  plt.show()
 #+END_SRC
 
 #+BEGIN_SRC ipython :session :results raw :exports result :ipyfile outputs/language-basic-2-word-map.png
@@ -481,6 +482,7 @@ bytes.fromhex('ec 95 88 eb 85 95') == b'\xec\x95\x88\xeb\x85\x95'
   widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
   nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1);
   nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR'); # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+  plt.show()
 #+END_SRC
 
 #+RESULTS:
