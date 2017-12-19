@@ -41,7 +41,7 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
 *** 2일차: Python에 익숙해지기
 
  - [[file:language-basic-3.org][Python 기초 3]]: 파일 다루기, 함수, 클래스
- - [[file:language-basic-4.org][Python 기초 4]]: 모듈, Lambda
+ - [[file:language-basic-4.org][Python 기초 4]]: 모듈
  - Q&A
 
 *** 3일차: Excel 데이터 분석하기
@@ -59,7 +59,6 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
 *** 5일차: 프로그래밍에 능숙해지기
 
  - 커져가는 코드 관리하기
- - 모듈 만들기
  - pytest
  - 회고 및 평가
 

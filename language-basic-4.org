@@ -1,2 +1,5 @@
-* Python 기초 4: 모듈, Lambda
+* Python 기초 4: 모듈
+
+ - 모듈 import해서 사용하기: import, from import as
+ - 모듈/패키지 설치하기
 
