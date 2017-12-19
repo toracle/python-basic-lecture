@@ -36,31 +36,39 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
  - [[file:installation.org][개발 환경(Spyder)에 익숙해지기]]
  - [[file:language-basic-1.org][Python 기초 1]]: 출력문, 변수, 반복문, 조건문
  - [[file:language-basic-2.org][Python 기초 2]]: 자료형 (list, tuple, dict, set, str)
- - [[file:language-basic-3.org][Python 기초 3]]: 파일 다루기, 함수, 클래스
+ - Q&A
 
 *** 2일차: Python에 익숙해지기
 
+ - [[file:language-basic-3.org][Python 기초 3]]: 파일 다루기, 함수, 클래스
  - [[file:language-basic-4.org][Python 기초 4]]: 모듈, Lambda
- - [[file:web-crawling.org][웹페이지 수집하기]]
- - BeautifulSoup
- - Regex
+ - Q&A
 
 *** 3일차: Excel 데이터 분석하기
 
+ - [[file:web-crawling.org][웹페이지 수집하기]]
  - [[file:jupyter-install.org][Jupyter Notebook에 익숙해지기]]
- - [[file:excel-1.org][엑셀 파일 다루기]]
- - [[file:pandas.org][Pandas 깊이 배우기]]
+ - Q&A
 
 *** 4일차
 
- - NumPy 배우기
- - SciPy 배우기
- - Bokeh
+ - [[file:excel-1.org][엑셀 파일 다루기]]
+ - [[file:pandas.org][Pandas 깊이 배우기]]
+ - Q&A
 
 *** 5일차: 프로그래밍에 능숙해지기
 
  - 커져가는 코드 관리하기
  - 모듈 만들기
- - 패키지 만들기
  - pytest
+ - 회고 및 평가
+
+*** Appendix
+
+ - NumPy 배우기
+ - SciPy 배우기
+ - Bokeh
+ - BeautifulSoup
+ - Regex
+ - 패키지 만들기
  - GitHub 사용하기
