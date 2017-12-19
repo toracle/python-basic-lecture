@@ -4,15 +4,11 @@
 
 이번에는 파일을 읽고 쓰는 방법을 알아봅시다.
 
-텍스트 파일을 열어 한줄씩 읽어들이는 구문은 아래와 같습니다. (아래 코드를 실행하기 전에, 먼저 파이썬 소스 파일과 같은 디렉토리에 =assets= 디렉토리를 만들고, [[file:assets/day1-example-read.txt][텍스트 파일]]을 =assets= 디렉토리 안에 저장해야 합니다.)
-
 #+BEGIN_SRC python :results output :exports both
-# -*- coding: utf-8 -*-
-
-fin = open('assets/day1-example-read.txt')
-for line in fin:
-   print(line, end='')
-fin.close()
+  fin = open('assets/day1-example-read.txt')
+  content = fin.read()
+  print(content, end='')
+  fin.close()
 #+END_SRC
 
 #+RESULTS:
@@ -24,34 +20,51 @@ fin.close()
 : 5,M,32,F,F
 : 6,M,39,T,F
 
+위의 코드를 살펴봅시다. ~open()~ 이라는 함수가 있고, 그 인자로 파일 경로를 전달합니다. 그러면 ~open()~ 함수는 파일 객체를 반환합니다. 파일 객체를 ~fin~ 이라는 이름의 변수에 담았고, 파일 객체의 메소드 중 ~read()~ 라는 메소드를 사용하여 파일의 내용을 모두 읽어들여 ~content~ 변수에 저장합니다. 파일을 모두 사용한 후에는 반드시 ~close()~ 메소드를 호출하여 파일을 닫아주어야 합니다.
+
 위 예제는 아래와 같이 줄여서 쓸 수 있습니다.
 
 #+BEGIN_SRC python :results output :exports both
-# -*- coding: utf-8 -*-
-
-with open('assets/day1-example-read.txt') as fin:
-   for line in fin:
-      print(line, end='')
+  with open('assets/day1-example-read.txt') as fin:
+        content = fin.read()
+  print(content, end='')
 #+END_SRC
+
+#+RESULTS:
+: ID,Sex,Age,Programming?,Python?
+: 1,M,25,T,T
+: 2,F,27,T,F
+: 3,F,24,F,F
+: 4,F,25,T,T
+: 5,M,32,F,F
+: 6,M,39,T,F
 
 여기서 =with A as B= 구문이 등장하는데, =with= 구문은 자신의 범위를 벗어난 경우 적절한 리소스 반환 작업을 수행합니다. (모든 리소스에 =with= 구문을 사용할 수 있는 것은 아닙니다.)
 
+파일이 작을 때는 위와 같은 방식으로 읽어들여도 좋지만, 파일이 매우 커서 메모리에 담을 수 없는 경우에는 한줄씩 읽어들여 처리하는 경우가 일반적입니다. 텍스트 파일을 열어 한줄씩 읽어들이는 구문은 아래와 같습니다. (아래 코드를 실행하기 전에, 먼저 파이썬 소스 파일과 같은 디렉토리에 =assets= 디렉토리를 만들고, [[file:assets/day1-example-read.txt][텍스트 파일]]을 =assets= 디렉토리 안에 저장해야 합니다.)
+
+#+BEGIN_SRC python :results output :exports both
+  fin = open('assets/day1-example-read.txt')
+  for line in fin:
+     print(line, end='')
+  fin.close()
+#+END_SRC
+
+#+RESULTS:
+: ID,Sex,Age,Programming?,Python?
+: 1,M,25,T,T
+: 2,F,27,T,F
+: 3,F,24,F,F
+: 4,F,25,T,T
+: 5,M,32,F,F
+: 6,M,39,T,F
+
 =open= 함수에 대해 조금 더 살펴봅시다.
 
-mode에 대해 설명. rt, rb, wt, wb 등. encoding 옵션도.
-
-
-** 연습문제
-
-뭘 할까...?
-
- - 설문조사한 것 통계내기?
-   - 성별에 따른 프로그래밍 경험 유무 빈도 및 비율
-   - 연령대에 따른 프로그래밍 경험 유무 빈도 및 비율
-   - 프로그래밍 경험 유무에 따른 파이썬 경험 유무 비율
- - 웹 크롤링?
-
-if, for, encoding
+ - mode에 대해 설명. rt, rb, wt, wb 등.
+ - encoding 옵션도.
+ - read
+ - write
 
 
 ** 함수 (Function)
@@ -82,7 +95,7 @@ def 함수이름(인자1, 인자2, 인자3, ...):
 
 하지만, 프로그래밍에서 함수는, 수학적인 의미에 더해서, '여러 개의 일련의 연관된 작업을 의미 있는 단위로 묶는다'는 의미를 가집니다. 이를테면 여러 연관된 문장을 묶은 뒤, 소제목을 붙인다고 할까요.
 
-의미망 예제가 조금 복잡했었죠? 그걸 함수를 사용해서 묶어봅시다.
+이전에 의미망 예제가 조금 복잡했었죠? 그걸 함수를 사용해서 묶어봅시다.
 
 
 #+BEGIN_SRC python :results output :exports both
@@ -365,3 +378,16 @@ mixed(*args, **kwargs)
      def draw(self):
         draw_graph(wordnet)
 #+END_SRC
+
+
+** 연습문제
+
+뭘 할까...?
+
+ - 설문조사한 것 통계내기?
+   - 성별에 따른 프로그래밍 경험 유무 빈도 및 비율
+   - 연령대에 따른 프로그래밍 경험 유무 빈도 및 비율
+   - 프로그래밍 경험 유무에 따른 파이썬 경험 유무 비율
+ - 웹 크롤링?
+
+if, for, encoding
