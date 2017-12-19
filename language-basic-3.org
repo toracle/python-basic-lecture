@@ -38,6 +38,9 @@ with open('assets/day1-example-read.txt') as fin:
 
 =open= 함수에 대해 조금 더 살펴봅시다.
 
+mode에 대해 설명. rt, rb, wt, wb 등. encoding 옵션도.
+
+
 ** 연습문제
 
 뭘 할까...?
@@ -51,10 +54,224 @@ with open('assets/day1-example-read.txt') as fin:
 if, for, encoding
 
 
-** 함수
+** 함수 (Function)
+
+지금까지 프로그램을 만들기 위한 하나 하나의 조각들을 살펴봤다면, 이제는 그 조각들을 쌓아올리기 위해, 다시 말해서 구조화를 하기 위해서 필요한 도구들을 살펴봅시다.
+
+우선, 가장 기본적인 도구로는 함수가 있습니다. 수학적인 측면에서 함수는 '어떤 입력 X에 대해 Y라는 값을 결과로 되돌려주는 것'이라고 표현할 수 있겠죠. 기하적으로 표현하면 'X의 한 점을 Y라는 점으로 변환(mapping)해주는 것'이라고 할 수 있겠고요.
+
+Python에서는 아래와 같이 함수를 정의할 수 있습니다.
+
+#+BEGIN_SRC python :results output
+def add(x, y):
+    return x + y
+
+print(add(1, 3))
+#+END_SRC
+
+#+RESULTS:
+: 4
+
+위 함수는, x, y 라는 값을 받아서 둘을 더한 값을 반환해줍니다. 함수 정의 형식은 아래와 같이 표현할 수 있겠습니다.
+
+#+BEGIN_SRC python :results output
+def 함수이름(인자1, 인자2, 인자3, ...):
+    # 내용
+    return
+#+END_SRC
+
+하지만, 프로그래밍에서 함수는, 수학적인 의미에 더해서, '여러 개의 일련의 연관된 작업을 의미 있는 단위로 묶는다'는 의미를 가집니다. 이를테면 여러 연관된 문장을 묶은 뒤, 소제목을 붙인다고 할까요.
+
+의미망 예제가 조금 복잡했었죠? 그걸 함수를 사용해서 묶어봅시다.
 
 
-** 클래스
+#+BEGIN_SRC python :results output :exports both
+  import networkx as nx
+  import matplotlib.pyplot as plt
+
+  def construct_wordnet(text):
+      lines = text.split('\n')      # 줄 단위로 자른다
+
+      word_edges = {}
+
+      for line in lines:
+          _line = line.strip()
+          if not _line:             # 빈줄이면 건너뛴다
+              continue
+          statements = _line.split('.') # 문장 단위로 자른다
+          for statement in statements: # 빈 문장이면 건너뛴다
+              if not statement:
+                  continue
+              words = statement.split(' ') # 단어 단위로 자른다
+              cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
+              cleansed_words_2 = [w for w in cleansed_words if w] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소를 제거한다
+              num_words = len(cleansed_words_2)
+              for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
+                  for index_j in range(index_i+1, num_words):
+                      word_to_word = (cleansed_words_2[index_i], cleansed_words_2[index_j])
+                      word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
+      return word_edges
+
+  def remove_low_frequency(word_edges, cutoff=2):
+      # 등장 빈도가 1회인 edge는 제거한다
+      keys = list(word_edges.keys())
+      for key in keys:
+          if word_edges[key] < cutoff:
+              del word_edges[key]
+
+  def draw_graph(word_edges):
+      G = nx.Graph()
+      for (word_1, word_2), freq in word_edges.items():
+          G.add_edge(word_1, word_2, weight=freq)
+
+      pos = nx.kamada_kawai_layout(G)
+      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
+      widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
+      nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1);
+      nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR'); # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+#+END_SRC
+
+크게 세 부분으로 나누었습니다. 
+
+ - 텍스트로부터 의미망 데이터를 만들어내는 부분
+ - 빈도가 적은 링크는 제거하는 부분
+ - 그래프를 그리는 부분
+
+그리고, 데이터를 파일로부터 읽어들이도록 변경해봅시다.
 
 
+#+BEGIN_SRC python
+  def read_file(path):
+      with open(path) as fin:
+          return fin.read()
+#+END_SRC
 
+#+BEGIN_SRC ipython :results output :exports none
+  import networkx as nx
+  import matplotlib.pyplot as plt
+
+  def read_file(path):
+      with open(path) as fin:
+          return fin.read()
+
+  def construct_wordnet(text):
+      lines = text.split('\n')      # 줄 단위로 자른다
+
+      word_edges = {}
+
+      for line in lines:
+          _line = line.strip()
+          if not _line:             # 빈줄이면 건너뛴다
+              continue
+          statements = _line.split('.') # 문장 단위로 자른다
+          for statement in statements: # 빈 문장이면 건너뛴다
+              if not statement:
+                  continue
+              words = statement.split(' ') # 단어 단위로 자른다
+              cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
+              cleansed_words_2 = [w for w in cleansed_words if w] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소를 제거한다
+              num_words = len(cleansed_words_2)
+              for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
+                  for index_j in range(index_i+1, num_words):
+                      word_to_word = (cleansed_words_2[index_i], cleansed_words_2[index_j])
+                      word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
+      return word_edges
+
+  def remove_low_frequency(word_edges, cutoff=2):
+      # 등장 빈도가 1회인 edge는 제거한다
+      keys = list(word_edges.keys())
+      for key in keys:
+          if word_edges[key] < cutoff:
+              del word_edges[key]
+
+  def draw_graph(word_edges):
+      G = nx.Graph()
+      for (word_1, word_2), freq in word_edges.items():
+          G.add_edge(word_1, word_2, weight=freq)
+
+      pos = nx.kamada_kawai_layout(G)
+      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
+      widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
+      nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1)
+      nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR') # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+#+END_SRC
+
+이제 다양한 문서에 대해서 아래와 같은 몇 줄의 코드만으로 의미망을 출력할 수 있게 되었습니다.
+
+#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/moon_speech.png
+  text = read_file('assets/moon_speech.txt')
+  wordnet = construct_wordnet(text)
+  remove_low_frequency(wordnet)
+  draw_graph(wordnet)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/moon_speech.png]]
+
+박근혜 전 대통령 취임사에 대해서도 의미망을 살펴봅시다.
+
+#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech.png
+  text = read_file('assets/park_speech.txt')
+  wordnet = construct_wordnet(text)
+  remove_low_frequency(wordnet)
+  draw_graph(wordnet)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/park_speech.png]]
+
+박근혜 대통령은 좀 더 다양한 어휘를 사용한 것 같네요. =cutoff= 를 좀 더 강화해봅시다.
+
+#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech_2.png
+  text = read_file('assets/park_speech.txt')
+  wordnet = construct_wordnet(text)
+  remove_low_frequency(wordnet, cutoff=3)
+  draw_graph(wordnet)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/park_speech_2.png]]
+
+함수를 어떤 경우에 많이 사용하는지 실제 사례를 살펴보았습니다.
+
+함수 자체에 대해서 조금 더 살펴봅시다.
+
+ - positional argument vs keyword argument
+ - default value
+ - *args, **kwargs
+ - first-class function
+ - lambda function
+
+
+** 클래스 (Class)
+
+다음으로 살펴볼 것은 클래스입니다. 클래스는 기본적으로 함수와 비슷한데, 여러 개의 함수가 하나의 묶음으로 묶여있는 것이 특징입니다. 클래스로 묶여있는 함수를 메소드(method)라고 부릅니다. 뿐만 아니라, 하나의 클래스 안에는 여러 함수들에서 공통적으로 사용하는 변수들이 존재합니다.
+
+기본적으로, 클래스는 아래와 같이 정의하고 사용합니다.
+
+
+#+BEGIN_SRC python :results output :exports both
+  class Speech:
+     def __init__(self, content):
+        self.content = content
+
+     def draw(self, cutoff=2):
+        wordnet = construct_wordnet(self.content)
+        remove_low_frequency(wordnet, cutoff=cutoff)
+        draw_graph(wordnet)
+#+END_SRC
+
+
+#+BEGIN_SRC ipython :session :exports none
+  class Speech:
+     def __init__(self, content):
+        self.content = content
+
+     def draw(self, cutoff=2):
+        wordnet = construct_wordnet(self.content)
+        remove_low_frequency(wordnet, cutoff=cutoff)
+        draw_graph(wordnet)
+#+END_SRC
