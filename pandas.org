@@ -2,3 +2,10 @@
 
 Pandas는 Python으로 작성된 데이터 분석 도구입니다. Python의 패키지 형태로 제공되어, Python 언어 내에 쉽게 섞어 사용할 수 있습니다.
 
+ - Series
+ - DataFrame
+ - Index
+
+
+ - Slicing
+

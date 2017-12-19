@@ -1,0 +1,9 @@
+* 엑셀 파일 다루기 2: 그래프 그리기
+
+ - Bar Chart
+ - Line Chart
+ - Scatter Plot
+ - Histogram
+ - Pie Chart
+ - Log Plot
+
