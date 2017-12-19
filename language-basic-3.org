@@ -183,6 +183,7 @@ def 함수이름(인자1, 인자2, 인자3, ...):
       for key in keys:
           if word_edges[key] < cutoff:
               del word_edges[key]
+      return
 
   def draw_graph(word_edges):
       G = nx.Graph()
@@ -194,6 +195,7 @@ def 함수이름(인자1, 인자2, 인자3, ...):
       widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
       nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1)
       nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR') # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+      return
 #+END_SRC
 
 이제 다양한 문서에 대해서 아래와 같은 몇 줄의 코드만으로 의미망을 출력할 수 있게 되었습니다.
@@ -239,11 +241,112 @@ def 함수이름(인자1, 인자2, 인자3, ...):
 
 함수 자체에 대해서 조금 더 살펴봅시다.
 
- - positional argument vs keyword argument
- - default value
- - *args, **kwargs
- - first-class function
- - lambda function
+*** Positional argument vs Keyword argument
+
+앞의 예에서, ~remove_low_frequency()~ 함수의 인자 중 ~cutoff~ 인자가 약간 다르게 생긴 것을 볼 수 있습니다.
+
+#+BEGIN_SRC python
+  def remove_low_frequency(word_edges, cutoff=2):
+      return
+#+END_SRC
+
+~word_edge~ 와 같은, ~=~ 표시가 없이 정의된 인자를 위치 인자라고 하고, ~cutoff~ 와 같이 ~=~ 표시와 함께 정의된 인자를 키워드 인자라고 합니다.
+
+위치 인자는 위치에 의해서 변수가 할당됩니다. 아래와 같은 함수가 있다고 할 때, 주어지는 인자의 순서에 따라서 함수를 정의할 때 지정된 변수에 값이 들어갑니다.
+
+#+BEGIN_SRC python :results output
+  def positional(arg1, arg2):
+      print('I am', arg1, arg2)
+
+  positional('a', 'boy')
+  positional('boy', 'a')
+#+END_SRC
+
+#+RESULTS:
+: I am a boy
+: I am boy a
+
+
+반면, ~cutoff~ 와 같은 키워드 인자는 이름을 지정해서 부여할 수 있습니다. 이름을 부여하지 않으면 위치 인자와 동일하게 동작합니다.
+
+#+BEGIN_SRC python :results output
+  def keyword(kwarg1=None, kwarg2='girl'):
+      print('I am', kwarg1, kwarg2)
+
+  keyword('a', 'boy')
+  keyword('a', kwarg2='boy')
+  keyword(kwarg1='a', kwarg2='boy')
+  keyword(kwarg2='boy', kwarg1='a')
+  keyword(kwarg1='a')
+#+END_SRC
+
+#+RESULTS:
+: I am a boy
+: I am a boy
+: I am a boy
+: I am a boy
+: I am a girl
+
+또한, 위치 인자는 생략이 불가능하지만, 키워드 인자는 생략이 가능합니다. 키워드 인자를 생략할 경우, 함수를 정의할 때 지정했던 기본값이 변수에 할당됩니다.
+
+그리고, 위치 인자와 키워드 인자를 하나의 함수 선언에 동시에 사용할 수 있습니다. 하지만 그 경우에는, 위치 인자를 앞쪽에, 그리고 키워드 인자를 뒷쪽에 선언해야 합니다. 키워드 인자가 위치 인자보다 앞에 선언될 수 없습니다.
+
+#+BEGIN_SRC python :results output
+def mixed(arg1, arg2, kwarg1='studying', kwarg2='excel'):
+    print(arg1, arg2, kwarg1, kwarg2)
+
+mixed('I', 'am', kwarg2='python')
+#+END_SRC
+
+#+RESULTS:
+: I am studying python
+
+
+#+BEGIN_SRC python
+  def mixed2(kwarg0=None, arg1, arg2, kwarg1='studying', kwarg2='excel'): # 키워드 인자가 위치 인자의 앞에 선언될 수 없음
+      return
+
+  mixed('I')                      # 위치 인자는 생략할 수 없음 (arg2가 주어지지 않았음)
+#+END_SRC
+
+#+RESULTS:
+
+
+*** Argument list unpacking
+
+그런데 가만히 살펴보면, 위치 인자는 ~list~ 나 ~tuple~ 과 닮아있고, 키워드 인자는 ~dict~ 와 닮아있습니다. ~list~ 나 ~tuple~ 도 위치로만 각 원소를 지칭할 수 있고, ~dict~ 는 이름으로 부를 수 있습니다.
+
+이런 특성을 활용해서, 인자를 직접 코드에 기재하지 않고도, ~list~ 나 ~tuple~, ~dict~ 를 사용해서 부여할 수 있습니다.
+
+#+BEGIN_SRC python :results output
+def mixed(arg1, arg2, kwarg1='studying', kwarg2='excel'):
+    print(arg1, arg2, kwarg1, kwarg2)
+
+args = ['I', 'am']
+mixed(*args)
+
+args = ['We', 'are']
+mixed(*args)
+
+kwargs = {'kwarg2': 'python'}
+mixed(*args, **kwargs)
+#+END_SRC
+
+#+RESULTS:
+: I am studying excel
+: We are studying excel
+: We are studying python
+
+위와 같이, 위치 인자로 전달할 값들을 ~list~ 나 ~tuple~ 에 넣고, 함수에 넣어줄 때는 변수 이름 앞에 ~*~ 을 붙여주면, ~,~ 를 사용해서 연속된 값을 넣어준 것과 같은 효과가 납니다.
+
+비슷하게, 키워드 인자로 전달할 값들을 ~dict~ 에 인자의 이름과 함께 넣고, 변수 이름 앞에 ~**~ 를 붙여주면, 이름을 지정해서 값을 넣어준 것과 같은 효과가 납니다.
+
+
+*** First-class function & lambda function
+
+다음으로 살펴볼 것은, 일급 함수 언어로서의 특성입니다. first-class function 이라고 하는데, 함수를 일급 시민으로 취급한다는 이야기입니다. 프로그래밍 언어에서 일급 시민으로 취급한다는 이야기는, 함수를 변수에 저장하거나 함수의 인자로 전달하는 등, 일반적인 값처럼 동일하게 다룰 수 있다는 것을 뜻합니다.
+
+설명하자면 복잡하니, 다음 예를 보시죠.
 
 
 ** 클래스 (Class)
@@ -254,24 +357,11 @@ def 함수이름(인자1, 인자2, 인자3, ...):
 
 
 #+BEGIN_SRC python :results output :exports both
-  class Speech:
+  class Wordnet:
      def __init__(self, content):
         self.content = content
+        self.wordnet = construct_wordnet(self.content)
 
-     def draw(self, cutoff=2):
-        wordnet = construct_wordnet(self.content)
-        remove_low_frequency(wordnet, cutoff=cutoff)
-        draw_graph(wordnet)
-#+END_SRC
-
-
-#+BEGIN_SRC ipython :session :exports none
-  class Speech:
-     def __init__(self, content):
-        self.content = content
-
-     def draw(self, cutoff=2):
-        wordnet = construct_wordnet(self.content)
-        remove_low_frequency(wordnet, cutoff=cutoff)
+     def draw(self):
         draw_graph(wordnet)
 #+END_SRC
