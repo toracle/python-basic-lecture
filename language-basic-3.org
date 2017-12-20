@@ -513,21 +513,54 @@ tab(rounded_df)
 
 ** 클래스 (Class)
 
-다음으로 살펴볼 것은 클래스입니다. 클래스는 기본적으로 함수와 비슷한데, 여러 개의 함수가 하나의 묶음으로 묶여있는 것이 특징입니다. 클래스로 묶여있는 함수를 메소드(method)라고 부릅니다. 뿐만 아니라, 하나의 클래스 안에는 여러 함수들에서 공통적으로 사용하는 변수들이 존재합니다.
+다음으로 살펴볼 것은 클래스입니다. 여러분이 직접 클래스를 만들어서 사용할 일은 별로 없을 것이라고 생각합니다. 하지만 외부 라이브러리은 클래스로 작성된 경우가 많습니다. 때문에 간단하게 클래스가 어떤 것인지 살펴보고, 어떻게 이해하고 사용하면 되는지 살펴보겠습니다.
+
+클래스는 기본적으로 함수와 비슷한데, 여러 개의 함수가 하나의 묶음으로 묶여있는 것이 특징입니다. 클래스로 묶여있는 함수를 메소드(method)라고 부릅니다. 뿐만 아니라, 하나의 클래스 안에는 여러 함수들에서 공통적으로 사용하는 변수들이 존재합니다.
 
 기본적으로, 클래스는 아래와 같이 정의하고 사용합니다.
 
-
 #+BEGIN_SRC python :results output :exports both
-  class Wordnet:
-     def __init__(self, content):
-        self.content = content
-        self.wordnet = construct_wordnet(self.content)
+  from datetime import datetime
+  from random import randint
+  from random import random
 
-     def draw(self):
-        draw_graph(wordnet)
+  class Person:
+     def __init__(self, name, weight=3.0, height=0.20):
+        self.name = name
+        self.weight = weight
+        self.height = height
+
+     def eat(self):
+        self.weight = self.weight + round(random(), 2) * 10
+
+     @property
+     def bmi(self):
+        return round(self.weight / pow(self.height, 2), 1)
+
+  p1 = Person('Tom', weight=75.0, height=1.83)
+  print(p1.bmi)
+  p1.eat()
+  p1.eat()
+  print(p1.bmi)
 #+END_SRC
 
+#+RESULTS:
+: 22.4
+: 25.5
+
+클래스 정의는 크게 아래와 같은 모양을 따릅니다.
+
+#+BEGIN_SRC python
+  class 클래스이름:
+      def __init__(self, arg1, arg2, ...):
+          self.arg1 = arg1
+          self.arg2 = arg2
+
+      def 메소드이름1(self):
+          return
+#+END_SRC
+
+여기서 ~__init__()~ 메소드는 특별한 용도의 메소드로서, 생성자라고 부릅니다. 생성자 메소드는 클래스로부터 객체를 생성할 때, 속성값, 즉 객체 변수들에게 초기값을 부여하기 위해 사용됩니다. 위에서 정의한 ~Person~ 클래스에서는 생성자가 ~name~ 이라는 위치 인자, ~weight~, ~height~ 이라는 키워드 인자를 가집니다.
 
 ** 연습문제
 
