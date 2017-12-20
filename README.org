@@ -29,7 +29,7 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
 
 ** 강사 소개
 
-연세대학교 컴퓨터과학과를 졸업하고, 소셜 네트워크 분석 전문 기업인 [[http://cyram.com][사이람]]에 입사하여 리서치 엔지니어 및 소프트웨어 개발자로 2년 5개월, 시스템개발팀 팀장으로 2년여간 재직하면서 소셜 네트워크 분석 소프트웨어를 개발하고 다양한 고객들의 데이터를 분석하는 프로젝트를 수행했습니다. 사이람 동료였던 김무궁, 그리고 함께 모인 다른 사람들과 [[https://play.google.com/store/apps/details?id=com.ogqcorp.bgh][오지큐]]를 공동창업하고, 5년 9개월간 CTO로 재직하며 모바일 백엔드 플랫폼을 개발했습니다. 그리고 지금은 그 경험을 토대로, 오지큐 동료였던 허민강과 함께 [[https://bothub.studio/?utm_source=github&utm_medium=display&utm_campaign=python-basic-workshop-2018][BotHub.Studio]]를 개발하며 또 다른 창업을 준비하고 있습니다.
+연세대학교 컴퓨터과학과를 졸업하고, 소셜 네트워크 분석 전문 기업인 [[http://cyram.com][사이람]]에 입사하여 리서치 엔지니어 및 소프트웨어 개발자로 2년 5개월, 시스템개발팀 팀장으로 2년여간 재직하면서 소셜 네트워크 분석 소프트웨어를 개발하고 다양한 기업들의 데이터를 분석하는 프로젝트를 수행했습니다. 사이람 동료였던 김무궁, 그리고 함께 모인 다른 사람들과 [[https://play.google.com/store/apps/details?id=com.ogqcorp.bgh][오지큐]]를 공동창업하고, 5년 9개월간 CTO로 재직하며 모바일 백엔드 플랫폼을 개발했습니다. 그리고 지금은 그 경험을 토대로, 오지큐 동료였던 허민강과 함께 [[https://bothub.studio/?utm_source=github&utm_medium=display&utm_campaign=python-basic-workshop-2018][BotHub.Studio]]를 개발하며 또 다른 창업을 준비하고 있습니다.
 
 
 ** 과정 개요
