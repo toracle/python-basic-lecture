@@ -38,4 +38,4 @@ print('hello')
 
 ** PyCharm 소개
 
-조금 더 본격적으로 Python 프로그래밍에 진입하고 싶다면, [[https://www.jetbrains.com/pycharm/][PyCharm]]도 권할만한 에디터(IDE)입니다. [[https://www.jetbrains.com/student/][학생용 무료 라이센스]가 있으니 한번 경험해보세요.
+조금 더 본격적으로 Python 프로그래밍에 진입하고 싶다면, [[https://www.jetbrains.com/pycharm/][PyCharm]]도 권할만한 에디터(IDE)입니다. [[https://www.jetbrains.com/student/][학생용 무료 라이센스]]가 있으니 한번 경험해보세요.
