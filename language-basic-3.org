@@ -143,16 +143,12 @@ def 함수이름(인자1, 인자2, 인자3, ...):
                   continue
               words = statement.split(' ') # 단어 단위로 자른다
               cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
-              cleansed_words_2 = [w for w in cleansed_words if w] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소를 제거한다
+              cleansed_words_2 = [w for w in cleansed_words if len(w) > 1] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소, 그리고 한글자 단어를 제거한다
               num_words = len(cleansed_words_2)
               for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
                   word_i = cleansed_words_2[index_i]
-                  if len(word_i) == 1: # 한 글자 단어는 건너뛴다
-                      continue
                   for index_j in range(index_i+1, num_words):
                       word_j = cleansed_words_2[index_j]
-                      if len(word_j) == 1: # 한 글자 단어는 건너뛴다
-                          continue
                       word_to_word = (word_i, word_j)
                       word_to_word = tuple(sorted(word_to_word))
                       word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
@@ -217,16 +213,12 @@ def 함수이름(인자1, 인자2, 인자3, ...):
                   continue
               words = statement.split(' ') # 단어 단위로 자른다
               cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
-              cleansed_words_2 = [w for w in cleansed_words if w] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소를 제거한다
+              cleansed_words_2 = [w for w in cleansed_words if len(w) > 1] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소, 그리고 한글자 단어를 제거한다
               num_words = len(cleansed_words_2)
               for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
                   word_i = cleansed_words_2[index_i]
-                  if len(word_i) == 1: # 한 글자 단어는 건너뛴다
-                      continue
                   for index_j in range(index_i+1, num_words):
                       word_j = cleansed_words_2[index_j]
-                      if len(word_j) == 1: # 한 글자 단어는 건너뛴다
-                          continue
                       word_to_word = (word_i, word_j)
                       word_to_word = tuple(sorted(word_to_word))
                       word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
