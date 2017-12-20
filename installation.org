@@ -36,6 +36,18 @@ print('hello')
 
 그러면 우하단의 콘솔 창에 실행 결과가 나타납니다.
 
+그 이외에 유용할만한 단축키들입니다.
+
+ - =Ctrl-S=: Save file
+ - =Ctrl-N=: New file
+ - =F5=: Run script
+ - =Shift-Up= or =Shift-Down=: Block
+ - =Ctrl-Enter=: 실행할 영역을 블럭으로 지정한 후에 =Ctrl-Enter= 를 누르면, 해당 영역만을 실행합니다.
+ - =Ctrl-I=: Inspect
+ - =TAB=: Auto-completion
+ - =.=: Member attribute/method recommendation
+
+
 ** PyCharm 소개
 
-조금 더 본격적으로 Python 프로그래밍에 진입하고 싶다면, [[https://www.jetbrains.com/pycharm/][PyCharm]]도 권할만한 에디터(IDE)입니다. [[https://www.jetbrains.com/student/][학생용 무료 라이센스]]가 있으니 한번 경험해보세요.
+조금 더 본격적으로, 큰 규모의 Python 프로그래밍에 진입하고 싶다면, [[https://www.jetbrains.com/pycharm/][PyCharm]]도 권할만한 에디터(IDE)입니다. [[https://www.jetbrains.com/student/][학생용 무료 라이센스]]가 있으니 한번 경험해보세요.
