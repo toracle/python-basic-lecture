@@ -1,5 +1,14 @@
 * Python 기초 3: 파일 다루기, 함수, 클래스
 
+#+BEGIN_SRC ipython :session :exports none
+%matplotlib inline
+from tabulate import tabulate
+
+def tab(df):
+    print(tabulate(df, headers='keys', tablefmt='orgtbl'))
+#+END_SRC
+
+
 ** 파일 다루기
 
 이번에는 파일을 읽고 쓰는 방법을 알아봅시다.
@@ -390,9 +399,122 @@ mixed(*args, **kwargs)
 
 *** First-class function & lambda function
 
-다음으로 살펴볼 것은, 일급 함수 언어로서의 특성입니다. first-class function 이라고 하는데, 함수를 일급 시민으로 취급한다는 이야기입니다. 프로그래밍 언어에서 일급 시민으로 취급한다는 이야기는, 함수를 변수에 저장하거나 함수의 인자로 전달하는 등, 일반적인 값처럼 동일하게 다룰 수 있다는 것을 뜻합니다.
+다음으로 살펴볼 것은, Python의 일급 함수 언어로서의 특성입니다. first-class function 이라고 하는데, 함수를 일급 시민으로 취급한다는 이야기입니다. 프로그래밍 언어에서 일급 시민으로 취급한다는 이야기는, 함수를 변수에 저장하거나 함수의 인자로 전달하는 등, 일반적인 값처럼 동일하게 다룰 수 있다는 것을 뜻합니다.
 
 설명하자면 복잡하니, 다음 예를 보시죠.
+
+#+BEGIN_SRC python :results output :exports both
+  a_list = 1.3453
+  a_function = round              # 변수에 round 함수를 저장. 함수 이름만으로 지칭.
+  print(a_function(a_list))       # 변수에 저장된 함수를 실행
+#+END_SRC
+
+#+RESULTS:
+: 1
+
+위와 같이, Python에서는 함수를 변수에 저장할 수도 있고, 변수에 저장된 함수를 실행할 수도 있습니다.
+
+그러면 이런 기능이 어디에서 쓸모가 있을까요? 아래와 같은 사례를 생각해봅시다.
+
+#+BEGIN_SRC python :results output :exports both
+  a_list = [1.3453, 4.33240, 4.38273, 2.2381, -30.3942]
+
+  def clean_data(lst, func=round):
+      return list([func(element) for element in lst])
+
+  print(clean_data(a_list))
+  print(clean_data(a_list, func=abs))
+#+END_SRC
+
+#+RESULTS:
+: [1, 4, 4, 2, -30]
+: [1.3453, 4.3324, 4.38273, 2.2381, 30.3942]
+
+이후에 더 자세히 살펴보겠지만, =pandas= 라이브러리를 사용할 때에 이 기능을 활용할 일이 생깁니다.
+
+
+#+BEGIN_SRC ipython :session :results raw :exports code
+  import pandas as pd
+
+  df = pd.DataFrame([1.3453, 4.33240, 4.38273, 2.2381, -30.3942])
+  rounded_df = df.apply(round)
+  rounded_df
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(rounded_df)
+#+END_SRC
+
+#+RESULTS:
+|   |   0 |
+|---+-----|
+| 0 |   1 |
+| 1 |   4 |
+| 2 |   4 |
+| 3 |   2 |
+| 4 | -30 |
+
+그런데 =round= 함수는 인자를 가질 수 있습니다. 소숫점 몇자리에서 반올림할 것인지 결졍할 수 있습니다. 이런 경우는 어떻게 해야 할까요? 우선 아래와 같이 별도의 함수를 정의해서 사용할 수 있겠습니다.
+
+#+BEGIN_SRC ipython :session :results raw :export code
+  import pandas as pd
+
+  def round_two_decimal_point(val):
+      return round(val, 2)
+
+  df = pd.DataFrame([1.3453, 4.33240, 4.38273, 2.2381, -30.3942])
+  rounded_df = df.apply(round_two_decimal_point)
+  rounded_df
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(rounded_df)
+#+END_SRC
+
+#+RESULTS:
+|   |      0 |
+|---+--------|
+| 0 |   1.35 |
+| 1 |   4.33 |
+| 2 |   4.38 |
+| 3 |   2.24 |
+| 4 | -30.39 |
+
+
+그런데 이렇게 한 번만 사용할 함수를 정의하자니 뭔가 낭비인 것 같습니다. 이럴 때는 람다(lambda) 함수를 사용할 수 있습니다. 람다 함수는, 이름이 없는 함수로, 간편하게 함수를 정의할 수 있습니다. 일반적으로 ~def <funcname>(args...):~ 형태로 함수를 정의하는 대신, 람다 함수는 ~lambda arg...:~ 형태로 함수를 간결하게 정의합니다.
+
+위의 코드를 단계적으로 람다 함수로 대체하면 아래와 같습니다.
+
+#+BEGIN_SRC ipython :session :results raw :export code
+  import pandas as pd
+
+  round_two_decimal_point = lambda val: round(val, 2)
+
+  df = pd.DataFrame([1.3453, 4.33240, 4.38273, 2.2381, -30.3942])
+  rounded_df = df.apply(round_two_decimal_point)
+  rounded_df
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :results raw :export code
+  import pandas as pd
+
+  df = pd.DataFrame([1.3453, 4.33240, 4.38273, 2.2381, -30.3942])
+  rounded_df = df.apply(lambda val: round(val, 2))
+  rounded_df
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(rounded_df)
+#+END_SRC
+
+#+RESULTS:
+|   |      0 |
+|---+--------|
+| 0 |   1.35 |
+| 1 |   4.33 |
+| 2 |   4.38 |
+| 3 |   2.24 |
+| 4 | -30.39 |
 
 
 ** 클래스 (Class)
