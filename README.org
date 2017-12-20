@@ -39,7 +39,7 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
 *** 2일차: Python 배우기
 
  - [[file:language-basic-3.org][Python 기초 3]]: 파일 다루기, 함수, 클래스
- - [[file:language-basic-4.org][Python 기초 4]]: 모듈, 예외
+ - [[file:language-basic-4.org][Python 기초 4]]: 모듈, 예외, 오류
  - [[file:qna.org][Q&A 및 코드리뷰]]
 
 *** 3일차: 웹페이지 수집하기
