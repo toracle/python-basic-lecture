@@ -115,6 +115,10 @@ def 함수이름(인자1, 인자2, 인자3, ...):
   import networkx as nx
   import matplotlib.pyplot as plt
 
+  def read_file(path):
+      with open(path) as fin:
+          return fin.read()
+
   def construct_wordnet(text):
       lines = text.split('\n')      # 줄 단위로 자른다
 
@@ -144,6 +148,7 @@ def 함수이름(인자1, 인자2, 인자3, ...):
       for key in keys:
           if word_edges[key] < cutoff:
               del word_edges[key]
+      return
 
   def draw_graph(word_edges):
       G = nx.Graph()
