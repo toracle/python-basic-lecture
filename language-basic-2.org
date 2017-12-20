@@ -418,8 +418,15 @@ Python에서 byte는 =b'\x01'= 처럼 표시됩니다. 문자열과 비슷한데
           cleansed_words_2 = [w for w in cleansed_words if w] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소를 제거한다
           num_words = len(cleansed_words_2)
           for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
+              word_i = cleansed_words_2[index_i]
+              if len(word_i) == 1: # 한 글자 단어는 건너뛴다
+                  continue
               for index_j in range(index_i+1, num_words):
-                  word_to_word = (cleansed_words_2[index_i], cleansed_words_2[index_j])
+                  word_j = cleansed_words_2[index_j]
+                  if len(word_j) == 1: # 한 글자 단어는 건너뛴다
+                      continue
+                  word_to_word = (word_i, word_j)
+                  word_to_word = tuple(sorted(word_to_word))
                   word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
 
   # 등장 빈도가 1회인 edge는 제거한다
