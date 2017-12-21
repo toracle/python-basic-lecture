@@ -264,13 +264,13 @@ print(a_set)
  - find, rfind
  - slicing
  - startswith
- - regex
  - encoding
 
 #+BEGIN_SRC python :results output :exports both
   'Hello' + ' World' == 'Hello World'                               # 두 개의 문자열을 합친 새 문자열을 반환
   'Hello Python World!'.split(' ') == ['Hello', 'Python', 'World!'] # 문자열을 구분자를 기준으로 잘라 리스트로 반환
   'Hello' in 'Hello World' is True                                  # 특정 문자열이 포함되어 있는지 여부를 확인
+  'Hello\nWorld'                                                    # 한 줄 아래로 출력
 
   'Tom, Hello, World!'.find(',') == 3                               # 특정 문자 또는 문자열이 처음 등장하는 위치를 반환
   'Tom, Hello, World!'.find(',') == 10                              # 특정 문자 또는 문자열이 처음 등장하는 위치를 반환
@@ -294,6 +294,28 @@ print(a_set)
 
   '안녕하세요'.encode('utf8') == b'\xec\x95\x88\xeb\x85\x95\xed\x95\x98\xec\x84\xb8\xec\x9a\x94'
   b'\xec\x95\x88\xeb\x85\x95\xed\x95\x98\xec\x84\xb8\xec\x9a\x94'.decode('utf8') == '안녕하세요'
+#+END_SRC
+
+Python에서는 문자열을 표현할 때 ~''~ 와 ~""~ 두 개를 모두 사용합니다. 그리고 여러 줄의 문자열을 쉽게 표현하기 위해서 ~''' '''~ 처럼 세 개의 따옴표를 연속하여 문자열을 열고 닫을 수 있습니다.
+
+#+BEGIN_SRC python
+  'Hello World' == "Hello World"
+  "It's useful to write an apostrophe"
+  '<a href="http://abcd.com">'
+
+  '''I am a multiline string
+  Hello World'''
+#+END_SRC
+
+문자열에는 표시되는 글자 외에도 특수한 기호를 표현하기 위해 약속된 규칙이 있습니다.
+
+#+BEGIN_SRC python :results output  
+  '\n'                            # 개행 문자
+  '\t'                            # 탭 문자
+  '\''                            # '' 내에서 ' 문자 자체를 표현하기 위함
+  "\""                            # "" 내에서 " 문자 자체를 표현하기 위함
+  '\x61'                          # hex 코드
+  '\\'                            # \ 문자 자체
 #+END_SRC
 
 
