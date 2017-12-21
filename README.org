@@ -66,7 +66,7 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
 
  - [[file:excel-1.org][엑셀 파일 다루기 1]]: 데이터 다루기
  - [[file:excel-2.org][엑셀 파일 다루기 2]]: 그래프 그리기
- - [[file:pandas.org][Pandas 깊이 배우기]]
+ - [[file:pandas.org][Pandas 배우기]]
  - [[file:qna.org][Q&A 및 코드리뷰]]
 
 *** 5일차: 커져가는 코드 관리하기
