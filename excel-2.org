@@ -1,9 +1,72 @@
 * TODO 엑셀 파일 다루기 2: 그래프 그리기
 
+#+BEGIN_SRC ipython :session :exports none
+  %matplotlib inline
+  from tabulate import tabulate
+
+  def tab(df):
+      print(tabulate(df, headers='keys', tablefmt='orgtbl'))
+#+END_SRC
+
+
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/excel-2-bar-chart.png
+  import pandas as pd
+
+  series = pd.Series([1, 2, 3, 4, 5])
+  series.plot.bar();
+#+end_SRC
+
+#+RESULTS:
+[[file:outputs/excel-2-bar-chart.png]]
+
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/excel-2-barh-chart.png
+  import pandas as pd
+
+  series = pd.Series([1, 2, 3, 4, 5])
+  series.plot.barh();
+#+end_SRC
+
+#+RESULTS:
+[[file:outputs/excel-2-barh-chart.png]]
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/excel-2-line-chart.png
+  import pandas as pd
+
+  series = pd.Series([1, 2, 3, 4, 5])
+  series.plot.line();
+#+end_SRC
+
+#+RESULTS:
+[[file:outputs/excel-2-line-chart.png]]
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/excel-2-area-chart.png
+  import pandas as pd
+
+  series = pd.Series([1, 2, 3, 4, 5])
+  series.plot.area();
+#+end_SRC
+
+#+RESULTS:
+[[file:outputs/excel-2-area-chart.png]]
+
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/excel-2-pie-chart.png
+  import pandas as pd
+
+  series = pd.Series([1, 2, 3, 4, 5])
+  series.plot.pie();
+#+end_SRC
+
+#+RESULTS:
+[[file:outputs/excel-2-pie-chart.png]]
+
+
  - Bar Chart
  - Line Chart
  - Scatter Plot
  - Histogram
  - Pie Chart
  - Log Plot
-
+ - Matplotlib
