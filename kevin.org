@@ -92,7 +92,7 @@ http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&mission=201001&p
 여기서 우리는 배우의 이름이 나와있는 한 줄을 가져오면 됩니다. =str= 에 대해 =in= 연산자를 사용하여, ~<a href="/movie/bi/pi/basic.nhn?code=~ 라는 문자열을 포함하는 줄만을 뽑아낼 수 있습니다.
 
 
-#+BEGIN_SRC python :results output :export both
+#+BEGIN_SRC python :results output :exports both
 # -*- coding: utf-8 -*-
 import requests
 
@@ -140,7 +140,7 @@ fetch_one_page()
 ~str~ 에는 ~find~ 라는 메소드가 있습니다. 대상 문자열이 원본 문자열 상에서 몇번째 위치에 등장하는지를 알려주는 메소드입니다.
 
 
-#+BEGIN_SRC python :results output :export both
+#+BEGIN_SRC python :results output :exports both
   # -*- coding: utf-8 -*-
   import requests
 
@@ -176,7 +176,7 @@ fetch_one_page()
 
 그리고, 목록을 반환하는 대신 =[일련번호,이름]= 의 구조로 텍스트 파일에 저장하게 해보세요.
 
-#+BEGIN_SRC python :results output :export none
+#+BEGIN_SRC python :results output :exports none
   # -*- coding: utf-8 -*-
   import requests
 
@@ -226,7 +226,7 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
 그리고 여기에서도 URL의 페이지 번호를 증가시켜가면서 요청을 해보세요. (단, 이 경우에는 배우들마다 출연 영화 정보 페이지가 몇 페이지까지 있는지 일일이 미리 알 수 없습니다. 프로그램이 판단하도록 해야 합니다. 마지막 페이지에 도달했을 때를 프로그램이 어떻게 판단할 수 있을지 생각해보세요.)
 
 
-#+BEGIN_SRC python :results output :export both
+#+BEGIN_SRC python :results output :exports both
   # -*- coding: utf-8 -*-
   import requests
 
@@ -273,7 +273,7 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
 위의 코드를 활용하여, 배우 목록을 저장한 파일로부터 배우 ID를 하나씩 읽어들여, =[배우ID,영화ID,영화제목]= 의 구조로 텍스트 파일에 저장해보세요.
 
 
-#+BEGIN_SRC python :results output :export none
+#+BEGIN_SRC python :results output :exports none
   # -*- coding: utf-8 -*-
   import requests
 
@@ -324,7 +324,7 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
 이제 우리는 =배우-영화= 간의 관계를 얻게 되었습니다. 이를 토대로, 같은 영화에 출연한 사람들끼리는 서로 연결 관계가 생기도록 데이터를 만들어줍시다.
 
 
-#+BEGIN_SRC python :results output :export code
+#+BEGIN_SRC python :results output :exports code
   import os
   import networkx as nx
 
