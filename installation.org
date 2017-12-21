@@ -8,11 +8,13 @@ Anaconda는 [[https://www.anaconda.com/download/][공식 홈페이지]]에서 �
 
 Python을 사용할 때는, 2017년 현재 기준으로, 버전을 선택해야 합니다. 보통 python2를 선택할 것이냐 python3를 선택할 것이냐를 결정해야 하는데, 본 강의에서는 python3 버전을 사용하도록 하겠습니다. Anaconda에서도 python 버전에 따라 적절한 배포본을 사용할 수 있도록 구분하여 제공하고 있습니다. 
 
+
 ** 32bit or 64bit?
 
 그 다음으로는, 32bit를 사용할 것인지 64bit를 사용할 것인지 선택해야 합니다. 대개의 경우 64bit를 선택해도 무방하나, 간혹 외부 패키지를 사용할 때 32bit만을 지원하는 패키지들이 있는 경우에는 32bit를 사용해야 합니다.
 
 본 강의에서는 특별히 32bit의 제한을 받는 외부 라이브러리를 사용하지 않기 때문에 64bit를 설치하시면 됩니다.
+
 
 ** Anaconda 설치하고 Spyder 사용하기
 
@@ -40,6 +42,8 @@ print('hello')
 
  - =Ctrl-S=: Save file
  - =Ctrl-N=: New file
+ - =Ctrl-W=: Close current tab
+ - =Ctrl-PageUp= or =Ctrl-PageDown=: Move to left/right tab
  - =F5=: Run script
  - =Shift-Up= or =Shift-Down=: Block
  - =Ctrl-Enter=: 실행할 영역을 블럭으로 지정한 후에 =Ctrl-Enter= 를 누르면, 해당 영역만을 실행합니다.
