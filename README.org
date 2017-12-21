@@ -80,7 +80,7 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
  - NumPy 배우기
  - SciPy 배우기
  - Bokeh
- - HTML에서 원하는 정보 가져오기: [[file:beautifulsoup.org][BeautifulSoup]]
+ - [[file:beautifulsoup.org][BeautifulSoup]]: HTML에서 원하는 정보 가져오기
  - 문자열 능숙하게 다루기: Regex (정규표현식)
  - 패키지 만들기
  - GitHub 사용하기
