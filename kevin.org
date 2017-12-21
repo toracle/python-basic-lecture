@@ -324,7 +324,7 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
 이제 우리는 =배우-영화= 간의 관계를 얻게 되었습니다. 이를 토대로, 같은 영화에 출연한 사람들끼리는 서로 연결 관계가 생기도록 데이터를 만들어줍시다.
 
 
-#+BEGIN_SRC python :results output :exports code
+#+BEGIN_SRC python :results output :exports both
   import os
   import networkx as nx
 

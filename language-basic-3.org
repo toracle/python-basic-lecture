@@ -464,7 +464,7 @@ tab(rounded_df)
 
 그런데 =round= 함수는 인자를 가질 수 있습니다. 소숫점 몇자리에서 반올림할 것인지 결졍할 수 있습니다. 이런 경우는 어떻게 해야 할까요? 우선 아래와 같이 별도의 함수를 정의해서 사용할 수 있겠습니다.
 
-#+BEGIN_SRC ipython :session :results raw :export code
+#+BEGIN_SRC ipython :session :results raw :exports code
   import pandas as pd
 
   def round_two_decimal_point(val):
@@ -493,7 +493,7 @@ tab(rounded_df)
 
 위의 코드를 단계적으로 람다 함수로 대체하면 아래와 같습니다.
 
-#+BEGIN_SRC ipython :session :results raw :export code
+#+BEGIN_SRC ipython :session :results raw :exports code
   import pandas as pd
 
   round_two_decimal_point = lambda val: round(val, 2)
@@ -503,7 +503,7 @@ tab(rounded_df)
   rounded_df
 #+END_SRC
 
-#+BEGIN_SRC ipython :session :results raw :export code
+#+BEGIN_SRC ipython :session :results raw :exports code
   import pandas as pd
 
   df = pd.DataFrame([1.3453, 4.33240, 4.38273, 2.2381, -30.3942])
