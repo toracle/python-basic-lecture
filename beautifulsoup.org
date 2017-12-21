@@ -42,8 +42,24 @@ HTML은 전반적으로 태그로 이루어져 있습니다. 태그란 =<html></
  - style
 
 
-** TODO CSS Selector
+** CSS Selector
 
+커다란 HTML 문서에서 내가 원하는 정보가 있는 위치를 어떻게 지칭할 수 있을까요? 모든 줄을 검사하면서 특정 문자열이 포함된 줄을 포착할 수도 있겠지만, 조금 더 쉬운 방법들이 있습니다. 그중, 웹에서 jquery 라이브러리가 등장한 이후로는 CSS selector를 지정하는 방법이 많이 사용됩니다.
+
+가장 많이 활용되는 CSS selector 의 기본 형태는 아래와 같은 것들이 있습니다:
+
+ - ~div~: 모든 =div= 태그를 선택
+ - ~div#main-container~: =div= 중, =id= 가 =main-container= 인 =div= 만을 선택
+ - ~div.header~: =div= 중, =class= 가 =header= 인 =div= 들만을 선택
+ - ~div[style="color: black;"]~: =div= 중, =style= 이라는 속성이 =color: black;= 이라는 값을 가지는 =div= 만을 선택
+
+그런데, 위의 selector만으로는 지정하기 어려운 경우가 있습니다. 아래와 같은 [[https://www.w3.org/TR/css3-selectors/#combinators][combinator selector]]를 사용하면, 웬만한 경우는 처리할 수 있습니다:
+
+ - ~div.header li~: =header= 클래스를 가지는 =div= 태그 하위에 있는 모든 =li= 를 선택
+ - ~div.header > ul~: =header= 클래스를 가지는 =div= 태그의 1단계 하위에 있는 모든 =ul= 를 선택
+ - ~div.header li:nth-child(2)~: =header= 클래스를 가지는 =div= 태그 하위에 있는 태그 중, =li= 가 2번째 자식인 모든 =li= 를 선택
+ - ~div.header li:first-child~: =header= 클래스를 가지는 =div= 태그 하위에 있는 태그 중, =li= 가 첫번째 자식인 모든 =li= 를 선택
+ - ~div.header li:last-child~: =header= 클래스를 가지는 =div= 태그 하위에 있는 태그 중, =li= 가 마지막 자식인 모든 =li= 를 선택
 
 
 ** BeautifulSoup
@@ -75,7 +91,7 @@ div#main-container
 
 
 #+BEGIN_SRC css
-div.article
+ㅜdiv.article
 #+END_SRC
 
 그 중에서 =Visit JSoup!= 이라는 문자열을 지칭하는 CSS selector는 아래와 같습니다.
@@ -83,6 +99,7 @@ div.article
 #+BEGIN_SRC css
 div.article > a
 #+END_SRC
+
 
 ** 연습문제
 
@@ -165,3 +182,7 @@ span.sbj > span.name > a
 
 http://www.tistory.com/new/?_new_tistory=new_all
 
+
+** TODO Ajax & JSON
+
+요즘 만들어지는 웹사이트들 중에는, HTML로 모두 미리 작성되는 대신, 서버로부터는 데이터만을 받고 웹브라우저에서 동적으로 HTML 문서 구조를 생성하는 경우가 많습니다. 
