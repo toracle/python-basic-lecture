@@ -331,7 +331,6 @@ tab(df.corr())
   df_dtype
 #+END_SRC
 
-
 번호, 성별, 즐기는 음식은 문자열 타입이라고 지정해주었습니다.
 
 #+BEGIN_SRC ipython :session :exports result :results output raw
@@ -499,7 +498,6 @@ tab(df_dtype)
 df_dtype['BMI'] = round(df_dtype['몸무게(kg)'] / pow(df_dtype['신장(m)'], 2), 1)
 df_dtype
 #+END_SRC
-
 
 #+BEGIN_SRC ipython :session :exports result :results raw output
 tab(df_dtype)
@@ -726,6 +724,15 @@ df.plot.scatter(x='성별', y='몸무게(kg)');
 
 #+RESULTS:
 [[file:outputs/excel-1-plot-sex-weight-scatter.png]]
+
+** 엑셀로 저장하기
+
+지금까지 가공한 DataFrame을 다시 엑셀 파일로 저장해봅시다.
+
+#+BEGIN_SRC ipython :session :exports code :results raw
+  df_dtype.to_excel('outputs/실습생_컬럼추가.xlsx')
+#+END_SRC
+
 
 ** 연습문제
 
