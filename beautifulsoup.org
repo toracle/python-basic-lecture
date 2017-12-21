@@ -1,0 +1,167 @@
+* 웹 페이지 수집하기: BeautifulSoup
+
+웹 페이지를 수집한 후에, 웹 페이지 내에서 원하는 정보를 추출하는 방법에 대해서 알아봅니다.
+
+
+** HTML 파일의 구조
+
+HTML은 Hyper-text Markup Language로, 문서 표현 언어의 하나입니다. 인터넷 문서들의 대부분이 이 언어로 이루어져 있죠.
+
+HTML의 구조를 이해하면 필요한 정보를 추출하는데 도움이 됩니다.
+
+
+#+BEGIN_SRC html
+<html>
+    <head>
+    </head>
+
+    <body>
+        <div id="main-container" style="color: black;">This is a container</div>
+        <div class="article header">Webpage scrapying</div>
+    </body>
+</html>
+#+END_SRC
+
+
+** 태그
+
+HTML은 전반적으로 태그로 이루어져 있습니다. 태그란 =<html></html>= 처럼, 괄호(=<>=) 사이에 태그 이름이 들어가고, 태그는 태그 열기(=<html>=)와 태그 닫기(=</html>=)로 이루어져 있습니다. 태그 사이에는 다른 태그가 들어올 수도 있고 최종 문자열 값이 들어올 수도 있습니다.
+
+태그의 종류에는 여러 가지가 있는데, 웹 페이지에서 정보를 추출할 때 눈여겨볼만한 유용한 태그는 다음과 같은 것들이 있습니다.
+
+ - div
+ - span
+ - p
+
+태그에는 속성이 기재될 수 있습니다. 속성은 태그명 뒤에 자리잡고, 속성명과 값으로 이루어져 있습니다. (ex. ~id="main-container"~)
+
+웹 페이지 추출에서 유용한 속성의 종류에는 다음과 같은 것들이 있습니다.
+
+ - id
+ - class
+ - style
+
+
+** TODO CSS Selector
+
+
+
+** BeautifulSoup
+
+BeautifulSoup은 웹 페이지 내에서 원하는 문서 구성 요소를 CSS selector 형식으로 특정할 수 있도록 도와줍니다.
+
+
+#+BEGIN_SRC html
+<html>
+    <head>
+    </head>
+
+    <body>
+        <div id="main-container" style="color: black;">This is a container</div>
+        <div class="article header">Webpage scrapying <a href="http://jsoup.org">Visit JSoup!</a></div>
+    </body>
+</html>
+#+END_SRC
+
+위의 HTML 코드에서, =This is a container= 라는 문자열을 지칭하는 CSS selector는 아래와 같습니다.
+
+#+BEGIN_SRC css
+div#main-container
+#+END_SRC
+
+=div= 태그 중에서, =main-container= 라는 id 값을 가지고 있는 것을 지칭합니다.
+
+=Webpage scrapying= 이라는 문자열을 지칭하는 CSS selector는 아래와 같습니다.
+
+
+#+BEGIN_SRC css
+div.article
+#+END_SRC
+
+그 중에서 =Visit JSoup!= 이라는 문자열을 지칭하는 CSS selector는 아래와 같습니다.
+
+#+BEGIN_SRC css
+div.article > a
+#+END_SRC
+
+** 연습문제
+
+연습문제로 아래 URL의 HTML에서 정보를 추출해보겠습니다. 아래의 URL은 다음 아고라의 주소입니다. 여기에서 글 제목과 글쓴이, 글의 URL 주소를 가져오겠습니다.
+
+http://bbs3.agora.media.daum.net/gaia/do/petition/list?bbsId=P001&objCate1=1
+
+우선 위의 URL에 접속한 후, Chrome에서 개발자 도구를 엽니다. Ctrl-Shift-I를 누릅니다. Elements 탭에서 돋보기 아이콘을 선택한 후, 확인하고자 하는 HTML 요소를 클릭합니다. 해당 요소를 특정할 수 있는 태그 및 속성을 확인합니다.
+
+글 제목을 클릭해보면, =span= 이라는 태그가 =sbj= 클래스(~<span class="sbj">~)를 가지고 있는 것을 볼 수 있습니다. 그리고 그 아래에 =a= 태그에 제목 문자열이 들어있습니다. 따라서 제목을 지칭하는 CSS selector는 다음과 같이 쓸 수 있습니다.
+
+
+#+BEGIN_SRC css
+span.sbj > a
+#+END_SRC
+
+개발자 도구의 Console 탭에서 ~$$('span.sbj > a')~ 라고 입력해봅시다.
+
+이와 비슷하게, 글쓴이를 지칭하는 CSS selector는 다음과 같이 쓸 수 있습니다.
+
+#+BEGIN_SRC css
+span.sbj > span.name > a
+#+END_SRC
+
+개발자 도구의 Console 탭에서 ~$$('span.sbj > span.name > a')~ 라고 입력해봅시다.
+
+
+이러한 CSS selector를 사용하여, 아고라 글의 제목과 글쓴이, 글의 URL 주소를 가져오는 코드는 다음과 같습니다.
+
+
+#+BEGIN_SRC python :results output :exports both
+  import requests
+  from bs4 import BeautifulSoup
+
+  url = 'http://bbs3.agora.media.daum.net/gaia/do/petition/list?pageIndex=1&bbsId=P001&objCate1=1'
+
+  response = requests.get(url)
+  soup = BeautifulSoup(response.content)
+  subjects = soup.select('span.sbj > a')
+  counts = soup.select('span.cnt > em')
+  writers = soup.select('span.sbj > span.name > a')
+
+  entries = zip(subjects, counts, writers)
+
+  for subject, count, writer in entries:
+      _subject = subject.string
+      _writer = writer.string
+      _count = count.string
+      href = subject.attrs['href']
+
+      print('|'.join([_subject, _writer, _count, href]))
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+세월호 9.11, 록히드 마틴 율곡불곰 사이보그 범행입니다!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211504&pageIndex=1
+처치실cctv의무화|김지환|0|read?bbsId=P001&objCate1=1&articleId=211503&pageIndex=1
+북한 평창 올림픽 참가 반대|함예슬|0|read?bbsId=P001&objCate1=1&articleId=211502&pageIndex=1
+김영한 강민규 (모두 대리) 동일 필적입니다,|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211501&pageIndex=1
+생존학생 문자, 단원고 교감 대리 메모 동일합니다!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211500&pageIndex=1
+서명합니다.|양재철|0|read?bbsId=P001&objCate1=1&articleId=211499&pageIndex=1
+둘라에이스호 선장 유사수신사기 조희팔이었네요!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211498&pageIndex=1
+이근안 엉덩이에 뿔 났네요, 봐 줄까요?|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211497&pageIndex=1
+동물보호법개정으로 '강아지공장' 아이들을 지켜주세요!|생명꽃|228|read?bbsId=P001&objCate1=1&articleId=211495&pageIndex=1
+[국민감사] 사법적폐 척결을 위한 후원금 모금안내|서재황|0|read?bbsId=P001&objCate1=1&articleId=211493&pageIndex=1
+조류독감(AI) 막을 수 있을텐데, 왜 이맘 때면 시끄러운가?|심 호|0|read?bbsId=P001&objCate1=1&articleId=211492&pageIndex=1
+ [국민감사] 대법원이 국민을 우롱하고 있습니다. 438|서재황|0|read?bbsId=P001&objCate1=1&articleId=211491&pageIndex=1
+1조 원 물량공세했지요?|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211490&pageIndex=1
+안철수씨 혼자 바른정당 입당하세요|듀라|8|read?bbsId=P001&objCate1=1&articleId=211489&pageIndex=1
+교황님 살펴주세요|ww8401|0|read?bbsId=P001&objCate1=1&articleId=211488&pageIndex=1
+한진중공업 세원테크 분신 지시 정황입니다!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211487&pageIndex=1
+장기표 변호사 폐암부랄질에 당했습니다!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211486&pageIndex=1
+중정 60년 정신조종 살해 수법들, 최진실 장자연|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211485&pageIndex=1
+[국민감사] 대법원이 국민을 우롱하고 있습니다. 437|서재황|0|read?bbsId=P001&objCate1=1&articleId=211484&pageIndex=1
+두순씨발 불뚝자지놈 원격 뇌수술 자행합니다!!!!!!!!!!!!!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211483&pageIndex=1
+#+end_example
+
+
+이번에는 아래의 티스토리 새글 모음 URL에 대해서 제목과 글쓴이, URL을 추출해봅시다.
+
+http://www.tistory.com/new/?_new_tistory=new_all
+
