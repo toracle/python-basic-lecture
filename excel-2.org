@@ -2,17 +2,30 @@
 
 #+BEGIN_SRC ipython :session :exports none
   %matplotlib inline
+
+  import matplotlib
+  import matplotlib.pyplot as plt
+  import matplotlib.font_manager as fm
+
+  matplotlib.rc('font', family='Noto Sans CJK KR')
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC ipython :session :exports none
+  %matplotlib inline
   from tabulate import tabulate
 
   def tab(df):
       print(tabulate(df, headers='keys', tablefmt='orgtbl'))
 #+END_SRC
 
+여기서는 그래프 그리기에 중점을 두고 살펴봅시다.
 
+복잡한 데이터를 다루기 전에, 우선 그래프를 그리기 위한 가장 최소한의 형태를 살펴보겠습니다.
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/excel-2-bar-chart.png
   import pandas as pd
-
   series = pd.Series([1, 2, 3, 4, 5])
   series.plot.bar();
 #+end_SRC
@@ -23,7 +36,6 @@
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/excel-2-barh-chart.png
   import pandas as pd
-
   series = pd.Series([1, 2, 3, 4, 5])
   series.plot.barh();
 #+end_SRC
@@ -33,7 +45,6 @@
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/excel-2-line-chart.png
   import pandas as pd
-
   series = pd.Series([1, 2, 3, 4, 5])
   series.plot.line();
 #+end_SRC
@@ -43,7 +54,6 @@
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/excel-2-area-chart.png
   import pandas as pd
-
   series = pd.Series([1, 2, 3, 4, 5])
   series.plot.area();
 #+end_SRC
@@ -54,7 +64,6 @@
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/excel-2-pie-chart.png
   import pandas as pd
-
   series = pd.Series([1, 2, 3, 4, 5])
   series.plot.pie();
 #+end_SRC
@@ -70,3 +79,94 @@
  - Pie Chart
  - Log Plot
  - Matplotlib
+
+
+
+이제 실제 데이터에 대해 그래프를 그려봅시다.
+
+#+BEGIN_SRC ipython :session :exports code :results raw
+  import pandas as pd
+  df_dtype = pd.read_excel('assets/엑셀과정실습생.xlsx', sheet_name='Sheet1',
+                           index_col=0,
+                           dtype={'번호': 'object', '성별': 'object', '즐기는 음식': 'object'})
+  df_dtype
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+    나이 성별  신장(cm)  몸무게(kg) 즐기는 음식
+  번호                               
+  1   30  1     183       82      1
+  2   28  2     160       62      3
+  3   27  1     178       77      2
+  4   23  1     172       70      2
+  5   25  1     168       72      3
+  6   27  1     179       77      1
+  7   26  1     169       71      1
+  8   29  1     171       75      3
+  9   34  2     158       60      2
+  10  31  1     183       77      3
+  11  26  2     162       59      1
+  12  26  1     173       70      2
+  13  35  1     173       68      3
+  14  24  1     176       66      3
+  15  29  2     170       70      2
+  16  33  1     177       72      2
+  17  38  2     159       55      1
+  18  26  1     166       69      3
+  19  26  1     169       66      2
+  20  28  2     159       60      2
+#+END_EXAMPLE
+
+막대그래프를 그려볼까요?
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-2-data-bar-chart.png
+  df_dtype['신장(cm)'].plot.bar();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-2-data-bar-chart.png]]
+
+키가 기본적으로 100cm 이상이라서, 잘 구별되지 않습니다. y축의 기준을 변경해봅시다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-2-data-bar-chart-ylim.png
+  axes = df_dtype['신장(cm)'].plot.bar()
+  axes.set_ylim((150, 190))
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-2-data-bar-chart-ylim.png]]
+
+이번에는 빈도에 대한 그래프를 그려봅시다. 우선 즐기는 음식에 대한 빈도를 구해봅시다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw
+  df_food_freq = pd.pivot_table(df_dtype, index='즐기는 음식', aggfunc='size')
+  df_food_freq
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+즐기는 음식
+  1    5
+  2    8
+  3    7
+  dtype: int64
+#+END_EXAMPLE
+
+이 빈도에 대해 그래프를 그려봅시다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-2-data-pivot-bar-chart.png
+  df_food_freq.plot.bar();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-2-data-pivot-bar-chart.png]]
+빈도 순으로 정렬해서 그려봅시다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-2-data-pivot-bar-chart-sorted.png
+  df_food_freq.sort_values(ascending=False).plot.bar();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-2-data-pivot-bar-chart-sorted.png]]
