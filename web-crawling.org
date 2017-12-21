@@ -33,8 +33,7 @@
 
 http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR
 
-위 웹페이지는, N사의 영화 정보 웹페이지입니다. 국적이 한국인 배우들의 목록을 보여줍니다.
-웹페이지 하단에 보면 페이지 번호가 있습니다. 2번 페이지를 클릭해보면, 다음과 같은 URL로 변경됩니다.
+위 웹페이지는, N사의 영화 정보 웹페이지입니다. 국적이 한국인 영화인들의 목록을 보여줍니다. (배우 외에도 감독, 연출 등도 포함되는데, 배우만 걸러내려면 예제가 너무 복잡해질 수 있으니, 모두 포함해서 진행합니다.) 웹페이지 하단에 보면 페이지 번호가 있습니다. 2번 페이지를 클릭해보면, 다음과 같은 URL로 변경됩니다.
 
 http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=2
 
@@ -45,13 +44,14 @@ http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=500
 
 웹페이지는 정상적으로 출력되었는데, 하단의 페이지 숫자를 보면 211페이지가 마지막 페이지인 것을 알 수 있습니다.
 
-그러면 page를 1부터 211까지 증가해가면서 저 URL을 요청하면 모든 한국 배우들의 목록을 가져올 수 있을 것입니다.
+그러면 page를 1부터 211까지 증가해가면서 저 URL을 요청하면 모든 한국 영화인들의 목록을 가져올 수 있을 것입니다.
+
 
 ** 영화인 목록 가져오기
 
 우선 첫번째 페이지를 가져오는 것부터 해봅시다.
 
-http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1
+http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&mission=201001&page=1
 
 
 #+BEGIN_SRC python :results output :exports both
@@ -165,7 +165,7 @@ fetch_one_page()
 #+END_SRC
 
 #+RESULTS:
-: [{'id': '131804', 'name': ''}, {'id': '1671', 'name': ''}, {'id': '1899', 'name': ''}, {'id': '2311', 'name': ''}, {'id': '54817', 'name': ''}, {'id': '58580', 'name': ''}, {'id': '63528', 'name': ''}, {'id': '71377', 'name': ''}, {'id': '71547', 'name': ''}, {'id': '74390', 'name': ''}, {'id': '75887', 'name': ''}, {'id': '75890', 'name': ''}, {'id': '76857', 'name': ''}, {'id': '78312', 'name': ''}, {'id': '80433', 'name': ''}, {'id': '81261', 'name': ''}, {'id': '83431', 'name': ''}, {'id': '84960', 'name': ''}, {'id': '85457', 'name': ''}, {'id': '86620', 'name': ''}]
+: [{'name': '', 'id': '131804'}, {'name': '', 'id': '1671'}, {'name': '', 'id': '1899'}, {'name': '', 'id': '2311'}, {'name': '', 'id': '54817'}, {'name': '', 'id': '58580'}, {'name': '', 'id': '63528'}, {'name': '', 'id': '71377'}, {'name': '', 'id': '71547'}, {'name': '', 'id': '74390'}, {'name': '', 'id': '75887'}, {'name': '', 'id': '75890'}, {'name': '', 'id': '76857'}, {'name': '', 'id': '78312'}, {'name': '', 'id': '80433'}, {'name': '', 'id': '81261'}, {'name': '', 'id': '83431'}, {'name': '', 'id': '84960'}, {'name': '', 'id': '85457'}, {'name': '', 'id': '86620'}]
 
 
 ** 연습문제
@@ -174,7 +174,43 @@ fetch_one_page()
 
 그리고 위 코드에서 ~page=1~ 부분을 수정하여, for문을 사용해서 페이지를 1부터 211까지 증가시켜가면서 URL을 요청하도록 해보세요. 그리고 이 작업을 수행하는 부분을 함수로 만들어놓도록 합시다. ~fetch_person_list~ 라고 하면 될 것 같네요.
 
-(잘 안되는 분들은 [[][제가 작성한 코드]]를 참고하세요.)
+그리고, 목록을 반환하는 대신 =[일련번호,이름]= 의 구조로 텍스트 파일에 저장하게 해보세요.
+
+#+BEGIN_SRC python :results output :export none
+  # -*- coding: utf-8 -*-
+  import requests
+
+  def get_id(line):
+      id_start = line.find('code=')                  # 'code='가 처음 등장하는 위치를 기억
+      id_end = line.find('"', id_start)              # 'code=' 위치 이후에 처음 "가 등장하는 위치를 기억
+      return line[id_start+len('code='):id_end]      # 'code=' 이후부터 처음 " 등장 이전까지 문자열을 slice
+
+  def get_name(line):
+      name_start = line.find('">')
+      name_end = line.find('<', name_start+1)
+      return line[name_start+2:name_end]
+
+  def fetch_one_page(page, fp):
+      response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page={}'.format(page))
+      for line in response.iter_lines():
+          decoded_line = line.decode('euc-kr')
+          if not decoded_line.strip():
+             continue
+          if '<a href="/movie/bi/pi/basic.nhn?code=' not in decoded_line:
+             continue
+          _line = decoded_line.strip()
+          actor_id = get_id(_line)
+          actor_name = get_name(_line)
+          fp.write('{},{}\n'.format(actor_id, actor_name))
+
+
+  def fetch_actor_list(fp):
+      for i in range(1, 221):
+          fetch_one_page(i, fp)
+
+  with open('outputs/actor_list.txt', 'w', encoding='utf8') as fout:
+      fetch_actor_list(fout)
+#+END_SRC
 
 
 ** 영화 목록 가져오기
@@ -231,5 +267,133 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
 #+RESULTS:
 : [{'id': '145778', 'name': '동네변호사 조들호'}, {'id': '146940', 'name': '배우학교'}, {'id': '91073', 'name': '박수건달'}, {'id': '80664', 'name': '미쓰GO'}, {'id': '78945', 'name': '싸인'}, {'id': '84275', 'name': '다시 보고 싶은 SBS 드라마 10선'}, {'id': '50216', 'name': '바람의 화원'}, {'id': '68934', 'name': '우린 액션배우다'}, {'id': '65856', 'name': '쩐의 전쟁'}, {'id': '43493', 'name': '눈부신 날에'}, {'id': '37908', 'name': '달마야, 서울 가자'}, {'id': '38814', 'name': '파리의 연인'}, {'id': '37853', 'name': '범죄의 재구성'}, {'id': '35904', 'name': '4인용 식탁'}, {'id': '31922', 'name': '달마야 놀자'}, {'id': '31405', 'name': '인디안 썸머'}, {'id': '29042', 'name': '킬리만자로'}, {'id': '75707', 'name': '깡패와 건달로 본 한국 100년'}, {'id': '23860', 'name': '화이트 발렌타인'}, {'id': '19456', 'name': '약속'}, {'id': '42545', 'name': '내 마음을 뺏어봐'}, {'id': '18611', 'name': '편지'}, {'id': '18592', 'name': '모텔 선인장'}, {'id': '18167', 'name': '쁘아종'}, {'id': '41280', 'name': '사랑한다면'}, {'id': '17195', 'name': '유리'}, {'id': '13591', 'name': '사랑하고 싶은 여자 & 결혼하고 싶은 여자'}, {'id': '47778', 'name': '가변차선'}]
 
-** TODO
 
+** 연습문제
+
+위의 코드를 활용하여, 배우 목록을 저장한 파일로부터 배우 ID를 하나씩 읽어들여, =[배우ID,영화ID,영화제목]= 의 구조로 텍스트 파일에 저장해보세요.
+
+
+#+BEGIN_SRC python :results output :export none
+  # -*- coding: utf-8 -*-
+  import requests
+
+  def get_id(line):
+      id_start = line.find('code=')                  # 'code='가 처음 등장하는 위치를 기억
+      id_end = line.find('"', id_start)              # 'code=' 위치 이후에 처음 "가 등장하는 위치를 기억
+      return line[id_start+len('code='):id_end]      # 'code=' 이후부터 처음 " 등장 이전까지 문자열을 slice
+
+  def get_name(line):
+      name_start = line.find('">')
+      name_end = line.find('<', name_start+1)
+      return line[name_start+2:name_end]
+
+  def fetch_movie_list(actor_id, fp):
+      page = 1
+      has_next_page = True
+      while has_next_page is True:                   # 다음 페이지로의 링크가 있는 경우에만 반복
+          has_next_page = False
+          url = 'http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode={}&page={}'.format(actor_id, page)
+          response = requests.get(url)
+          for line in response.iter_lines():
+              decoded_line = line.decode('utf8')
+              if '<em>다음</em>' in decoded_line:
+                  has_next_page = True
+              if '<a href="/movie/bi/mi/basic.nhn?code=' not in decoded_line or \
+                 'pilmo_thumb' in decoded_line:
+                  continue
+              _id = get_id(decoded_line)
+              _name = get_name(decoded_line)
+              fp.write('{},{},{}\n'.format(actor_id, _id, _name))
+          page = page + 1
+
+  with open('outputs/actor_list.txt', encoding='utf-8') as fin:
+      for line in fin:
+          _line = line.strip()
+          if not _line:
+              continue
+          actor_id, actor_name = _line.split(',', 1)
+          with open('outputs/actor_{}_movies.txt'.format(actor_id), 'w', encoding='utf-8') as fout:
+              fetch_movie_list(actor_id, fout)
+#+END_SRC
+
+#+RESULTS:
+
+
+** 배우-영화 데이터로 배우-배우 관계 만들기
+
+이제 우리는 =배우-영화= 간의 관계를 얻게 되었습니다. 이를 토대로, 같은 영화에 출연한 사람들끼리는 서로 연결 관계가 생기도록 데이터를 만들어줍시다.
+
+
+#+BEGIN_SRC python :results output :export code
+  import os
+  import networkx as nx
+
+  def construct_actor_info():
+      actor_name_to_id = {}
+      with open(os.path.join('outputs', 'actor_list.txt'), encoding='utf8') as fin:
+          for line in fin:
+              actor_id, actor_name = line.strip().split(',', 1)
+              actor_name_to_id[actor_name] = actor_id
+      return actor_name_to_id
+
+  def construct_two_mode():
+      movie_to_actors = {}
+      for entry in os.scandir('outputs'):
+          if not entry.name.startswith('actor_') or not entry.name.endswith('_movies.txt'):
+              continue
+
+          with open(os.path.join('outputs', entry.name), encoding='utf8') as fin:
+              for line in fin:
+                  _line = line.strip()
+                  if not _line:
+                      continue
+
+                  actor_id, movie_id, movie_name = _line.split(',', 2)
+                  movie_to_actors.setdefault(movie_id, []).append(actor_id)
+      return movie_to_actors
+
+  def construct_actor_by_actor(movie_to_actors):
+      actor_to_actor = {}
+      for movie, actor_list in movie_to_actors.items():
+          num_actors = len(actor_list)
+          for i in range(num_actors):
+              actor_i = actor_list[i]
+              for j in range(i+1, num_actors):
+                  actor_j = actor_list[j]
+                  edge_id = tuple(sorted((actor_i, actor_j)))
+                  actor_to_actor[edge_id] = actor_to_actor.setdefault(edge_id, 0) + 1
+      return actor_to_actor
+
+  def construct_graph(actor_to_actor):
+      G = nx.Graph()
+      for edge, freq in actor_to_actor.items():
+          actor_i, actor_j = edge
+          G.add_edge(actor_i, actor_j)
+      return G
+
+  def get_path_length(g, actor_name_to_id, name1, name2):
+      id_1 = actor_name_to_id[name1]
+      id_2 = actor_name_to_id[name2]
+      return nx.shortest_path_length(g, id_1, id_2)
+
+  print('Construct actor_info')
+  actor_name_to_id = construct_actor_info()
+  print('Construct two-mode')
+  movie_to_actors = construct_two_mode()
+  print('Construct one-mode')
+  actor_to_actor = construct_actor_by_actor(movie_to_actors)
+  print('Construct G')
+  G = construct_graph(actor_to_actor)
+  print(get_path_length(G, actor_name_to_id, '박신양', '오달수'))
+  print(get_path_length(G, actor_name_to_id, '박신양', '한효주'))
+  print(get_path_length(G, actor_name_to_id, '박신양', '주병진'))
+#+END_SRC
+
+#+RESULTS:
+: Construct actor_info
+: Construct two-mode
+: Construct one-mode
+: Construct G
+: 2
+: 2
+: 3
