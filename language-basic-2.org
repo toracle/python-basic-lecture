@@ -112,6 +112,52 @@ Python3에는 아래와 같은 주요 자료형(type)이 있습니다.
 : Timothy
 
 
+간혹 여러 개의 ~list~ 를 한번에 순회해야 할 때, 인덱스 번호가 필요할 때가 있습니다. 그럴 때는 아래와 같이 ~enumerate~ 함수를 사용할 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+  a_list = [20, 14, 19, 30, 42]
+  b_list = ['Tom', 'Chris', 'Timothy', 'Sandy', 'Buzz']
+
+  for index, a_element in enumerate(a_list):
+      print(index, a_element, b_list[index])
+#+END_SRC
+
+#+RESULTS:
+: 0 20 Tom
+: 1 14 Chris
+: 2 19 Timothy
+: 3 30 Sandy
+: 4 42 Buzz
+
+또는 ~zip()~ 함수를 사용할 수도 있습니다. ~zip()~ 함수는 두 개 이상의 길이가 같은 리스트를 하나로 합쳐줍니다.
+
+#+BEGIN_SRC python :results output :exports both
+  a_list = [20, 14, 19, 30, 42]
+  b_list = ['Tom', 'Chris', 'Timothy', 'Sandy', 'Buzz']
+  c_list = zip(a_list, b_list)
+  print(list(c_list))
+#+END_SRC
+
+#+RESULTS:
+: [(20, 'Tom'), (14, 'Chris'), (19, 'Timothy'), (30, 'Sandy'), (42, 'Buzz')]
+
+~for~ 구문과 함께는 아래와 같이 사용할 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+  a_list = [20, 14, 19, 30, 42]
+  b_list = ['Tom', 'Chris', 'Timothy', 'Sandy', 'Buzz']
+  for a, b in zip(a_list, b_list):
+      print(a, b)
+#+END_SRC
+
+#+RESULTS:
+: 20 Tom
+: 14 Chris
+: 19 Timothy
+: 30 Sandy
+: 42 Buzz
+
+
 ** dict
 
 이번에는 =dict= 에 대해 알아봅니다.
