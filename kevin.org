@@ -208,7 +208,7 @@ fetch_one_page()
       for i in range(1, 221):
           fetch_one_page(i, fp)
 
-  with open('outputs/actor_list.txt', 'w', encoding='utf8') as fout:
+  with open(os.path.join('kevin-outputs', 'actor_list.txt'), 'w', encoding='utf8') as fout:
       fetch_actor_list(fout)
 #+END_SRC
 
@@ -306,13 +306,13 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
               fp.write('{},{},{}\n'.format(actor_id, _id, _name))
           page = page + 1
 
-  with open('outputs/actor_list.txt', encoding='utf-8') as fin:
+  with open(os.path.join('kevin-outputs', 'actor_list.txt'), encoding='utf-8') as fin:
       for line in fin:
           _line = line.strip()
           if not _line:
               continue
           actor_id, actor_name = _line.split(',', 1)
-          with open('outputs/actor_{}_movies.txt'.format(actor_id), 'w', encoding='utf-8') as fout:
+          with open(os.path.join('kevin-outputs', 'actor_{}_movies.txt'.format(actor_id)), 'w', encoding='utf-8') as fout:
               fetch_movie_list(actor_id, fout)
 #+END_SRC
 
@@ -330,7 +330,7 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
 
   def construct_actor_info():
       actor_name_to_id = {}
-      with open(os.path.join('outputs', 'actor_list.txt'), encoding='utf8') as fin:
+      with open(os.path.join('kevin-outputs', 'actor_list.txt'), encoding='utf8') as fin:
           for line in fin:
               actor_id, actor_name = line.strip().split(',', 1)
               actor_name_to_id[actor_name] = actor_id
@@ -338,11 +338,11 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
 
   def construct_two_mode():
       movie_to_actors = {}
-      for entry in os.scandir('outputs'):
+      for entry in os.scandir('kevin-outputs'):
           if not entry.name.startswith('actor_') or not entry.name.endswith('_movies.txt'):
               continue
 
-          with open(os.path.join('outputs', entry.name), encoding='utf8') as fin:
+          with open(os.path.join('kevin-outputs', entry.name), encoding='utf8') as fin:
               for line in fin:
                   _line = line.strip()
                   if not _line:
@@ -376,24 +376,17 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
       id_2 = actor_name_to_id[name2]
       return nx.shortest_path_length(g, id_1, id_2)
 
-  print('Construct actor_info')
   actor_name_to_id = construct_actor_info()
-  print('Construct two-mode')
   movie_to_actors = construct_two_mode()
-  print('Construct one-mode')
   actor_to_actor = construct_actor_by_actor(movie_to_actors)
-  print('Construct G')
   G = construct_graph(actor_to_actor)
+
   print(get_path_length(G, actor_name_to_id, '박신양', '오달수'))
   print(get_path_length(G, actor_name_to_id, '박신양', '한효주'))
   print(get_path_length(G, actor_name_to_id, '박신양', '주병진'))
 #+END_SRC
 
 #+RESULTS:
-: Construct actor_info
-: Construct two-mode
-: Construct one-mode
-: Construct G
 : 2
 : 2
 : 3
