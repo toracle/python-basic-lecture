@@ -41,11 +41,32 @@ plt.show()
 [[file:outputs/basic-4-module-examp-1.png]]
 
 
-Anaconda가 다양한 패키지들을 미리 포함하고 있기는 하지만, 필요한 패키지가 모두 포함되어있지는 않습니다. 한 예로, Anaconda가 영어권에서 만들어진 배포본이다보니 한글 처리에 대한 패키지는 들어있지 않습니다. 이런 경우에는 외부 패키지를 설치해야 합니다.
+Anaconda가 다양한 패키지들을 미리 포함하고 있기는 하지만, 필요한 패키지가 모두 포함되어있지는 않습니다. 때에 따라서 외부 패키지를 설치해야 합니다.
+
+[[http://arrow.readthedocs.io/en/latest/][arrow]]라는 패키지는 Python에서 날짜를 손쉽게 다룰 수 있게 도와줍니다. 이 패키지는 Anaconda에 기본적으로 포함되어 있지 않습니다. 이 패키지를 설치해봅시다. Anaconda Prompt를 실행하고 아래 명령을 입력해줍니다.
 
 #+BEGIN_SRC sh
-$ conda install konlpy
+conda install arrow
 #+END_SRC
+
+이제 ~arrow~ 패키지를 사용할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+import arrow
+print(arrow.get('2018-01-03 09:10:00+09:00'))
+#+END_SRC
+
+#+RESULTS:
+: 2018-01-03T09:10:00+09:00
+
+위에서는 ~conda~ 를 사용하여 패키지를 설치했습니다. ~conda~ 패키지 관리자는 Anaconda에서 관리합니다. 그런데 간혹 Anaconda 저장소에 올라가 있지 않은 패키지가 있습니다. 대표적으로 한글 형태소 분석기 모음인 KoNLPy 패키지가 그렇습니다. 이런 경우에는 ~pip~ 패키지 관리자를 사용하여 설치할 수 있습니다. ~pip~ 패키지 관리자는 Python에 가장 기본적으로 포함되어 있는 도구입니다.
+
+#+BEGIN_SRC sh
+pip install jpype1
+pip install konlpy
+#+END_SRC
+
+(KoNLPy를 사용하기 위해서는 Java Runtime이 설치되어 있어야 합니다.)
 
 
 ** TODO 예외 처리하기
