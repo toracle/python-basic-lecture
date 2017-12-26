@@ -49,6 +49,11 @@ Known labextensions:
 
 [[file:assets/python-basic-day1-jupyter-new-notebook.png]]
 
+ - ~Up~ & ~Down~: 셀간에 커서 이동
+ - ~Shift-Enter~: 현재 셀 실행
+ - ~Enter~: 현재 셀 수정
+ - ~Ctrl-Enter~: 현재 셀 실행하고 명령 모드로 진입
+ - ~Alt-Enter~: 현재 셀 실행하고 아래에 새 셀 삽입
 
 
 [fn:jupyter-ipython] Jupyter라는 이름은 중간에 바뀐 이름이고, 그 이전에는 IPython (Interactive Python)이라는 이름을 사용했습니다. 그래서 현재 Jupyter에도 IPython 시절의 흔적들이 많이 남아있습니다. Jupyter notebook 파일의 이름도 .ipynb 확장자를 사용하는데, IPython Notebook의 줄임말입니다.
