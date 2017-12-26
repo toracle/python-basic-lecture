@@ -162,3 +162,33 @@ Beare, B. (2017). The Chang-Kim-Park model of cointegrated density-valued time s
 Beare, B., J. Seo, and W. Seo (2017). Cointegrated Linear Processes in Hilbert Space. Journal of Time Series Analysis 38, 10101027.
 Chang, Y., C. Kim, and J. Park (2016). Nonstationarity in time series of state densities. Journal of Econometrics 192, 152  167.
 #+END_EXAMPLE
+
+
+
+#+BEGIN_SRC python :results output :exports none
+  import re
+
+  lines = '''Beare, B. (2017). The Chang-Kim-Park model of cointegrated density-valued time series cannot accommodate a stochastic trend. Econ Journal Watch 14, 133137.
+  Beare, B., J. Seo, and W. Seo (2017). Cointegrated Linear Processes in Hilbert Space. Journal of Time Series Analysis 38, 10101027.
+  Chang, Y., C. Kim, and J. Park (2016). Nonstationarity in time series of state densities. Journal of Econometrics 192, 152  167.
+  '''
+
+  # pattern = re.compile(r'(.*)\s\((.*)\)\.\s(.*)\.\s([a-zA-Z ]\s([0-9]+))')
+  pattern = re.compile(r'(.*)\s+\(([0-9]+)\)\.\s+(.*?)\.\s+([a-zA-Z ]+)\s+([0-9]+)')
+
+  for line in lines.split('\n'):
+      match = pattern.search(line)
+      if not match:
+          continue
+      authors = match.group(1)
+      pubyear = match.group(2)
+      article_name = match.group(3)
+      journal_name = match.group(4)
+      issue = match.group(5)
+      print(authors, pubyear, article_name, journal_name, issue)
+#+END_SRC
+
+#+RESULTS:
+: Beare, B. 2017 The Chang-Kim-Park model of cointegrated density-valued time series cannot accommodate a stochastic trend Econ Journal Watch 14
+: Beare, B., J. Seo, and W. Seo 2017 Cointegrated Linear Processes in Hilbert Space Journal of Time Series Analysis 38
+: Chang, Y., C. Kim, and J. Park 2016 Nonstationarity in time series of state densities Journal of Econometrics 192
