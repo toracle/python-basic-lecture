@@ -121,7 +121,7 @@ pip install konlpy
 
 NLP 엔진을 사용하여 문장을 형태소 단위로 구분하고, 각 요소에 품사를 식별하여 붙여보겠습니다.
 
-#+BEGIN_SRC ipython :session :exports both :results output raw
+#+BEGIN_SRC ipython :session :exports both :results output
 from konlpy.tag import Twitter
 tw = Twitter()
 result = tw.pos('존경하고 사랑하는 국민 여러분, 감사합니다. 국민 여러분의 위대한 선택에 머리숙여 깊이 감사드립니다.')
@@ -129,7 +129,7 @@ print(result)
 #+END_SRC
 
 #+RESULTS:
-[('존경하고', 'Verb'), ('사랑하는', 'Verb'), ('국민', 'Noun'), ('여러분', 'Noun'), (',', 'Punctuation'), ('감사합', 'Verb'), ('니다', 'Eomi'), ('.', 'Punctuation'), ('국민', 'Noun'), ('여러분', 'Noun'), ('의', 'Josa'), ('위대한', 'Adjective'), ('선택', 'Noun'), ('에', 'Josa'), ('머리', 'Noun'), ('숙여', 'Verb'), ('깊이', 'Noun'), ('감사', 'Noun'), ('드립니', 'Verb'), ('다', 'Eomi'), ('.', 'Punctuation')]
+: [('존경하고', 'Verb'), ('사랑하는', 'Verb'), ('국민', 'Noun'), ('여러분', 'Noun'), (',', 'Punctuation'), ('감사합', 'Verb'), ('니다', 'Eomi'), ('.', 'Punctuation'), ('국민', 'Noun'), ('여러분', 'Noun'), ('의', 'Josa'), ('위대한', 'Adjective'), ('선택', 'Noun'), ('에', 'Josa'), ('머리', 'Noun'), ('숙여', 'Verb'), ('깊이', 'Noun'), ('감사', 'Noun'), ('드립니', 'Verb'), ('다', 'Eomi'), ('.', 'Punctuation')]
 
 
 위의 NLP 엔진 사용법을 활용하여 의미망을 다시 그려봅시다.
