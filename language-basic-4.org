@@ -1,6 +1,6 @@
 * Python 기초 4: 모듈, 예외, 오류
 
-** TODO 모듈 사용하기
+** 모듈 사용하기
 
 코드가 점점 커지면, 코드를 하나의 파일에 담기 어려워지게 됩니다. 그럴 때는 코드를 여러 개의 파일로 나누어 놓고, 필요한 내용들을 불러와서 사용하게 되는데, '불러와서 사용할 수 있게 되어 있는 형태'를 모듈이라고 합니다.
 
@@ -67,6 +67,8 @@ pip install konlpy
 #+END_SRC
 
 (KoNLPy를 사용하기 위해서는 Java Runtime이 설치되어 있어야 합니다.)
+
+*** TODO github에서 설치하기
 
 
 ** TODO 예외 처리하기
@@ -309,3 +311,45 @@ NLP 엔진을 사용하지 않은 결과와 비교했을 때, 조금 더 단어�
 
 #+RESULTS:
 [[file:outputs/park_speech_nlp_cutoff_3.png]]
+
+** 연습문제
+
+의미망 대신에 태그 클라우드를 한번 그려봅시다. [[https://github.com/atizo/PyTagCloud][pytagcloud]]라는 패키지를 사용하면 손쉽게 태그 클라우드를 그릴 수 있습니다.
+
+문재인 대통령 연설문
+
+#+BEGIN_SRC ipython :session :exports result :results raw output
+  import os
+  from pytagcloud import create_tag_image, make_tags
+  from konlpy.tag import Twitter
+
+  def read_file(path):
+      with open(path) as fin:
+          return fin.read()
+
+  def get_tag_counts(text):
+      tw = Twitter()
+      words = tw.pos(text)
+      cleansed_words = [w[0] for w in words if w[1] not in ('Punctuation', 'Josa', 'Eomi') and len(w[0]) > 1]
+      counts = {}
+      for w in cleansed_words:
+          counts[w] = counts.setdefault(w, 0) + 1
+      return sorted(counts.items(), key=lambda x: x[1], reverse=True)
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :exports result :results raw output
+  text = read_file(os.path.join('assets', 'moon_speech.txt'))
+  tags = make_tags(get_tag_counts(text), maxsize=80)
+  create_tag_image(tags, os.path.join('outputs', 'tag_cloud_moon_speech.png'), size=(600, 400), fontname='Noto Sans CJK')
+#+END_SRC
+
+[[file:outputs/tag_cloud_moon_speech.png]]
+
+
+#+BEGIN_SRC ipython :session :exports result :results raw output
+  text = read_file(os.path.join('assets', 'park_speech.txt'))
+  tags = make_tags(get_tag_counts(text), maxsize=80)
+  create_tag_image(tags, os.path.join('outputs', 'tag_cloud_park_speech.png'), size=(600, 400), fontname='Noto Sans CJK')
+#+END_SRC
+
+[[file:outputs/tag_cloud_park_speech.png]]
