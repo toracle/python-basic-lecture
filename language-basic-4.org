@@ -30,40 +30,54 @@ print(listdir('.'))
 
 모듈의 이름이 길거나 겹치는 등의 이유로 별칭으로 접근하도록 지정할 수 있습니다.
 
-#+BEGIN_SRC ipython :results raw :exports both
-import pandas as pd
-
-df = pd.DataFrame([1, 2, 3, 4, 5])
-df
-#+END_SRC
-
-#+RESULTS:
-#+BEGIN_EXAMPLE
-   0
-  0  1
-  1  2
-  2  3
-  3  4
-  4  5
-#+END_EXAMPLE
-
-#+BEGIN_SRC ipython :results raw :exports both
+#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/basic-4-module-examp-1.png
 from matplotlib import pyplot as plt
 
-plt.plot(df)
+plt.plot([1, 2, 3, 4, 5])
 plt.show()
 #+END_SRC
 
 #+RESULTS:
-[[file:./obipy-resources/3IsU.png]]
+[[file:outputs/basic-4-module-examp-1.png]]
 
 
+Anaconda가 다양한 패키지들을 미리 포함하고 있기는 하지만, 필요한 패키지가 모두 포함되어있지는 않습니다. 한 예로, Anaconda가 영어권에서 만들어진 배포본이다보니 한글 처리에 대한 패키지는 들어있지 않습니다. 이런 경우에는 외부 패키지를 설치해야 합니다.
 
- - 모듈 import해서 사용하기: import, from import as
- - 모듈/패키지 설치하기
+#+BEGIN_SRC sh
+$ conda install konlpy
+#+END_SRC
 
 
 ** TODO 예외 처리하기
+
+이번에는 예외 처리에 대해 알아보겠습니다.
+
+프로그램을 의도대로 작성하다보면, 의도와 다르게 동작하는 경우를 고려해야 할 때가 있습니다. 이를테면 하위 디렉토리에 파일을 생성하려고 했는데, 그 디렉토리가 아직 존재하지 않는 경우, 아니면 웹에서 정보를 가져오도록 했는데 인터넷 연결이 끊어진 경우 등이 있겠죠. 이런 경우에, 프로그램이 그 의도하지 않은 상황, 즉 예외 상황에 대해서 어떻게 동작해야 하는지 일러주어야 합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  a_list = [1, 2, 3, 4, 5]
+  a_list[5]                       # IndexError가 발생. 참조는 0부터 시작하기 때문에, '5'를 참조하기 위해서는 4를 지정해야 함.
+#+END_SRC
+
+#+RESULTS:
+: Traceback (most recent call last):
+:  File "<stdin>", line 1, in <module>
+: IndexError: list index out of range
+
+#+BEGIN_SRC python :exports both :results output
+  a_dict = {'Tom': 32, 'Chris': 20}
+  a_dict['Mary']                  # KeyError가 발생. a_dict에 Mary는 존재하지 않음.
+#+END_SRC
+
+#+RESULTS:
+: Traceback (most recent call last):
+:  File "<stdin>", line 1, in <module>
+: KeyError: 'Mary'
+
+아마도 여러분이 직접 예외 상황을 만들 일보다는 기본 라이브러리나 외부 라이브러리에서 발생하는 예외 상황을 처리해야 할 경우가 많을 것입니다. 발생할 예외를 처리할 구문을 지정하기 위해서는 ~try... except...~ 구문을 사용합니다.
+
+
+
 
  - 예외 처리하기: try ... except
  - 예외도 클래스다. 예외 클래스 import하기
@@ -75,3 +89,8 @@ plt.show()
  - 오류 메세지 읽기
  - 오류 메세지 검색하기
 
+
+#+BEGIN_SRC python :exports both :results output
+  import requests
+  requests.get('http://domainnotexists.com')
+#+END_SRC
