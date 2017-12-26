@@ -2,6 +2,63 @@
 
 ** TODO 모듈 사용하기
 
+코드가 점점 커지면, 코드를 하나의 파일에 담기 어려워지게 됩니다. 그럴 때는 코드를 여러 개의 파일로 나누어 놓고, 필요한 내용들을 불러와서 사용하게 되는데, '불러와서 사용할 수 있게 되어 있는 형태'를 모듈이라고 합니다.
+
+초기에는 여러분이 직접 모듈을 만들기보다는 다른 사람들이 만들어놓은 모듈을 사용할 일이 더 많이 있을겁니다.
+
+모듈을 사용하기 위해서는 우선 모듈을 불러들여서 메모리상에 적재해야 합니다.
+
+모듈을 적재하려면 ~import~ 구문을 사용합니다. import된 모듈은 ~.~ 을 통해서 그 안에 포함된 함수, 변수, 클래스 등에 접근할 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+import os
+print(os.listdir('.'))
+#+END_SRC
+
+#+RESULTS:
+: ['.git', '.gitignore', '.mypy_cache', 'LICENSE.md', 'README.org', 'assets', 'beautifulsoup.org', 'excel-1.org', 'excel-2.org', 'installation.org', 'jupyter-install.org', 'kevin.org', 'language-basic-1.org', 'language-basic-2.org', 'language-basic-3.org', 'language-basic-4.org', 'obipy-resources', 'outputs', 'pandas.org', 'proficiency.org', 'python-overview.org', 'qna.org', 'refactoring.org', 'regex.org', 'testing.org']
+
+또는 ~from ... import~ 구문을 사용하여 특정 모듈 내의 원하는 대상을 모듈 접두어 없이 곧바로 참조할 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+from os import listdir
+print(listdir('.'))
+#+END_SRC
+
+#+RESULTS:
+: ['.git', '.gitignore', '.mypy_cache', 'LICENSE.md', 'README.org', 'assets', 'beautifulsoup.org', 'excel-1.org', 'excel-2.org', 'installation.org', 'jupyter-install.org', 'kevin.org', 'language-basic-1.org', 'language-basic-2.org', 'language-basic-3.org', 'language-basic-4.org', 'obipy-resources', 'outputs', 'pandas.org', 'proficiency.org', 'python-overview.org', 'qna.org', 'refactoring.org', 'regex.org', 'testing.org']
+
+모듈의 이름이 길거나 겹치는 등의 이유로 별칭으로 접근하도록 지정할 수 있습니다.
+
+#+BEGIN_SRC ipython :results raw :exports both
+import pandas as pd
+
+df = pd.DataFrame([1, 2, 3, 4, 5])
+df
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+   0
+  0  1
+  1  2
+  2  3
+  3  4
+  4  5
+#+END_EXAMPLE
+
+#+BEGIN_SRC ipython :results raw :exports both
+from matplotlib import pyplot as plt
+
+plt.plot(df)
+plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:./obipy-resources/3IsU.png]]
+
+
+
  - 모듈 import해서 사용하기: import, from import as
  - 모듈/패키지 설치하기
 
