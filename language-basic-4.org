@@ -97,10 +97,37 @@ pip install konlpy
 
 아마도 여러분이 직접 예외 상황을 만들 일보다는 기본 라이브러리나 외부 라이브러리에서 발생하는 예외 상황을 처리해야 할 경우가 많을 것입니다. 발생할 예외를 처리할 구문을 지정하기 위해서는 ~try... except...~ 구문을 사용합니다.
 
+#+BEGIN_SRC python :exports both :results output
+  a_dict = {'Tom': 32, 'Chris': 20}
+  try:
+      print(a_dict['Mary'])
+  except KeyError:
+      a_dict['Mary'] = 10
+      print(a_dict['Mary'])
+#+END_SRC
+
+#+RESULTS:
+: 10
+
+예외의 구체적인 내용이 필요할 때는 ~try... except ... as ...~ 구문을 사용합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  a_dict = {'Tom': 32, 'Chris': 20}
+  try:
+      print(a_dict['Mary'])
+  except KeyError as ex:
+      print('Missing key:', ex.args[0])
+      a_dict['Mary'] = 10
+      print(a_dict['Mary'])
+#+END_SRC
+
+#+RESULTS:
+: Missing key: Mary
+: 10
 
 
+~except~ 로 식별할 수 있는 예외/에러의 종류에는 여러 가지가 있습니다.
 
- - 예외 처리하기: try ... except
  - 예외도 클래스다. 예외 클래스 import하기
 
 
@@ -200,6 +227,9 @@ print(result)
 
 #+RESULTS:
 [[file:outputs/moon_speech_nlp.png]]
+
+
+NLP 엔진을 사용하지 않은 결과와 비교했을 때, 조금 더 단어가 많아진 것처럼 보입니다. 아마도 형태소가 분리되면서 흩어져서 집계되던 어휘들이 모이면서 발생한 현상으로 보입니다. 이를테면, =대통령이=, =대통령은=, =대통령의= 처럼 각각 다른 단어로 여겨지던 것이, =대통령= 이라는 하나의 단어로 모아지게 된 것이죠.
 
 
 #+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech_nlp.png
