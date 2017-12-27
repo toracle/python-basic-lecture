@@ -119,6 +119,8 @@ pip remove pytagcloud
 :  File "<stdin>", line 1, in <module>
 : KeyError: 'Mary'
 
+예외가 발생한 경우에는, ~return~ 여부와는 상관 없이 즉시 상위 호출 개체로 예외가 전파됩니다. 도중에 예외를 잡아 처리한 경우에는 전파가 중단됩니다. 아무 곳에서도 예외를 잡아 처리하지 않은 경우에는 위의 출력 결과에서 보듯이 ~예외이름: 구체적인 메세지~ 과 같은 내용이 출력됩니다.
+
 아마도 여러분이 직접 예외 상황을 만들 일보다는 기본 라이브러리나 외부 라이브러리에서 발생하는 예외 상황을 처리해야 할 경우가 많을 것입니다. 발생할 예외를 처리할 구문을 지정하기 위해서는 ~try... except...~ 구문을 사용합니다.
 
 #+BEGIN_SRC python :exports both :results output
@@ -149,12 +151,13 @@ pip remove pytagcloud
 : Missing key: Mary
 : 10
 
-
 ~except~ 로 식별할 수 있는 예외/에러의 종류에는 여러 가지가 있습니다.
 
- - IndexError
- - KeyError
- - IOError
+ - IndexError: ~list~ 의 참조 범위를 벗어난 경우
+ - KeyError: ~dict~ 에 존재하지 않는 키를 참조한 경우
+ - IOError: 파일이나 네트워크 등에 관련된 오류
+ - NameError
+ - TypeError
 
 
  - 예외도 클래스다. 예외 클래스 import하기
