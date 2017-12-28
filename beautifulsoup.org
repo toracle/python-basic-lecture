@@ -91,7 +91,7 @@ div#main-container
 
 
 #+BEGIN_SRC css
-ㅜdiv.article
+div.article
 #+END_SRC
 
 그 중에서 =Visit JSoup!= 이라는 문자열을 지칭하는 CSS selector는 아래와 같습니다.
