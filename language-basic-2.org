@@ -94,6 +94,7 @@ Python3에는 아래와 같은 주요 자료형(type)이 있습니다.
 : ['Chris', 'F', 28, True]
 : ['Timothy', 'M', 32, False]
 
+
 ~list~ 및 ~tuple~ 에 대해서는, 각 원소를 풀어헤쳐서 이름 있는 변수에 할당할 수 있습니다. (destructuring, 또는 tuple unpacking 이라고 합니다.)
 
 #+BEGIN_SRC python :results output :exports both
@@ -156,6 +157,43 @@ Python3에는 아래와 같은 주요 자료형(type)이 있습니다.
 : 19 Timothy
 : 30 Sandy
 : 42 Buzz
+
+List comprehension을 사용해서 간편하게 list를 만들 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+  a_list = [20, 14, 19, 30, 42]
+  a_gt_19_list = [v for v in a_list if v >= 19]
+  print(a_gt_19_list)
+#+END_SRC
+
+#+RESULTS:
+: [20, 19, 30, 42]
+
+위의 코드는 아래 코드와 의미적으로 동일합니다.
+
+#+BEGIN_SRC python :results output :exports both
+  a_list = [20, 14, 19, 30, 42]
+  a_gt_19_list = []
+
+  for v in a_list:
+      if v >= 19:
+          a_gt_19_list.append(v)
+  print(a_gt_19_list)
+#+END_SRC
+
+#+RESULTS:
+: [20, 19, 30, 42]
+
+List comprehension을 사용한 또 다른 예입니다.
+
+#+BEGIN_SRC python :results output :exports both
+  a_list = [20, 14, 19, 30, 42]
+  a_double_list = [v * 2 for v in a_list]
+  print(a_double_list)
+#+END_SRC
+
+#+RESULTS:
+: [40, 28, 38, 60, 84]
 
 
 ** dict
