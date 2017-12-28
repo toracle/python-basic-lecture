@@ -80,9 +80,9 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
 *** 후보 주제들
 
  - [[file:regex.org][정규표현식(Regex)]]: 문자열 능숙하게 다루기
- - Matplotlib 소개
- - SciPy 소개
- - Bokeh
+ - [[file:matplotlib.org][Matplotlib 소개]]
+ - NetworkX 소개: SNA 분석하기
+ - Bokeh 소개
  - 패키지 만들기
  - GitHub 사용하기
  - ArgumentParser 사용하기
