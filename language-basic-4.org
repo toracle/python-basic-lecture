@@ -204,13 +204,13 @@ pip remove pytagcloud
 
 ** 연습문제
 
-이번에는 NLP 엔진을 사용하여 문장을 형태소 단위로 구분하고, 각 요소에 품사를 식별하여 붙여보겠습니다.
+'모듈 설치하기'에서 설치했던 KoNLPy 엔진을 사용하여 문장을 형태소 단위로 구분하고, 각 요소에 품사를 식별하여 붙여보겠습니다.
 
 #+BEGIN_SRC python :exports both :results output
-from konlpy.tag import Twitter
-tw = Twitter()
-result = tw.pos('존경하고 사랑하는 국민 여러분, 감사합니다. 국민 여러분의 위대한 선택에 머리숙여 깊이 감사드립니다.')
-print(result)
+  from konlpy.tag import Twitter  # KoNLPy 모듈 하위에 있는 tag라는 모듈에서 Twitter라는 클래스를 가져온다
+  tw = Twitter()                  # Twitter 클래스를 사용하여 객체를 생성한다
+  result = tw.pos('존경하고 사랑하는 국민 여러분, 감사합니다. 국민 여러분의 위대한 선택에 머리숙여 깊이 감사드립니다.') # tw 객체의 pos() 메소드를 실행한다
+  print(result)
 #+END_SRC
 
 #+RESULTS:
