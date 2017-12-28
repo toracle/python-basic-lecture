@@ -146,48 +146,121 @@ span.sbj > span.name > a
   response = requests.get(url)
   soup = BeautifulSoup(response.content)
   subjects = soup.select('span.sbj > a')
+  date = soup.select('span.date')
   counts = soup.select('span.cnt > em')
   writers = soup.select('span.sbj > span.name > a')
 
-  entries = zip(subjects, counts, writers)
+  entries = zip(subjects, date, counts, writers)
 
-  for subject, count, writer in entries:
+  for subject, date, count, writer in entries:
       _subject = subject.string
+      _date = date.string
       _writer = writer.string
       _count = count.string
       href = subject.attrs['href']
 
-      print('|'.join([_subject, _writer, _count, href]))
+      print('|'.join([_subject, _date, _writer, _count, href]))
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-세월호 9.11, 록히드 마틴 율곡불곰 사이보그 범행입니다!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211504&pageIndex=1
-처치실cctv의무화|김지환|0|read?bbsId=P001&objCate1=1&articleId=211503&pageIndex=1
-북한 평창 올림픽 참가 반대|함예슬|0|read?bbsId=P001&objCate1=1&articleId=211502&pageIndex=1
-김영한 강민규 (모두 대리) 동일 필적입니다,|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211501&pageIndex=1
-생존학생 문자, 단원고 교감 대리 메모 동일합니다!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211500&pageIndex=1
-서명합니다.|양재철|0|read?bbsId=P001&objCate1=1&articleId=211499&pageIndex=1
-둘라에이스호 선장 유사수신사기 조희팔이었네요!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211498&pageIndex=1
-이근안 엉덩이에 뿔 났네요, 봐 줄까요?|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211497&pageIndex=1
-동물보호법개정으로 '강아지공장' 아이들을 지켜주세요!|생명꽃|228|read?bbsId=P001&objCate1=1&articleId=211495&pageIndex=1
-[국민감사] 사법적폐 척결을 위한 후원금 모금안내|서재황|0|read?bbsId=P001&objCate1=1&articleId=211493&pageIndex=1
-조류독감(AI) 막을 수 있을텐데, 왜 이맘 때면 시끄러운가?|심 호|0|read?bbsId=P001&objCate1=1&articleId=211492&pageIndex=1
- [국민감사] 대법원이 국민을 우롱하고 있습니다. 438|서재황|0|read?bbsId=P001&objCate1=1&articleId=211491&pageIndex=1
-1조 원 물량공세했지요?|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211490&pageIndex=1
-안철수씨 혼자 바른정당 입당하세요|듀라|8|read?bbsId=P001&objCate1=1&articleId=211489&pageIndex=1
-교황님 살펴주세요|ww8401|0|read?bbsId=P001&objCate1=1&articleId=211488&pageIndex=1
-한진중공업 세원테크 분신 지시 정황입니다!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211487&pageIndex=1
-장기표 변호사 폐암부랄질에 당했습니다!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211486&pageIndex=1
-중정 60년 정신조종 살해 수법들, 최진실 장자연|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211485&pageIndex=1
-[국민감사] 대법원이 국민을 우롱하고 있습니다. 437|서재황|0|read?bbsId=P001&objCate1=1&articleId=211484&pageIndex=1
-두순씨발 불뚝자지놈 원격 뇌수술 자행합니다!!!!!!!!!!!!!|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211483&pageIndex=1
+문재인 대통령의 파렴치 범죄, 확실한 물증|2017.12.28 11:36|사과사|0|read?bbsId=P001&objCate1=1&articleId=211736&pageIndex=1
+공휴일을 유급휴일로 바꾸어야합니다.|2017.12.28 11:17|한가닥의 빛|0|read?bbsId=P001&objCate1=1&articleId=211735&pageIndex=1
+강경화 딸.. 국적회복 확인하자..|2017.12.28 10:20|정광수|1|read?bbsId=P001&objCate1=1&articleId=211732&pageIndex=1
+벌레같은 교도관들이 뼈를 부러뜨리고 성폭행을 하는 등|2017.12.28 10:06|악덕교도관대청소|2|read?bbsId=P001&objCate1=1&articleId=211731&pageIndex=1
+광명 운산고 김Y숙 선생의 명예퇴직을 반대합니다!|2017.12.28 08:57|RainSun|1|read?bbsId=P001&objCate1=1&articleId=211730&pageIndex=1
+근로복지공단은 당장 꼼수를 멈추라!|2017.12.28 06:16|풍경소리|4|read?bbsId=P001&objCate1=1&articleId=211729&pageIndex=1
+삼성화재보험 중소기업상대로 사기행각|2017.12.28 06:01|이천곤|2|read?bbsId=P001&objCate1=1&articleId=211728&pageIndex=1
+학교 규칙이라는 구실로 휴대폰 수거를 하지 말아주십시오|2017.12.28 02:57|전승훈|0|read?bbsId=P001&objCate1=1&articleId=211726&pageIndex=1
+지배자들|2017.12.28 01:01|deadkillers-society|1|read?bbsId=P001&objCate1=1&articleId=211725&pageIndex=1
+사이보그 이리역 폭파 시멘틱스|2017.12.28 00:11|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211724&pageIndex=1
+사이보그 데이터 베이스 킬 입증|2017.12.28 00:09|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211723&pageIndex=1
+제2 imf, 살인의 추억 재현될 수 있습니다!|2017.12.27 23:40|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211722&pageIndex=1
+[국민감사] 대법원이 국민을 우롱하고 있습니다. 442|2017.12.27 23:33|서재황|0|read?bbsId=P001&objCate1=1&articleId=211721&pageIndex=1
+[국민감사] 대법원이 국민을 우롱하고 있습니다. 441|2017.12.27 23:30|서재황|0|read?bbsId=P001&objCate1=1&articleId=211720&pageIndex=1
+어린이집 평가인증 부모가 할수 있게해주세요 |2017.12.27 22:27|허브향기ㆀ|0|read?bbsId=P001&objCate1=1&articleId=211719&pageIndex=1
+이재용 부회장을 선처해 주십시오. |2017.12.27 21:28|sunny|0|read?bbsId=P001&objCate1=1&articleId=211718&pageIndex=1
+교황님 살펴주세요|2017.12.27 20:16|ww8401|0|read?bbsId=P001&objCate1=1&articleId=211717&pageIndex=1
+무고죄로 처벌해 주세요|2017.12.27 18:44|tiger|0|read?bbsId=P001&objCate1=1&articleId=211716&pageIndex=1
+무고죄로 처벌해 주세요|2017.12.27 18:40|tiger|0|read?bbsId=P001&objCate1=1&articleId=211715&pageIndex=1
+고이와 1987, 이걸 누가 샀을까?! 고이비도요?|2017.12.27 17:35|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211714&pageIndex=1
 #+end_example
 
+아래의 나무위키 URL에 대해서, 위키 내부간의 하이퍼링크 목록을 추출해보세요.
 
-이번에는 아래의 티스토리 새글 모음 URL에 대해서 제목과 글쓴이, URL을 추출해봅시다.
+https://namu.wiki/w/Python
 
-http://www.tistory.com/new/?_new_tistory=new_all
+
+#+BEGIN_SRC python :exports result :results output
+  import requests
+  from bs4 import BeautifulSoup
+
+  def visit_page(page):
+      name, href = page
+      url = 'https://namu.wiki' + href
+      response = requests.get(url)
+      soup = BeautifulSoup(response.content, 'html5lib')
+      link_elements = soup.select('.wiki-inner-content .wiki-link-internal')
+      links = set([(elem['title'], elem['href']) for elem in link_elements])
+      return list(links)
+
+  page = ('Python', '/w/Python')
+  print([name for name, page in visit_page(page)])
+#+END_SRC
+
+#+RESULTS:
+: ['명령어', '코엑스', '페리아 연대기', '국부론', '넘파이', 'Swift(프로그래밍 언어)', '스택', 'C언어', '파일:xkcdpythonko.png', '2015년', '연세대학교', '킹덤 언더 파이어', '한국', '스팸(몬티 파이선 스케치)', 'Bottle', 'Erlang', 'APAC', '파이선', '비단뱀', 'Pygame', '창조', 'Django', '코드', 'JDK', '오라클', '부산대학교', '필로우', 'C#', '아스키', '인천대학교', 'callback 함수', '웹 프레임워크', 'Pillow', '프레임워크', '액션스크립트', 'rm -rf /', '카이스트', '심즈 4', 'scikit-learn', '고자', '드롭박스', '파일:나무위키+유도.png', '파이톤', 'tkinter', 'Flask', 'Lua', '부르즈 할리파', '추가바람', '의사코드', '파이썬', 'JIT', '상암', '라이브러리', '프로세스', 'reddit', '코더', '프로그래밍 언어', '나무위키:프로젝트', 'MATLAB', '시드 마이어의 문명', '2016년', 'Ruby', 'PyPy', 'Perl', 'Linux', '리눅스', 'PyGame', '우분투', 'C', '누리꿈스퀘어', 'C++', 'NumPy', '스레드', 'Haskell', '파이게임', '스크래피', 'Beautiful Soup', '이스터 에그', '파일:external/regmedia.co.uk/swift_benchmark.jpg', 'Scrapy', 'OpenCV', '문명 4', '자바 가상 머신', '기계학습', 'Sublime Text', '통합 개발 환경', '중국', 'Go', '42', '프로그래머', 'EVE 온라인', '2014년', '스택 오버플로우', '뱀', '국민대학교', '구조체', 'Notepad++', '인스타그램', 'IBM', '몬티 파이선', '한글', 'LISP', 'JAVA', 'Java', '유튜브', 'xkcd', 'WOW', 'R(프로그래밍 언어)', '2017년', '객체 지향 프로그래밍', 'UC 버클리', 'JavaScript', '뷰티플 수프', '월드 오브 탱크', '코루틴', '이클립스(통합 개발 환경)', 'C(프로그래밍 언어)', '비주얼 스튜디오', "Ren'Py", '상명대학교', '구글', 'JVM', '매사추세츠 공과대학교']
+
+이번에는 위의 내용을 응용해서, snowballing 방식으로 웹페이지를 수집해보세요.
+
+#+BEGIN_SRC ipython :session :exports result :results raw :ipyfile outputs/beautifulsoup-manuwiki-python-map.png
+  %matplotlib inline
+  import requests
+  import networkx as nx
+  import matplotlib.pyplot as plt
+  from bs4 import BeautifulSoup
+
+  def visit_page(page):
+      name, href = page
+      url = 'https://namu.wiki' + href
+      response = requests.get(url)
+      soup = BeautifulSoup(response.content, 'html5lib')
+      link_elements = soup.select('.wiki-inner-content .wiki-link-internal')
+      links = set([(elem['title'], elem['href']) for elem in link_elements])
+      return list(links)
+
+  def update_edges(graph, page, links):
+      for link in links:
+          graph.add_edge(page[0], link[0])
+
+  G = nx.Graph()
+
+  seed = [('Python', '/w/Python')]
+  visited = set()
+
+  page = seed.pop()
+  if page not in visited:
+      links = visit_page(page)
+      visited.add(page)
+      update_edges(G, page, links)
+      seed = seed + links
+
+  page = seed.pop()
+  if page not in visited:
+      links = visit_page(page)
+      visited.add(page)
+      update_edges(G, page, links)
+      seed = seed + links
+
+  pos = nx.kamada_kawai_layout(G)
+  plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
+  nx.draw_networkx_edges(G, pos, alpha=0.1);
+  nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR'); # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/beautifulsoup-manuwiki-python-map.png]]
 
 
 ** TODO Ajax & JSON
