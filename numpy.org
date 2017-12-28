@@ -1,0 +1,398 @@
+* NumPy 소개
+
+NumPy는 수치 연산을 위한 기초적인 도구들을 모아놓은 라이브러리입니다. 특히 벡터 및 행렬을 표현하고 연산하는데 필요한 도구들을 포함하고 있습니다. NumPy가 할 수 있는 일들은 순수 Python으로도 작성할 수 있습니다. 하지만 일반적으로 Python은 C나 Java 등의 언어에 비해 속도가 느리다고 알려져 있는데, NumPy는 C를 기반으로 작성되어 속도와 메모리 사용량이 일반 Python을 사용하는 경우보다 더 우월합니다.
+
+NumPy는 SciPy, Pandas, scikit-learn 등 많은 Python 기반의 데이터 라이브러리에서 사용하고 있습니다.
+
+NumPy는 Anaconda에 기본적으로 포함되어 있어서 별도의 설치 과정이 필요하지 않습니다. 순수 Python 배포본을 사용하는 경우에는 아래와 같이 설치합니다.
+
+#+BEGIN_SRC sh
+pip install numpy
+#+END_SRC
+
+numpy를 사용할 때는 통상적으로 아래와 같은 이름으로 ~import~ 하여 사용합니다.
+
+#+BEGIN_SRC python
+import numpy as np
+#+END_SRC
+
+
+** 행렬 생성하기
+
+NumPy는 아래와 같이 벡터나 행렬을 생성할 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+import numpy as np
+an_array = np.array([1, 2, 3])
+print(an_array)
+#+END_SRC
+
+#+RESULTS:
+: [1 2 3]
+
+#+BEGIN_SRC python :results output :exports both
+  import numpy as np
+  a_matrix = np.array([[1, 2, 3], [4, 5, 6]])
+  print(a_matrix)
+#+END_SRC
+
+#+RESULTS:
+: [[1 2 3]
+:  [4 5 6]]
+
+0으로 이루어진 벡터나 행렬을 생성하고 싶다면 아래와 같이 만들 수 있습니다.
+
+#+BEGIN_SRC python :results output :exrpots both
+import numpy as np
+an_array = np.zeros(3)
+print(an_array)
+#+END_SRC
+
+#+RESULTS:
+: [ 0.  0.  0.]
+
+#+BEGIN_SRC python :results output :exrpots both
+  import numpy as np
+  a_matrix = np.zeros((3, 4))
+  print(a_matrix)
+#+END_SRC
+
+#+RESULTS:
+: [[ 0.  0.  0.  0.]
+:  [ 0.  0.  0.  0.]
+:  [ 0.  0.  0.  0.]]
+
+1로 이루어진 벡터나 행렬을 생성하고 싶다면 아래와 같이 만들 수 있습니다.
+
+#+BEGIN_SRC python :results output :exrpots both
+import numpy as np
+an_array = np.ones(3)
+print(an_array)
+#+END_SRC
+
+#+RESULTS:
+: [ 1.  1.  1.]
+
+#+BEGIN_SRC python :results output :exrpots both
+  import numpy as np
+  a_matrix = np.ones((3, 4))
+  print(a_matrix)
+#+END_SRC
+
+#+RESULTS:
+: [[ 1.  1.  1.  1.]
+:  [ 1.  1.  1.  1.]
+:  [ 1.  1.  1.  1.]]
+
+
+단조 증가/감소하는 배열을 만들고 싶다면 아래와 같이 만들 수 있습니다. ~arange~ 함수는 python 내장함수인 ~range~ 와 사용법이 유사합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  an_array = np.arange(12)
+  print(an_array)
+#+END_SRC
+
+#+RESULTS:
+: [ 0  1  2  3  4  5  6  7  8  9 10 11]
+
+아래와 같이 1차원 배열로부터 (3, 4)의 행렬을 만들 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.arange(12).reshape((3, 4))
+  print(a_matrix)
+#+END_SRC
+
+#+RESULTS:
+: [[ 0  1  2  3]
+:  [ 4  5  6  7]
+:  [ 8  9 10 11]]
+
+아래와 같이 행렬에 대한 전치행렬을 만들 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.arange(12).reshape((3, 4)).T
+  print(a_matrix)
+#+END_SRC
+
+#+RESULTS:
+: [[ 0  4  8]
+:  [ 1  5  9]
+:  [ 2  6 10]
+:  [ 3  7 11]]
+
+랜덤 값으로 이루어진 배열을 아래와 같이 만들 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  an_array = np.random.random(6)
+  print(an_array)
+#+END_SRC
+
+#+RESULTS:
+: [ 0.88018585  0.57052127  0.04043108  0.64592294  0.17075513  0.99269949]
+
+
+역시 랜덤 값으로 이루어진 배열을 아래와 같이 만들 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.random.random((3, 4))
+  print(a_matrix)
+#+END_SRC
+
+#+RESULTS:
+: [[ 0.20370205  0.76194811  0.13555465  0.25069355]
+:  [ 0.33216221  0.24405488  0.40439707  0.88130432]
+:  [ 0.35258248  0.6324515   0.38639701  0.41529962]]
+
+
+또는 ~reshape~ 을 사용하여 아래와 같이 만들 수도 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.random.random(12).reshape(3, 4)
+  print(a_matrix)
+#+END_SRC
+
+#+RESULTS:
+: [[ 0.66037308  0.01304499  0.34555608  0.404326  ]
+:  [ 0.55315768  0.65773916  0.1509553   0.24299402]
+:  [ 0.11136858  0.22849563  0.60674247  0.13969691]]
+
+
+** 배열과 행렬에 대한 참조
+
+배열의 특정 원소를 지칭하려면 아래와 같이 합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  an_array = np.arange(12)
+  print(an_array)
+  print(an_array[3])
+#+END_SRC
+
+#+RESULTS:
+: [ 0  1  2  3  4  5  6  7  8  9 10 11]
+: 3
+
+행렬의 특정 원소를 지칭하려면 아래와 같이 합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.arange(12).reshape((3, 4))
+  print(a_matrix)
+  print(a_matrix[1][3])
+  print(a_matrix[1,3])
+#+END_SRC
+
+#+RESULTS:
+: [[ 0  1  2  3]
+:  [ 4  5  6  7]
+:  [ 8  9 10 11]]
+: 7
+: 7
+
+행렬의 특정 행을 지칭하려면 아래와 같이 합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.arange(12).reshape((3, 4))
+  print(a_matrix)
+  print(a_matrix[1])
+#+END_SRC
+
+#+RESULTS:
+: [[ 0  1  2  3]
+:  [ 4  5  6  7]
+:  [ 8  9 10 11]]
+: [4 5 6 7]
+
+아래는 특정 행의 범위를 반환합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.arange(12).reshape((3, 4))
+  print(a_matrix)
+  print(a_matrix[:2])
+#+END_SRC
+
+#+RESULTS:
+: [[ 0  1  2  3]
+:  [ 4  5  6  7]
+:  [ 8  9 10 11]]
+: [[0 1 2 3]
+:  [4 5 6 7]]
+
+행렬의 특정 열을 지칭하려면 어떻게 할까요?
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.arange(12).reshape((3, 4))
+  print(a_matrix)
+  print(a_matrix[0:3,1])
+#+END_SRC
+
+#+RESULTS:
+: [[ 0  1  2  3]
+:  [ 4  5  6  7]
+:  [ 8  9 10 11]]
+: [1 5 9]
+
+모든 행에 걸친 원소를 가져올 때는 아래와 같이 행 범위 값 없이 사용할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.arange(12).reshape((3, 4))
+  print(a_matrix)
+  print(a_matrix[:,1])
+#+END_SRC
+
+#+RESULTS:
+: [[ 0  1  2  3]
+:  [ 4  5  6  7]
+:  [ 8  9 10 11]]
+: [1 5 9]
+
+특정 열에 대해 특정 범위의 행의 원소를 가져올 때는 아래와 할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.arange(12).reshape((3, 4))
+  print(a_matrix)
+  print(a_matrix[0:2,1])
+#+END_SRC
+
+#+RESULTS:
+: [[ 0  1  2  3]
+:  [ 4  5  6  7]
+:  [ 8  9 10 11]]
+: [1 5]
+
+
+** 배열과 행렬에 대한 연산
+
+Python 기본 배열과는 달리, NumPy의 배열에 대해서는 곧바로 사칙연산을 수행할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  an_array = np.arange(12) * 3
+  print(an_array)
+#+END_SRC
+
+#+RESULTS:
+: [ 0  3  6  9 12 15 18 21 24 27 30 33]
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  an_array = np.arange(12) + 3
+  print(an_array)
+#+END_SRC
+
+#+RESULTS:
+: [ 3  4  5  6  7  8  9 10 11 12 13 14]
+
+행렬에 대해서 역시 마찬가지입니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.arange(12).reshape((3, 4)) * 2
+  print(a_matrix)
+#+END_SRC
+
+#+RESULTS:
+: [[ 0  2  4  6]
+:  [ 8 10 12 14]
+:  [16 18 20 22]]
+
+배열이나 행렬에 대해서 조건문을 쓸 수 있습니다. 참/거짓으로 이루어진 결과값이 배열이나 행렬로 반환됩니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  an_array = np.arange(12) % 2 == 0
+  print(an_array)
+#+END_SRC
+
+#+RESULTS:
+: [ True False  True False  True False  True False  True False  True False]
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  a_matrix = np.arange(12).reshape((3, 4)) % 2 == 0
+  print(a_matrix)
+#+END_SRC
+
+#+RESULTS:
+: [[ True False  True False]
+:  [ True False  True False]
+:  [ True False  True False]]
+
+
+** 함수들
+
+기본적인 몇 가지 함수들을 살펴보겠습니다.
+
+우선, ~np.sum~ 함수는 주어진 배열이나 행렬의 모든 원소를 합한 값을 반환합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  an_array = np.arange(12)
+  print(np.sum(an_array))
+#+END_SRC
+
+#+RESULTS:
+: 66
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  an_array = np.arange(12).reshape((3, 4))
+  print(np.sum(an_array))
+#+END_SRC
+
+#+RESULTS:
+: 66
+
+
+~np.cumsum~ 함수는 주어진 배열에서 각 원소를 누적하여 합한 결과를 반환합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  an_array = np.arange(12)
+  print(np.cumsum(an_array))
+#+END_SRC
+
+#+RESULTS:
+: [ 0  1  3  6 10 15 21 28 36 45 55 66]
+
+#+BEGIN_SRC python :exports both :results output
+  import numpy as np
+  an_array = np.arange(12).reshape((3, 4))
+  print(np.cumsum(an_array))
+#+END_SRC
+
+#+RESULTS:
+: [ 0  1  3  6 10 15 21 28 36 45 55 66]
+
+~np.random.rand~ 함수는 주어진 크기의 랜덤 배열 혹은 행렬을 만듭니다.
+
+#+BEGIN_SRC python :exports both :results output
+import numpy as np
+print(np.random.rand(6))
+#+END_SRC
+
+#+RESULTS:
+: [ 0.96828143  0.99037128  0.57053895  0.44466369  0.76758739  0.00529559]
+
+#+BEGIN_SRC python :exports both :results output
+import numpy as np
+print(np.random.rand(3, 4))
+#+END_SRC
+
+#+RESULTS:
+: [[ 0.44977926  0.00607217  0.58918218  0.88833684]
+:  [ 0.43798942  0.36826806  0.34287693  0.38824649]
+:  [ 0.63527151  0.7309766   0.35425316  0.09056272]]
+
+~reshape~ 함수에서처럼 ~(row, col)~ 튜플을 주는 것이 아니라, 두 개의 인자로 row, col을 지정하는 것에 주의하세요.
