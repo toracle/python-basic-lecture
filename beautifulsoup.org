@@ -62,11 +62,6 @@ HTML은 전반적으로 태그로 이루어져 있습니다. 태그란 =<html></
  - ~div.header li:last-child~: =header= 클래스를 가지는 =div= 태그 하위에 있는 태그 중, =li= 가 마지막 자식인 모든 =li= 를 선택
 
 
-** BeautifulSoup
-
-BeautifulSoup은 웹 페이지 내에서 원하는 문서 구성 요소를 CSS selector 형식으로 특정할 수 있도록 도와줍니다.
-
-
 #+BEGIN_SRC html
 <html>
     <head>
@@ -98,6 +93,18 @@ div.article
 
 #+BEGIN_SRC css
 div.article > a
+#+END_SRC
+
+
+** BeautifulSoup
+
+[[https://www.crummy.com/software/BeautifulSoup/bs4/doc/][BeautifulSoup]]은 웹 페이지 내에서 원하는 문서 구성 요소를 CSS selector 형식으로 특정할 수 있도록 도와줍니다.
+
+BeautifulSoup은 외부 라이브러리이지만, Anaconda에 기본적으로 포함되어 있기 때문에 별도로 설치할 필요는 없습니다. Anaconda를 사용하지 않고 순수 Python 배포본을 사용하는 경우에는 아래와 같이 설치할 수 있습니다.
+
+
+#+BEGIN_SRC sh
+pip install beautifulsoup4
 #+END_SRC
 
 
