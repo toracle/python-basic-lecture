@@ -153,27 +153,105 @@ pip remove pytagcloud
 
 ~except~ 로 식별할 수 있는 예외/에러의 종류에는 여러 가지가 있습니다.
 
- - IndexError: ~list~ 의 참조 범위를 벗어난 경우
- - KeyError: ~dict~ 에 존재하지 않는 키를 참조한 경우
- - IOError: 파일이나 네트워크 등에 관련된 오류
- - NameError
- - TypeError
+ - ~IndexError~: ~list~ 의 참조 범위를 벗어난 경우
+ - ~KeyError~: ~dict~ 에 존재하지 않는 키를 참조한 경우
+ - ~IOError~: 파일이나 네트워크 등에 관련된 오류
+ - ~NameError~: 변수 이름이 존재하지 않는 경우
+ - ~TypeError~: 타입이 잘못 지정된 경우
+
+이 외에도 다양한 예외 종류가 있습니다. 그리고 이렇게 내장(built-in)되어 있는 예외는 별다른 과정 없이 곧바로 사용할 수 있습니다.
+
+반면에 예외는 프로그래머가 새롭게 정의해서 사용할 수도 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  class MyException(Exception):
+      pass
+
+  raise MyException()
+#+END_SRC
+
+예외는 클래스를 사용해서 정의됩니다. 따라서 프로그램을 작성하면서, 잡기를 원하는 예외가 있다면, 해당 예외가 정의된 클래스를 ~import~ 해서 사용해야 합니다.
 
 
- - 예외도 클래스다. 예외 클래스 import하기
+*** TODO 오류 대응하기
 
+프로그램을 작성하다 보면 오류 상황에 굉장히 많이 맞닥뜨리게 됩니다. 이 때, 오류에 당황하지 않고 문제 지점을 찾아내고 원인을 파악해내는 것이 매우 중요합니다.
 
-** TODO 오류 대응하기
+존재하지 않는 도메인을 요청하면, 아래와 같은 오류 메세지가 발생합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import requests
+  result = requests.get('http://domainnotexists.com')
+  print(result.content)
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+Traceback (most recent call last):
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connection.py", line 141, in _new_conn
+    (self.host, self.port), self.timeout, **extra_kw)
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/util/connection.py", line 83, in create_connection
+    raise err
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connectionpool.py", line 601, in urlopen
+    chunked=chunked)
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connectionpool.py", line 357, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.5/http/client.py", line 1106, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python3.5/http/client.py", line 1151, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python3.5/http/client.py", line 1102, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python3.5/http/client.py", line 934, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.5/http/client.py", line 877, in send
+    self.connect()
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connection.py", line 166, in connect
+    conn = self._new_conn()
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connection.py", line 150, in _new_conn
+    self, "Failed to establish a new connection: %s" % e)
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x7fc12d196550>: Failed to establish a new connection: [Errno 11] Resource temporarily unavailable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/adapters.py", line 440, in send
+    timeout=timeout
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connectionpool.py", line 639, in urlopen
+    _stacktrace=sys.exc_info()[2])
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/util/retry.py", line 388, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='domainnotexists.com', port=80): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fc12d196550>: Failed to establish a new connection: [Errno 11] Resource temporarily unavailable',))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/api.py", line 72, in get
+    return request('get', url, params=params, **kwargs)
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/api.py", line 58, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/sessions.py", line 508, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/sessions.py", line 618, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/adapters.py", line 508, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='domainnotexists.com', port=80): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fc12d196550>: Failed to establish a new connection: [Errno 11] Resource temporarily unavailable',))
+#+END_EXAMPLE
 
  - 오류에 익숙해지기
  - 오류 메세지 읽기
  - 오류 메세지 검색하기
 
 
-#+BEGIN_SRC python :exports both :results output
-  import requests
-  requests.get('http://domainnotexists.com')
-#+END_SRC
 
 
 ** 연습문제
@@ -386,5 +464,7 @@ NLP 엔진을 사용하지 않은 결과와 비교했을 때, 조금 더 단어�
   tags = make_tags(get_tag_counts(text), maxsize=80)
   create_tag_image(tags, os.path.join('outputs', 'tag_cloud_park_speech.png'), size=(600, 400), fontname='Noto Sans CJK')
 #+END_SRC
+
+#+RESULTS:
 
 [[file:outputs/tag_cloud_park_speech.png]]
