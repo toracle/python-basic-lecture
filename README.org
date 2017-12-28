@@ -58,8 +58,8 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
 
 *** 3일차: 웹페이지 수집하기
 
- - [[file:kevin.org][웹페이지 수집하기]]: 케빈 베이컨 게임
- - [[file:beautifulsoup.org][BeautifulSoup]]: HTML에서 원하는 정보 가져오기
+ - [[file:kevin.org][웹문서 수집하기]]: 케빈 베이컨 게임
+ - [[file:beautifulsoup.org][웹문서에서 정보 추출하기]]: HTML에서 원하는 정보 가져오기
  - [[file:jupyter-install.org][Jupyter Notebook에 익숙해지기]]
  - [[file:qna.org][Q&A 및 코드리뷰]]
 
