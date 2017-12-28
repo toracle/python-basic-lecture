@@ -93,7 +93,7 @@ pip remove pytagcloud
 #+END_SRC
 
 
-** TODO 예외 처리하기
+** 예외 처리하기
 
 이번에는 예외 처리에 대해 알아보겠습니다.
 
@@ -173,90 +173,38 @@ pip remove pytagcloud
 예외는 클래스를 사용해서 정의됩니다. 따라서 프로그램을 작성하면서, 잡기를 원하는 예외가 있다면, 해당 예외가 정의된 클래스를 ~import~ 해서 사용해야 합니다.
 
 
-*** TODO 오류 대응하기
+*** 오류 대응하기
 
 프로그램을 작성하다 보면 오류 상황에 굉장히 많이 맞닥뜨리게 됩니다. 이 때, 오류에 당황하지 않고 문제 지점을 찾아내고 원인을 파악해내는 것이 매우 중요합니다.
 
-존재하지 않는 도메인을 요청하면, 아래와 같은 오류 메세지가 발생합니다.
+존재하지 않는 디렉토리에 파일을 쓰려고 하면, 아래와 같은 오류 메세지가 발생합니다.
 
 #+BEGIN_SRC python :exports both :results output
-  import requests
-  result = requests.get('http://domainnotexists.com')
-  print(result.content)
+  import os
+
+  def read():
+      with open(os.path.join('nodirectory', 'testoutput.txt'), 'w') as fout:
+          fout.write('hello')
+
+  read()
 #+END_SRC
 
 #+RESULTS:
-#+BEGIN_EXAMPLE
-Traceback (most recent call last):
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connection.py", line 141, in _new_conn
-    (self.host, self.port), self.timeout, **extra_kw)
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/util/connection.py", line 83, in create_connection
-    raise err
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/util/connection.py", line 73, in create_connection
-    sock.connect(sa)
-BlockingIOError: [Errno 11] Resource temporarily unavailable
+: Traceback (most recent call last):
+:   File "exc.py", line 7, in <module>
+:   File "exc.py", line 4, in read
+: FileNotFoundError: [Errno 2] No such file or directory: 'nodirectory/testoutput.txt'
 
-During handling of the above exception, another exception occurred:
+오류 메세지는 크게 Traceback과 에러 메세지로 구분할 수 있습니다. 위에서 ~Traceback (most recent call last)~ 이라고 표현된 아랫줄부터, ~FileNotFoundError~ 라고 예외의 이름이 표시된 줄 바로 윗까지가 ~traceback~ 정보입니다. ~traceback~ 정보는 함수들이 호출된 경로를 나타냅니다. 어떤 실행 과정을 거쳤으며 최종적으로 코드의 어느 지점에서 오류가 발생했는지, 그 위치를 파악할 수 있습니다.
 
-Traceback (most recent call last):
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connectionpool.py", line 601, in urlopen
-    chunked=chunked)
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connectionpool.py", line 357, in _make_request
-    conn.request(method, url, **httplib_request_kw)
-  File "/usr/lib/python3.5/http/client.py", line 1106, in request
-    self._send_request(method, url, body, headers)
-  File "/usr/lib/python3.5/http/client.py", line 1151, in _send_request
-    self.endheaders(body)
-  File "/usr/lib/python3.5/http/client.py", line 1102, in endheaders
-    self._send_output(message_body)
-  File "/usr/lib/python3.5/http/client.py", line 934, in _send_output
-    self.send(msg)
-  File "/usr/lib/python3.5/http/client.py", line 877, in send
-    self.connect()
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connection.py", line 166, in connect
-    conn = self._new_conn()
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connection.py", line 150, in _new_conn
-    self, "Failed to establish a new connection: %s" % e)
-urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x7fc12d196550>: Failed to establish a new connection: [Errno 11] Resource temporarily unavailable
+위의 오류에서 보면, 가장 처음 실행이 시작된 곳은 7행, ~read()~ 부분입니다. 그리고 ~read()~ 함수에서 4행의 ~open()~ 함수를 실행하는 도중에 오류가 발생한 것을 알 수 있습니다. 그리고 마지막 줄을 보면 발생한 오류는 ~FileNotFoundError~ 입니다.
 
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/adapters.py", line 440, in send
-    timeout=timeout
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/connectionpool.py", line 639, in urlopen
-    _stacktrace=sys.exc_info()[2])
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/urllib3/util/retry.py", line 388, in increment
-    raise MaxRetryError(_pool, url, error or ResponseError(cause))
-urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='domainnotexists.com', port=80): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fc12d196550>: Failed to establish a new connection: [Errno 11] Resource temporarily unavailable',))
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "<stdin>", line 2, in <module>
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/api.py", line 72, in get
-    return request('get', url, params=params, **kwargs)
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/api.py", line 58, in request
-    return session.request(method=method, url=url, **kwargs)
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/sessions.py", line 508, in request
-    resp = self.send(prep, **send_kwargs)
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/sessions.py", line 618, in send
-    r = adapter.send(request, **kwargs)
-  File "/home/toracle/.virtualenvs/pybasic/local/lib/python3.5/site-packages/requests/adapters.py", line 508, in send
-    raise ConnectionError(e, request=request)
-requests.exceptions.ConnectionError: HTTPConnectionPool(host='domainnotexists.com', port=80): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fc12d196550>: Failed to establish a new connection: [Errno 11] Resource temporarily unavailable',))
-#+END_EXAMPLE
-
- - 오류에 익숙해지기
- - 오류 메세지 읽기
- - 오류 메세지 검색하기
-
-
+예외 메세지를 봐도 어떤 상황이며 왜 오류가 발생했는지 알기 어렵다면, 예외 메세지 자체를 검색엔진에서 검색해보는 것도 좋은 습관입니다. 위의 경우에는 ~FileNotFoundError: [Errno 2] No such file or directory~ 를 통째로 검색해볼 수 있습니다.
 
 
 ** 연습문제
 
-NLP 엔진을 사용하여 문장을 형태소 단위로 구분하고, 각 요소에 품사를 식별하여 붙여보겠습니다.
+이번에는 NLP 엔진을 사용하여 문장을 형태소 단위로 구분하고, 각 요소에 품사를 식별하여 붙여보겠습니다.
 
 #+BEGIN_SRC python :exports both :results output
 from konlpy.tag import Twitter
