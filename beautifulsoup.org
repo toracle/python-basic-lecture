@@ -55,11 +55,11 @@ HTML은 전반적으로 태그로 이루어져 있습니다. 태그란 =<html></
 
 그런데, 위의 selector만으로는 지정하기 어려운 경우가 있습니다. 아래와 같은 [[https://www.w3.org/TR/css3-selectors/#combinators][combinator selector]]를 사용하면, 웬만한 경우는 처리할 수 있습니다:
 
- - ~div.header li~: =header= 클래스를 가지는 =div= 태그 하위에 있는 모든 =li= 를 선택
- - ~div.header > ul~: =header= 클래스를 가지는 =div= 태그의 1단계 하위에 있는 모든 =ul= 를 선택
- - ~div.header li:nth-child(2)~: =header= 클래스를 가지는 =div= 태그 하위에 있는 태그 중, =li= 가 2번째 자식인 모든 =li= 를 선택
- - ~div.header li:first-child~: =header= 클래스를 가지는 =div= 태그 하위에 있는 태그 중, =li= 가 첫번째 자식인 모든 =li= 를 선택
- - ~div.header li:last-child~: =header= 클래스를 가지는 =div= 태그 하위에 있는 태그 중, =li= 가 마지막 자식인 모든 =li= 를 선택
+ - ~div.header li~: =div.header= 태그 하위에 있는 모든 =li= 를 선택
+ - ~div.header > ul~: =div.header= 태그의 1단계 하위에 있는 모든 =ul= 를 선택
+ - ~div.header li:nth-child(2)~: =div.header= 태그 하위에 있는 태그 중, =li= 가 2번째 자식인 모든 =li= 를 선택
+ - ~div.header li:first-child~: =div.header= 태그 하위에 있는 태그 중, =li= 가 첫번째 자식인 모든 =li= 를 선택
+ - ~div.header li:last-child~: =div.header= 태그 하위에 있는 태그 중, =li= 가 마지막 자식인 모든 =li= 를 선택
 
 
 #+BEGIN_SRC html
