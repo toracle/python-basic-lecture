@@ -287,7 +287,7 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
       name_end = line.find('<', name_start+1)
       return line[name_start+2:name_end]
 
-  def fetch_movie_list(actor_id, fp):
+  def fetch_movie_list(actor_id, fout):
       page = 1
       has_next_page = True
       while has_next_page is True:                   # 다음 페이지로의 링크가 있는 경우에만 반복
@@ -303,7 +303,7 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
                   continue
               _id = get_id(decoded_line)
               _name = get_name(decoded_line)
-              fp.write('{},{},{}\n'.format(actor_id, _id, _name))
+              fout.write('{},{},{}\n'.format(actor_id, _id, _name))
           page = page + 1
 
   with open(os.path.join('kevin-outputs', 'actor_list.txt'), encoding='utf-8') as fin:
