@@ -49,22 +49,59 @@ Pandas의 Series로 그려도 동일합니다.
 #+RESULTS:
 [[file:outputs/matplotlib-first-plot-3.png]]
 
+x축의 값을 지정하려면 아래와 같이 할 수 있습니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-first-plot-4.png
+  %matplotlib inline
+  import pandas as pd
+  import matplotlib.pyplot as plt
+
+  plt.plot(['2011', '2012', '2013', '2014', '2015'], [1, 3, 2, 5, 4])
+  plt.show();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-first-plot-4.png]]
+
 
 ** 여러 계열을 동시에 그리기
+
+여러 계열의 데이터를 동시에 그리려면 아래와 같이 합니다.
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-multiseries-plot-1.png
   %matplotlib inline
   import pandas as pd
   import matplotlib.pyplot as plt
 
-  plt.plot(pd.Series([1, 3, 2, 5, 4]))
-  plt.plot(pd.Series([2, 1, 3, 1, 1]))
+  x = ['2011', '2012', '2013', '2014', '2015']
+  plt.plot(x, [1, 3, 2, 5, 4])
+  plt.plot(x, [2, 1, 3, 1, 1])
   plt.show();
 #+END_SRC
 
 #+RESULTS:
 [[file:outputs/matplotlib-multiseries-plot-1.png]]
 
+
+** 제목 표시하기
+
+그래프의 제목과 x,y축 이름을 붙이기 위해서는 ~title~, ~xlabel~, ~ylabel~ 함수를 사용합니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-title-plot-1.png
+  %matplotlib inline
+  import pandas as pd
+  import matplotlib.pyplot as plt
+
+  plt.title('Test Plot')
+  plt.xlabel('Tick')
+  plt.ylabel('Value')
+  plt.plot([1, 3, 2, 5, 4])
+  plt.plot([2, 1, 3, 1, 1])
+  plt.show();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-title-plot-1.png]]
 
 ** 범례 표시하기
 
@@ -75,8 +112,8 @@ Pandas의 Series로 그려도 동일합니다.
   import pandas as pd
   import matplotlib.pyplot as plt
 
-  plt.plot(pd.Series([1, 3, 2, 5, 4]), label='서울')
-  plt.plot(pd.Series([2, 1, 3, 1, 1]), label='부산')
+  plt.plot([1, 3, 2, 5, 4], label='서울')
+  plt.plot([2, 1, 3, 1, 1], label='부산')
   plt.legend()
   plt.show();
 #+END_SRC
@@ -94,8 +131,8 @@ Pandas의 Series로 그려도 동일합니다.
   import matplotlib.pyplot as plt
   matplotlib.rc('font', family='Noto Sans CJK KR')
 
-  plt.plot(pd.Series([1, 3, 2, 5, 4]), label='서울')
-  plt.plot(pd.Series([2, 1, 3, 1, 1]), label='부산')
+  plt.plot([1, 3, 2, 5, 4], label='서울')
+  plt.plot([2, 1, 3, 1, 1], label='부산')
   plt.legend()
   plt.show();
 #+END_SRC
@@ -103,12 +140,106 @@ Pandas의 Series로 그려도 동일합니다.
 #+RESULTS:
 [[file:outputs/matplotlib-legend-plot-2.png]]
 
-
 ** Grid 그리기
 
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-grid-plot-1.png
+  %matplotlib inline
+  import pandas as pd
+  import matplotlib
+  import matplotlib.pyplot as plt
+  matplotlib.rc('font', family='Noto Sans CJK KR')
 
-** 스타일 꾸미기
+  plt.plot([1, 3, 2, 5, 4], label='서울')
+  plt.plot([2, 1, 3, 1, 1], label='부산')
+  plt.grid()
+  plt.show();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-grid-plot-1.png]]
+
+
+
 
 
 ** figure와 axes 소개
 
+웹상에서 matplotlib에 대한 정보를 리서치하시다보면, 위에서 소개한 것과는 다소 다른 스타일의 사용법도 발견하실 수 있습니다. 이 두 스타일의 차이점과 원리를 이해하시면 코드를 읽어 활용하는데 덜 헷깔리실겁니다.
+
+우선 아래 개념도를 보고 matplotlib가 정의하는 그래프 구조에 대해 알아봅시다.
+
+[[https://matplotlib.org/_images/anatomy.png]]
+
+ - 가장 큰 요소로 =figure= 가 있습니다. =figure= 는 일종의 전체 캔버스라고 볼 수 있습니다.
+ - 하나의 =figure= 는 여러개의 차트를 가질 수 있는데, 각 차트를 =Axes= 라고 부릅니다. (=Axis= 가 아닙니다)
+
+본 쳅터에서 설명하던 코드를 다시 한번 살펴볼까요?
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-figure-axes-1.png
+%matplotlib inline
+
+import matplotlib.pyplot as plt
+
+plt.plot([1, 3, 2, 5, 4])
+plt.show();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-figure-axes-1.png]]
+
+위의 코드에는 실제로는 숨겨진 동작이 있습니다. 아래의 코드는 위의 코드와 동일합니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-figure-axes-2.png
+%matplotlib inline
+
+import matplotlib.pyplot as plt
+
+figure = plt.figure()
+axes = figure.subplots()
+axes.plot([1, 3, 2, 5, 4])
+plt.show();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-figure-axes-2.png]]
+
+위의 코드에서는 matplotlib의 구성 요소인 figure와 axes가 명확히 드러납니다.
+
+pyplot을 사용한 간략한 스타일의 사용법은, 간단한 용도로 사용할 때는 간편하지만, 복잡하거나 정교한 제어를 할 때는 figure와 axes를 명시적으로 사용할 필요가 있습니다.
+
+
+** subplot 그리기
+
+그 중 한 예가 여러 개의 그래프를 한 번에 그리는 것입니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-subplot-1.png
+%matplotlib inline
+
+import matplotlib.pyplot as plt
+
+figure = plt.figure()
+axes_1 = figure.add_subplot(1,1,1)
+axes_1.plot([1, 3, 2, 5, 4])
+axes_2 = figure.add_subplot(2,1,1)
+axes_2.plot([1, 3, 2, 5, 4])
+plt.show();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-subplot-1.png]]
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-subplot-2.png
+%matplotlib inline
+
+import matplotlib.pyplot as plt
+
+figure = plt.figure()
+axes_1 = figure.add_subplot(1,1,1)
+axes_1.plot([1, 3, 2, 5, 4])
+axes_2 = figure.add_subplot(1,2,1)
+axes_2.plot([1, 3, 2, 5, 4])
+plt.show();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-subplot-2.png]]
