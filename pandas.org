@@ -9,3 +9,4 @@ Pandas는 Python으로 작성된 데이터 분석 도구입니다. Python의 패
 
  - Slicing
 
+ - melt

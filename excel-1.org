@@ -12,6 +12,15 @@ def tab(df):
     print(tabulate(df, headers='keys', tablefmt='orgtbl'))
 #+END_SRC
 
+ - Sorting
+ - 컬럼별로 unique value 보기
+ - 컬럼별 value frequency 보기
+ - 특정 컬럼에 특정 값을 가지는 row들만 보기
+ - Pivot table로 보기
+ - Vlookup (join)
+ - 새 컬럼에 recoding하기
+ - 그래프 그리기
+
 
 ** 엑셀 파일 읽어들이기
 
