@@ -102,10 +102,40 @@ div.article > a
 
 BeautifulSoup은 외부 라이브러리이지만, Anaconda에 기본적으로 포함되어 있기 때문에 별도로 설치할 필요는 없습니다. Anaconda를 사용하지 않고 순수 Python 배포본을 사용하는 경우에는 아래와 같이 설치할 수 있습니다.
 
-
 #+BEGIN_SRC sh
 pip install beautifulsoup4
 #+END_SRC
+
+BeautifulSoup에는 다양한 메소드들이 있는데, CSS selector를 사용하기 위해서는 ~select()~ 메소드를 사용합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  from bs4 import BeautifulSoup
+
+  html = '''<html>
+      <head>
+      </head>
+
+      <body>
+          <div id="main-container" style="color: black;">This is a container</div>
+          <div class="article header">Webpage scrapying</div>
+      </body>
+  </html>
+  '''
+
+  soup = BeautifulSoup(html)      # BeautifulSoup에 문서를 적재합니다
+  print(soup.select('#main-container')[0].string)
+  print(soup.select('#main-container')[0]['style'])
+  print(soup.select('.article')[0].string)
+  print(soup.select('.article')[0]['class'])
+#+END_SRC
+
+#+RESULTS:
+: This is a container
+: color: black;
+: Webpage scrapying
+: ['article', 'header']
+
+각 element에 대해서는 ~string~ 속성을 통해 값을 참조할 수 있고, ~dict~ 처럼 ~[]~ 참조를 통해 각 속성에 접근할 수 있습니다.
 
 
 ** 연습문제
@@ -191,7 +221,7 @@ span.sbj > span.name > a
 https://namu.wiki/w/Python
 
 
-#+BEGIN_SRC python :exports result :results output
+#+BEGIN_SRC python :results output :exports result 
   import requests
   from bs4 import BeautifulSoup
 
@@ -213,7 +243,7 @@ https://namu.wiki/w/Python
 
 이번에는 위의 내용을 응용해서, snowballing 방식으로 웹페이지를 수집해보세요.
 
-#+BEGIN_SRC ipython :session :exports result :results output raw :ipyfile outputs/beautifulsoup-manuwiki-python-map.png
+#+BEGIN_SRC ipython :session :results output raw :exports result :ipyfile outputs/beautifulsoup-manuwiki-python-map.png
   %matplotlib inline
   import requests
   import networkx as nx
