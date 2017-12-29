@@ -12,6 +12,10 @@ def tab(df):
     print(tabulate(df, headers='keys', tablefmt='orgtbl'))
 #+END_SRC
 
+#+RESULTS:
+
+엑셀로 자주 하던 작업들을 떠올려보면, 대략 아래와 같은 것들이 있습니다. 하나씩 살펴보도록 합시다.
+
  - Sorting
  - 컬럼별로 unique value 보기
  - 컬럼별 value frequency 보기
@@ -85,6 +89,137 @@ tab(df)
 | 17 |   18 |   26 |    1 |      166 |         69 |           3 |
 | 18 |   19 |   26 |    1 |      169 |         66 |           2 |
 | 19 |   20 |   28 |    2 |      159 |         60 |           2 |
+
+
+** 특정 컬럼으로 정렬하기
+
+키가 큰 순서대로 정렬을 해볼까요?
+
+#+BEGIN_SRC ipython :session :results raw :exports both
+df.sort_values('신장(cm)')
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+    번호  나이  성별  신장(cm)  몸무게(kg)  즐기는 음식
+  8    9  34   2     158       60       2
+  16  17  38   2     159       55       1
+  19  20  28   2     159       60       2
+  1    2  28   2     160       62       3
+  10  11  26   2     162       59       1
+  17  18  26   1     166       69       3
+  4    5  25   1     168       72       3
+  6    7  26   1     169       71       1
+  18  19  26   1     169       66       2
+  14  15  29   2     170       70       2
+  7    8  29   1     171       75       3
+  3    4  23   1     172       70       2
+  11  12  26   1     173       70       2
+  12  13  35   1     173       68       3
+  13  14  24   1     176       66       3
+  15  16  33   1     177       72       2
+  2    3  27   1     178       77       2
+  5    6  27   1     179       77       1
+  0    1  30   1     183       82       1
+  9   10  31   1     183       77       3
+#+END_EXAMPLE
+
+이런, 키가 작은 순으로 정렬이 되었네요.
+
+#+BEGIN_SRC ipython :session :results raw :exports both
+df.sort_values('신장(cm)', ascending=False)
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+    번호  나이  성별  신장(cm)  몸무게(kg)  즐기는 음식
+  0    1  30   1     183       82       1
+  9   10  31   1     183       77       3
+  5    6  27   1     179       77       1
+  2    3  27   1     178       77       2
+  15  16  33   1     177       72       2
+  13  14  24   1     176       66       3
+  11  12  26   1     173       70       2
+  12  13  35   1     173       68       3
+  3    4  23   1     172       70       2
+  7    8  29   1     171       75       3
+  14  15  29   2     170       70       2
+  6    7  26   1     169       71       1
+  18  19  26   1     169       66       2
+  4    5  25   1     168       72       3
+  17  18  26   1     166       69       3
+  10  11  26   2     162       59       1
+  1    2  28   2     160       62       3
+  16  17  38   2     159       55       1
+  19  20  28   2     159       60       2
+  8    9  34   2     158       60       2
+#+END_EXAMPLE
+
+이제 키가 큰 순서대로 정렬이 되었습니다.
+
+여러 컬럼도 정렬이 될까요? 같은 키 내에서는 몸무게 순으로 정렬을 해봅시다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both
+df.sort_values(['신장(cm)', '몸무게(kg)'], ascending=False)
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+    번호  나이  성별  신장(cm)  몸무게(kg)  즐기는 음식
+  0    1  30   1     183       82       1
+  9   10  31   1     183       77       3
+  5    6  27   1     179       77       1
+  2    3  27   1     178       77       2
+  15  16  33   1     177       72       2
+  13  14  24   1     176       66       3
+  11  12  26   1     173       70       2
+  12  13  35   1     173       68       3
+  3    4  23   1     172       70       2
+  7    8  29   1     171       75       3
+  14  15  29   2     170       70       2
+  6    7  26   1     169       71       1
+  18  19  26   1     169       66       2
+  4    5  25   1     168       72       3
+  17  18  26   1     166       69       3
+  10  11  26   2     162       59       1
+  1    2  28   2     160       62       3
+  19  20  28   2     159       60       2
+  16  17  38   2     159       55       1
+  8    9  34   2     158       60       2
+#+END_EXAMPLE
+
+여러 컬럼을 정렬할 때, 컬럼별로 순서를 다르게 할 수 있을까요? 키는 내림차순, 몸무게는 오름차순으로요.
+
+#+BEGIN_SRC ipython :session :results raw :exports both
+df.sort_values(['신장(cm)', '몸무게(kg)'], ascending=[False, True])
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+    번호  나이  성별  신장(cm)  몸무게(kg)  즐기는 음식
+  9   10  31   1     183       77       3
+  0    1  30   1     183       82       1
+  5    6  27   1     179       77       1
+  2    3  27   1     178       77       2
+  15  16  33   1     177       72       2
+  13  14  24   1     176       66       3
+  12  13  35   1     173       68       3
+  11  12  26   1     173       70       2
+  3    4  23   1     172       70       2
+  7    8  29   1     171       75       3
+  14  15  29   2     170       70       2
+  18  19  26   1     169       66       2
+  6    7  26   1     169       71       1
+  4    5  25   1     168       72       3
+  17  18  26   1     166       69       3
+  10  11  26   2     162       59       1
+  1    2  28   2     160       62       3
+  16  17  38   2     159       55       1
+  19  20  28   2     159       60       2
+  8    9  34   2     158       60       2
+#+END_EXAMPLE
+
+이렇게 하면 되는군요.
 
 
 ** 기초 통계
@@ -170,6 +305,80 @@ tab(df_freq)
 | 비율(%) | 70 | 30 |
 
 빈도를 나타내는 ~series~ 를 하나, 비율을 나타내는 ~series~ 를 하나 생성하고, ~DataFrame~ 을 사용하여 두 요소를 하나의 표로 묶어줍니다.
+
+
+** Row 필터링
+
+값을 기준으로 필터링하고 싶은 경우에는 어떻게 할까요? 너무 특이한 값을 가지는 아웃라이어를 제거한다던지 말이죠.
+
+몸무게가 80 이상인 사람은 제외하도록 해봅시다.
+
+우선, 어떤 사람이 몸무게가 80 이상인지 확인합니다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw
+df_dtype['몸무게(kg)'] < 80
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+번호
+  1     False
+  2      True
+  3      True
+  4      True
+  5      True
+  6      True
+  7      True
+  8      True
+  9      True
+  10     True
+  11     True
+  12     True
+  13     True
+  14     True
+  15     True
+  16     True
+  17     True
+  18     True
+  19     True
+  20     True
+  Name: 몸무게(kg), dtype: bool
+#+END_EXAMPLE
+
+이 boolean 배열을 ~df_dtype~ 에게 전달합니다.
+
+#+BEGIN_SRC ipython :session :exports code :results raw
+df_dtype[df_dtype['몸무게(kg)'] <= 80]
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(df_dtype[df_dtype['몸무게(kg)'] <= 80])
+#+END_SRC
+
+#+RESULTS:
+| 번호 | 나이 | 성별 | 신장(cm) | 몸무게(kg) | 즐기는 음식 |
+|------+------+------+----------+------------+-------------|
+|    2 |   28 |    2 |      160 |         62 |           3 |
+|    3 |   27 |    1 |      178 |         77 |           2 |
+|    4 |   23 |    1 |      172 |         70 |           2 |
+|    5 |   25 |    1 |      168 |         72 |           3 |
+|    6 |   27 |    1 |      179 |         77 |           1 |
+|    7 |   26 |    1 |      169 |         71 |           1 |
+|    8 |   29 |    1 |      171 |         75 |           3 |
+|    9 |   34 |    2 |      158 |         60 |           2 |
+|   10 |   31 |    1 |      183 |         77 |           3 |
+|   11 |   26 |    2 |      162 |         59 |           1 |
+|   12 |   26 |    1 |      173 |         70 |           2 |
+|   13 |   35 |    1 |      173 |         68 |           3 |
+|   14 |   24 |    1 |      176 |         66 |           3 |
+|   15 |   29 |    2 |      170 |         70 |           2 |
+|   16 |   33 |    1 |      177 |         72 |           2 |
+|   17 |   38 |    2 |      159 |         55 |           1 |
+|   18 |   26 |    1 |      166 |         69 |           3 |
+|   19 |   26 |    1 |      169 |         66 |           2 |
+|   20 |   28 |    2 |      159 |         60 |           2 |
+
+몸무게가 80kg 이상인 항목은 제외된 것을 볼 수 있습니다. (여기서, df_dtype 자체는 변하지 않고, 항목이 제외된 새 DataFrame이 반환된다는 것에 주의하세요)
 
 
 ** 피벗 테이블
@@ -263,6 +472,11 @@ tab(df_pv_3.apply(lambda x: round(x, 1)))
 |    2 | 57.0 | 63.3 | 62.0 |
 
 
+** TODO Vlookup
+
+엑셀에서 피벗과 더불어 중급 기술로 여겨지는 것 중 하나가 VLookup이죠. 데이터베이스 용어로 하면 JOIN 입니다.
+
+
 ** 그래프 그리기
 
 이번에는 간단히 그래프를 그려봅시다.
@@ -305,6 +519,16 @@ tab(df_pv_3.apply(lambda x: round(x, 1)))
 
 #+RESULTS:
 [[file:outputs/excel-1-plot2-age-bar.png]]
+
+
+성별에 따른 몸무게 분포가 어떻게 되는지 살펴볼까요?
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot-sex-weight-scatter.png
+df.plot.scatter(x='성별', y='몸무게(kg)');
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-1-plot-sex-weight-scatter.png]]
 
 
 ** Correlation
@@ -642,97 +866,6 @@ tab(df_cat_pv.apply(lambda x: round(x, 1)))
 
 
 더 이상 필요 없는 컬럼을 지울 때는, =dict= 에서 =key= 를 삭제할 때처럼, ~a_dict.pop('나이')~, 혹은 ~del a_dict['나이']~ 를 사용할 수 있습니다.
-
-
-** Row 필터링
-
-값을 기준으로 필터링하고 싶은 경우에는 어떻게 할까요? 너무 특이한 값을 가지는 아웃라이어를 제거한다던지 말이죠.
-
-몸무게가 80 이상인 사람은 제외하도록 해봅시다.
-
-우선, 어떤 사람이 몸무게가 80 이상인지 확인합니다.
-
-#+BEGIN_SRC ipython :session :exports both :results raw
-df_dtype['몸무게(kg)'] < 80
-#+END_SRC
-
-#+RESULTS:
-#+BEGIN_EXAMPLE
-번호
-  1     False
-  2      True
-  3      True
-  4      True
-  5      True
-  6      True
-  7      True
-  8      True
-  9      True
-  10     True
-  11     True
-  12     True
-  13     True
-  14     True
-  15     True
-  16     True
-  17     True
-  18     True
-  19     True
-  20     True
-  Name: 몸무게(kg), dtype: bool
-#+END_EXAMPLE
-
-이 boolean 배열을 ~df_dtype~ 에게 전달합니다.
-
-#+BEGIN_SRC ipython :session :exports code :results raw
-df_dtype[df_dtype['몸무게(kg)'] <= 80]
-#+END_SRC
-
-#+BEGIN_SRC ipython :session :exports result :results output raw
-tab(df_dtype[df_dtype['몸무게(kg)'] <= 80])
-#+END_SRC
-
-#+RESULTS:
-| 번호 | 나이 | 성별 | 신장(cm) | 몸무게(kg) | 즐기는 음식 |
-|------+------+------+----------+------------+-------------|
-|    2 |   28 |    2 |      160 |         62 |           3 |
-|    3 |   27 |    1 |      178 |         77 |           2 |
-|    4 |   23 |    1 |      172 |         70 |           2 |
-|    5 |   25 |    1 |      168 |         72 |           3 |
-|    6 |   27 |    1 |      179 |         77 |           1 |
-|    7 |   26 |    1 |      169 |         71 |           1 |
-|    8 |   29 |    1 |      171 |         75 |           3 |
-|    9 |   34 |    2 |      158 |         60 |           2 |
-|   10 |   31 |    1 |      183 |         77 |           3 |
-|   11 |   26 |    2 |      162 |         59 |           1 |
-|   12 |   26 |    1 |      173 |         70 |           2 |
-|   13 |   35 |    1 |      173 |         68 |           3 |
-|   14 |   24 |    1 |      176 |         66 |           3 |
-|   15 |   29 |    2 |      170 |         70 |           2 |
-|   16 |   33 |    1 |      177 |         72 |           2 |
-|   17 |   38 |    2 |      159 |         55 |           1 |
-|   18 |   26 |    1 |      166 |         69 |           3 |
-|   19 |   26 |    1 |      169 |         66 |           2 |
-|   20 |   28 |    2 |      159 |         60 |           2 |
-
-몸무게가 80kg 이상인 항목은 제외된 것을 볼 수 있습니다. (여기서, df_dtype 자체는 변하지 않고, 항목이 제외된 새 DataFrame이 반환된다는 것에 주의하세요)
-
-#+BEGIN_SRC ipython :session :exports result :results raw
-import scipy.stats
-scipy.stats.ttest_ind(df['성별'], df['몸무게(kg)'], equal_var=False)
-#+END_SRC
-
-#+RESULTS:
-: Ttest_indResult(statistic=-42.709060696135886, pvalue=1.784997631146937e-20)
-
-
-
-#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot-sex-weight-scatter.png
-df.plot.scatter(x='성별', y='몸무게(kg)');
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/excel-1-plot-sex-weight-scatter.png]]
 
 
 ** 엑셀로 저장하기
