@@ -72,16 +72,15 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
  - [[file:matplotlib.org][Matplotlib 소개]]
  - [[file:qna.org][Q&A 및 코드리뷰]]
 
-*** 5일차: 커져가는 코드 관리하기
+*** 5일차: SNA / 커져가는 코드 관리하기
 
- - [[file:refactoring.org][리팩토링]]: 함수 사용, 모듈화
- - [[file:testing.org][테스트]]: pytest
+ - [[file:networkx.org][NetworkX 소개]]: SNA 분석하기
+ - [[file:refactoring.org][큰 코드 관리하기]]: 디버거, 리팩토링
  - 회고 및 평가
 
 *** 후보 주제들
 
  - [[file:regex.org][정규표현식(Regex)]]: 문자열 능숙하게 다루기
- - NetworkX 소개: SNA 분석하기
  - 패키지 만들기
  - GitHub 사용하기
  - Jupyter Notebook으로 보고서 만들기

@@ -1,2 +1,16 @@
-* TODO 리팩토링: 함수 사용, 모듈화
+* 큰 코드 관리하기
 
+** TODO Debugger
+
+ - Breakpoint 설정하기
+ - Step over
+ - Step into
+ - Step Return
+ - Continue
+ - ipdb console
+
+** TODO Refactoring
+
+ - 데이터 처리 전체 과정을 몇 개의 단계로 구획한다
+ - 하나의 함수는 하나의 일만 한다
+ - 긴 코드를 여러 개의 의미 있는 단위의 함수로 추출하고 의미 있는 이름을 붙인다
