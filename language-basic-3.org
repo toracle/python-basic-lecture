@@ -101,6 +101,37 @@ def tab(df):
  - readline()
  - write(str)
 
+데이터를 다루다보면, CSV 형식의 데이터 파일을 접할 경우가 많습니다. 특히 Excel 프로그램에서 '다른 이름으로 저장'을 통해 생성한 CSV 파일은, 값에 구분자인 =,= 가 포함되어 있는 경우, 값을 따옴표(")로 감싸줍니다. 이런 경우에는 =csv= 모듈을 사용하면 편리합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import os
+  import csv
+
+  with open(os.path.join('outputs', 'basic-1-csv-writer.txt'), 'w', encoding='utf8') as fout:
+      writer = csv.writer(fout)
+      writer.writerow(['안녕 텍스트', 'https://www.wikipedia.org'])
+      writer.writerow(['안녕,파이썬', 'https://python.org'])
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+안녕 텍스트,https://www.wikipedia.org
+"안녕,파이썬",https://python.org
+#+END_EXAMPLE
+
+#+BEGIN_SRC python :exports both :results output
+  import os
+  import csv
+
+  with open(os.path.join('outputs', 'basic-1-csv-writer.txt'), encoding='utf8') as fin:
+      reader = csv.reader(fin)
+      for row in reader:
+          print(row)
+#+END_SRC
+
+#+RESULTS:
+: ['안녕 텍스트', 'https://www.wikipedia.org']
+: ['안녕,파이썬', 'https://python.org']
+
 
 ** 함수 (Function)
 
