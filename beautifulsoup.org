@@ -213,7 +213,7 @@ https://namu.wiki/w/Python
 
 이번에는 위의 내용을 응용해서, snowballing 방식으로 웹페이지를 수집해보세요.
 
-#+BEGIN_SRC ipython :session :exports result :results raw :ipyfile outputs/beautifulsoup-manuwiki-python-map.png
+#+BEGIN_SRC ipython :session :exports result :results output raw :ipyfile outputs/beautifulsoup-manuwiki-python-map.png
   %matplotlib inline
   import requests
   import networkx as nx
