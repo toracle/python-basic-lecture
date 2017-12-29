@@ -190,14 +190,14 @@ plt.show();
 위의 코드에는 실제로는 숨겨진 동작이 있습니다. 아래의 코드는 위의 코드와 동일합니다.
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-figure-axes-2.png
-%matplotlib inline
+  %matplotlib inline
 
-import matplotlib.pyplot as plt
+  import matplotlib.pyplot as plt
 
-figure = plt.figure()
-axes = figure.subplots()
-axes.plot([1, 3, 2, 5, 4])
-plt.show();
+  figure = plt.figure()           # 가장 먼저, 캔버스인 figure를 준비한다
+  axes = figure.add_subplot(111)  # 하나의 axes를 추가한다
+  axes.plot([1, 3, 2, 5, 4])      # 해당 axes에 그래프를 그린다
+  plt.show();                     # 표시한다
 #+END_SRC
 
 #+RESULTS:
@@ -213,16 +213,17 @@ pyplot을 사용한 간략한 스타일의 사용법은, 간단한 용도로 사
 그 중 한 예가 여러 개의 그래프를 한 번에 그리는 것입니다.
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-subplot-1.png
-%matplotlib inline
+  %matplotlib inline
 
-import matplotlib.pyplot as plt
+  import matplotlib.pyplot as plt
 
-figure = plt.figure()
-axes_1 = figure.add_subplot(1,1,1)
-axes_1.plot([1, 3, 2, 5, 4])
-axes_2 = figure.add_subplot(2,1,1)
-axes_2.plot([1, 3, 2, 5, 4])
-plt.show();
+  figure = plt.figure()
+  axes_1 = figure.add_subplot(1,1,1)
+  axes_1.plot([1, 3, 2, 5, 4])
+
+  axes_2 = figure.add_subplot(2,1,1)
+  axes_2.plot([1, 3, 2, 5, 4])
+  plt.show();
 #+END_SRC
 
 #+RESULTS:
