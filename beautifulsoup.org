@@ -245,8 +245,9 @@ https://namu.wiki/w/Python
 
 이번에는 위의 내용을 응용해서, snowballing 방식으로 웹페이지를 수집해보세요.
 
-#+BEGIN_SRC ipython :session :results output raw :exports result :ipyfile outputs/beautifulsoup-manuwiki-python-map.png
+#+BEGIN_SRC ipython :session :results output raw :exports none :ipyfile outputs/beautifulsoup-manuwiki-python-map.png
   %matplotlib inline
+  import os
   import requests
   import networkx as nx
   import matplotlib.pyplot as plt
@@ -261,38 +262,73 @@ https://namu.wiki/w/Python
       links = set([(elem['title'], elem['href']) for elem in link_elements])
       return list(links)
 
-  def update_edges(graph, page, links):
+  def save_edges(fout, page, links):
       for link in links:
-          graph.add_edge(page[0], link[0])
+          fout.write('\t'.join([page[0], page[1], link[0], link[1]]))
+          fout.write('\n')
 
-  G = nx.Graph()
+  def crawl(seed, fout):
+      visited = set()
+      page = seed.pop()
+      if page not in visited:
+          links = visit_page(page)
+          visited.add(page)
+          save_edges(fout, page, links)
+          seed = seed + links
 
-  seed = [('Python', '/w/Python')]
-  visited = set()
+      while seed:
+          page = seed.pop()
+          if page not in visited and (not page[0].startswith('파일:') and not page[0].startswith('나무위키:')):
+              links = visit_page(page)
+              visited.add(page)
+              save_edges(fout, page, links)
 
-  page = seed.pop()
-  if page not in visited:
-      links = visit_page(page)
-      visited.add(page)
-      update_edges(G, page, links)
-      seed = seed + links
+  def load_graph(graph, fin):
+      for line in fin:
+          src_name, _, tgt_name, _ = line.strip().split('\t')
+          graph.add_edge(src_name, tgt_name)
 
-  page = seed.pop()
-  if page not in visited:
-      links = visit_page(page)
-      visited.add(page)
-      update_edges(G, page, links)
-      seed = seed + links
+  def remove_zero_outdegree(graph):
+      nodes_to_remove = [name for name, freq in G.out_degree if freq == 0]
+      for node in nodes_to_remove:
+          graph.remove_node(node)
 
-  pos = nx.kamada_kawai_layout(G)
-  plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
-  nx.draw_networkx_edges(G, pos, alpha=0.1);
-  nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR'); # 각자 시스템에 따라 적절한 폰트 이름으로 변경
-  plt.show()
+  def remove_one_indegree(graph):
+      nodes_to_remove = [name for name, freq in G.in_degree if freq < 2]
+      for node in nodes_to_remove:
+          graph.remove_node(node)
+
+  def show_graph(graph):
+      pos = nx.kamada_kawai_layout(graph)
+      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
+      nx.draw_networkx_edges(graph, pos, alpha=0.1);
+      nx.draw_networkx_labels(graph, pos, font_family='Noto Sans CJK KR'); # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+      plt.show()
 #+END_SRC
 
+#+BEGIN_SRC ipython :session :results raw :exports none
+  seed = [('Python', '/w/Python')]
+  with open(os.path.join('outputs', 'namuwiki.txt'), 'w', encoding='utf8') as fout:
+      crawl(seed, fout)
+#+END_SRC
 
-[[file:outputs/beautifulsoup-manuwiki-python-map.png]]
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/beautifulsoup-namu-pagelinks.png
+  %matplotlib inline
+  import os
+  import networkx as nx
+
+  G = nx.DiGraph()
+  with open(os.path.join('outputs', 'namuwiki.txt'), encoding='utf8') as fin:
+      load_graph(G, fin)
+
+  remove_zero_outdegree(G)
+  remove_one_indegree(G)
+  show_graph(G)
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/beautifulsoup-namu-pagelinks.png]]
+
 
 
 ** TODO Ajax & JSON
