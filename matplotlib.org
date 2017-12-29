@@ -149,8 +149,9 @@ x축의 값을 지정하려면 아래와 같이 할 수 있습니다.
   import matplotlib.pyplot as plt
   matplotlib.rc('font', family='Noto Sans CJK KR')
 
-  plt.plot([1, 3, 2, 5, 4], label='서울')
-  plt.plot([2, 1, 3, 1, 1], label='부산')
+  x = ['2011', '2012', '2013', '2014', '2015']
+  plt.plot(x, [1, 3, 2, 5, 4], label='서울')
+  plt.plot(x, [2, 1, 3, 1, 1], label='부산')
   plt.grid()
   plt.show();
 #+END_SRC
@@ -159,6 +160,23 @@ x축의 값을 지정하려면 아래와 같이 할 수 있습니다.
 [[file:outputs/matplotlib-grid-plot-1.png]]
 
 
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-grid-plot-2.png
+  %matplotlib inline
+  import pandas as pd
+  import matplotlib
+  import matplotlib.pyplot as plt
+  matplotlib.rc('font', family='Noto Sans CJK KR')
+
+  x = ['2011', '2012', '2013', '2014', '2015']
+  plt.plot(x, [1, 3, 2, 5, 4], label='서울')
+  plt.plot(x, [2, 1, 3, 1, 1], label='부산')
+  plt.yticks([1, 2, 3, 4, 5])
+  plt.grid()
+  plt.show();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-grid-plot-2.png]]
 
 
 
@@ -203,7 +221,7 @@ plt.show();
 #+RESULTS:
 [[file:outputs/matplotlib-figure-axes-2.png]]
 
-위의 코드에서는 matplotlib의 구성 요소인 figure와 axes가 명확히 드러납니다.
+위의 코드에서는 matplotlib의 구성 요소인 figure와 axes가 명확히 드러납니다. pyplot만을 사용하는 방식에서는, ~plt.plot()~ 을 수행하면 내부적으로 기본 ~axes~ 를 생성하고, 이후 ~axes~ 에 관련된 ~plt~ 함수를 실행할 때는 기본 ~axes~ 에 대해 수행합니다.
 
 pyplot을 사용한 간략한 스타일의 사용법은, 간단한 용도로 사용할 때는 간편하지만, 복잡하거나 정교한 제어를 할 때는 figure와 axes를 명시적으로 사용할 필요가 있습니다.
 
@@ -212,16 +230,18 @@ pyplot을 사용한 간략한 스타일의 사용법은, 간단한 용도로 사
 
 그 중 한 예가 여러 개의 그래프를 한 번에 그리는 것입니다.
 
+~subplots()~ 혹은 ~add_subplot()~
+
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-subplot-1.png
   %matplotlib inline
 
   import matplotlib.pyplot as plt
 
   figure = plt.figure()
-  axes_1 = figure.add_subplot(1,1,1)
+  axes_1 = figure.add_subplot(2,1,1) # subplot이 2행 1열짜리이고 첫번째 plot임
   axes_1.plot([1, 3, 2, 5, 4])
 
-  axes_2 = figure.add_subplot(2,1,1)
+  axes_2 = figure.add_subplot(2,1,2) # subplot이 2행 1열짜리이고 두번째 plot임
   axes_2.plot([1, 3, 2, 5, 4])
   plt.show();
 #+END_SRC
@@ -230,16 +250,17 @@ pyplot을 사용한 간략한 스타일의 사용법은, 간단한 용도로 사
 [[file:outputs/matplotlib-subplot-1.png]]
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-subplot-2.png
-%matplotlib inline
+  %matplotlib inline
 
-import matplotlib.pyplot as plt
+  import matplotlib.pyplot as plt
 
-figure = plt.figure()
-axes_1 = figure.add_subplot(1,1,1)
-axes_1.plot([1, 3, 2, 5, 4])
-axes_2 = figure.add_subplot(1,2,1)
-axes_2.plot([1, 3, 2, 5, 4])
-plt.show();
+  figure = plt.figure()
+  axes_1 = figure.add_subplot(1,2,1) # subplot이 1행 2열짜리이고 첫번째 plot임
+  axes_1.plot([1, 3, 2, 5, 4])
+
+  axes_2 = figure.add_subplot(1,2,2) # subplot이 2행 2열짜리이고 두번째 plot임
+  axes_2.plot([1, 3, 2, 5, 4])
+  plt.show();
 #+END_SRC
 
 #+RESULTS:
