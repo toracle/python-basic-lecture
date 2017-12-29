@@ -238,8 +238,10 @@ https://namu.wiki/w/Python
   print([name for name, page in visit_page(page)])
 #+END_SRC
 
-#+RESULTS:
-: ['명령어', '코엑스', '페리아 연대기', '국부론', '넘파이', 'Swift(프로그래밍 언어)', '스택', 'C언어', '파일:xkcdpythonko.png', '2015년', '연세대학교', '킹덤 언더 파이어', '한국', '스팸(몬티 파이선 스케치)', 'Bottle', 'Erlang', 'APAC', '파이선', '비단뱀', 'Pygame', '창조', 'Django', '코드', 'JDK', '오라클', '부산대학교', '필로우', 'C#', '아스키', '인천대학교', 'callback 함수', '웹 프레임워크', 'Pillow', '프레임워크', '액션스크립트', 'rm -rf /', '카이스트', '심즈 4', 'scikit-learn', '고자', '드롭박스', '파일:나무위키+유도.png', '파이톤', 'tkinter', 'Flask', 'Lua', '부르즈 할리파', '추가바람', '의사코드', '파이썬', 'JIT', '상암', '라이브러리', '프로세스', 'reddit', '코더', '프로그래밍 언어', '나무위키:프로젝트', 'MATLAB', '시드 마이어의 문명', '2016년', 'Ruby', 'PyPy', 'Perl', 'Linux', '리눅스', 'PyGame', '우분투', 'C', '누리꿈스퀘어', 'C++', 'NumPy', '스레드', 'Haskell', '파이게임', '스크래피', 'Beautiful Soup', '이스터 에그', '파일:external/regmedia.co.uk/swift_benchmark.jpg', 'Scrapy', 'OpenCV', '문명 4', '자바 가상 머신', '기계학습', 'Sublime Text', '통합 개발 환경', '중국', 'Go', '42', '프로그래머', 'EVE 온라인', '2014년', '스택 오버플로우', '뱀', '국민대학교', '구조체', 'Notepad++', '인스타그램', 'IBM', '몬티 파이선', '한글', 'LISP', 'JAVA', 'Java', '유튜브', 'xkcd', 'WOW', 'R(프로그래밍 언어)', '2017년', '객체 지향 프로그래밍', 'UC 버클리', 'JavaScript', '뷰티플 수프', '월드 오브 탱크', '코루틴', '이클립스(통합 개발 환경)', 'C(프로그래밍 언어)', '비주얼 스튜디오', "Ren'Py", '상명대학교', '구글', 'JVM', '매사추세츠 공과대학교']
+
+#+BEGIN_EXAMPLE
+['명령어', '코엑스', '페리아 연대기', '국부론', '넘파이', 'Swift(프로그래밍 언어)', '스택', 'C언어', '파일:xkcdpythonko.png', '2015년', '연세대학교', '킹덤 언더 파이어', '한국', '스팸(몬티 파이선 스케치)', 'Bottle', 'Erlang', 'APAC', '파이선', '비단뱀', 'Pygame', '창조', 'Django', '코드', 'JDK', '오라클', '부산대학교', '필로우', 'C#', '아스키', '인천대학교', 'callback 함수', '웹 프레임워크', 'Pillow', '프레임워크', '액션스크립트', 'rm -rf /', '카이스트', '심즈 4', 'scikit-learn', '고자', '드롭박스', '파일:나무위키+유도.png', '파이톤', 'tkinter', 'Flask', 'Lua', '부르즈 할리파', '추가바람', '의사코드', '파이썬', 'JIT', '상암', '라이브러리', '프로세스', 'reddit', '코더', '프로그래밍 언어', '나무위키:프로젝트', 'MATLAB', '시드 마이어의 문명', '2016년', 'Ruby', 'PyPy', 'Perl', 'Linux', '리눅스', 'PyGame', '우분투', 'C', '누리꿈스퀘어', 'C++', 'NumPy', '스레드', 'Haskell', '파이게임', '스크래피', 'Beautiful Soup', '이스터 에그', '파일:external/regmedia.co.uk/swift_benchmark.jpg', 'Scrapy', 'OpenCV', '문명 4', '자바 가상 머신', '기계학습', 'Sublime Text', '통합 개발 환경', '중국', 'Go', '42', '프로그래머', 'EVE 온라인', '2014년', '스택 오버플로우', '뱀', '국민대학교', '구조체', 'Notepad++', '인스타그램', 'IBM', '몬티 파이선', '한글', 'LISP', 'JAVA', 'Java', '유튜브', 'xkcd', 'WOW', 'R(프로그래밍 언어)', '2017년', '객체 지향 프로그래밍', 'UC 버클리', 'JavaScript', '뷰티플 수프', '월드 오브 탱크', '코루틴', '이클립스(통합 개발 환경)', 'C(프로그래밍 언어)', '비주얼 스튜디오', "Ren'Py", '상명대학교', '구글', 'JVM', '매사추세츠 공과대학교']
+#+END_EXAMPLE
 
 이번에는 위의 내용을 응용해서, snowballing 방식으로 웹페이지를 수집해보세요.
 
@@ -289,7 +291,7 @@ https://namu.wiki/w/Python
   plt.show()
 #+END_SRC
 
-#+RESULTS:
+
 [[file:outputs/beautifulsoup-manuwiki-python-map.png]]
 
 
