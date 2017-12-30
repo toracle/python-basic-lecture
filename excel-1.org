@@ -472,60 +472,6 @@ tab(df_food)
 왼쪽 테이블, 즉 ~df~ 의 '즐기는 음식' 컬럼과, 오른쪽 테이블, 즉 ~df_foot~ 테이블의 인덱스 컬럼을 비교하여, 같은 row인 경우 두 row를 결합합니다.
 
 
-** 그래프 그리기
-
-이번에는 간단히 그래프를 그려봅시다.
-
-#+BEGIN_SRC ipython :session :exports none
-  %matplotlib inline
-
-  import matplotlib
-  import matplotlib.pyplot as plt
-  import matplotlib.font_manager as fm
-
-  matplotlib.rc('font', family='Noto Sans CJK KR')
-#+END_SRC
-
-#+RESULTS:
-
-#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot1.png
-  df.plot();
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/excel-1-plot1.png]]
-
-나이에 대해서만 그래프를 그려볼까요?
-
-
-#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot2-age.png
-  df['나이'].plot();
-#+END_SRC
-
-#+RESULTS:
-
-[[file:outputs/excel-1-plot2-age.png]]
-
-나이는 막대그래프가 더 어울릴 것 같습니다.
-
-#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot2-age-bar.png
-  df['나이'].plot.bar();
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/excel-1-plot2-age-bar.png]]
-
-
-성별에 따른 몸무게 분포가 어떻게 되는지 살펴볼까요?
-
-#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot-sex-weight-scatter.png
-df.plot.scatter(x='성별', y='몸무게(kg)');
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/excel-1-plot-sex-weight-scatter.png]]
-
-
 ** Correlation
 
 이번에는 컬럼간의 상관관계를 구해볼까요?
