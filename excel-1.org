@@ -19,11 +19,11 @@ def tab(df):
  - Sorting
  - 컬럼별로 unique value 보기
  - 컬럼별 value frequency 보기
- - 특정 컬럼에 특정 값을 가지는 row들만 보기
  - Pivot table로 보기
  - Vlookup (join)
- - 새 컬럼에 recoding하기
  - 그래프 그리기
+ - 새 컬럼에 recoding하기
+ - 특정 컬럼에 특정 값을 가지는 row들만 보기
 
 
 ** 엑셀 파일 읽어들이기
@@ -320,80 +320,6 @@ tab(df_freq)
 빈도를 나타내는 ~series~ 를 하나, 비율을 나타내는 ~series~ 를 하나 생성하고, ~DataFrame~ 을 사용하여 두 요소를 하나의 표로 묶어줍니다.
 
 
-** Row 필터링
-
-값을 기준으로 필터링하고 싶은 경우에는 어떻게 할까요? 너무 특이한 값을 가지는 아웃라이어를 제거한다던지 말이죠.
-
-몸무게가 80 이상인 사람은 제외하도록 해봅시다.
-
-우선, 어떤 사람이 몸무게가 80 이상인지 확인합니다.
-
-#+BEGIN_SRC ipython :session :exports both :results raw
-df_dtype['몸무게(kg)'] < 80
-#+END_SRC
-
-#+RESULTS:
-#+BEGIN_EXAMPLE
-번호
-  1     False
-  2      True
-  3      True
-  4      True
-  5      True
-  6      True
-  7      True
-  8      True
-  9      True
-  10     True
-  11     True
-  12     True
-  13     True
-  14     True
-  15     True
-  16     True
-  17     True
-  18     True
-  19     True
-  20     True
-  Name: 몸무게(kg), dtype: bool
-#+END_EXAMPLE
-
-이 boolean 배열을 ~df_dtype~ 에게 전달합니다.
-
-#+BEGIN_SRC ipython :session :exports code :results raw
-df_dtype[df_dtype['몸무게(kg)'] <= 80]
-#+END_SRC
-
-#+BEGIN_SRC ipython :session :exports result :results output raw
-tab(df_dtype[df_dtype['몸무게(kg)'] <= 80])
-#+END_SRC
-
-#+RESULTS:
-| 번호 | 나이 | 성별 | 신장(cm) | 몸무게(kg) | 즐기는 음식 |
-|------+------+------+----------+------------+-------------|
-|    2 |   28 |    2 |      160 |         62 |           3 |
-|    3 |   27 |    1 |      178 |         77 |           2 |
-|    4 |   23 |    1 |      172 |         70 |           2 |
-|    5 |   25 |    1 |      168 |         72 |           3 |
-|    6 |   27 |    1 |      179 |         77 |           1 |
-|    7 |   26 |    1 |      169 |         71 |           1 |
-|    8 |   29 |    1 |      171 |         75 |           3 |
-|    9 |   34 |    2 |      158 |         60 |           2 |
-|   10 |   31 |    1 |      183 |         77 |           3 |
-|   11 |   26 |    2 |      162 |         59 |           1 |
-|   12 |   26 |    1 |      173 |         70 |           2 |
-|   13 |   35 |    1 |      173 |         68 |           3 |
-|   14 |   24 |    1 |      176 |         66 |           3 |
-|   15 |   29 |    2 |      170 |         70 |           2 |
-|   16 |   33 |    1 |      177 |         72 |           2 |
-|   17 |   38 |    2 |      159 |         55 |           1 |
-|   18 |   26 |    1 |      166 |         69 |           3 |
-|   19 |   26 |    1 |      169 |         66 |           2 |
-|   20 |   28 |    2 |      159 |         60 |           2 |
-
-몸무게가 80kg 이상인 항목은 제외된 것을 볼 수 있습니다. (여기서, df_dtype 자체는 변하지 않고, 항목이 제외된 새 DataFrame이 반환된다는 것에 주의하세요)
-
-
 ** 피벗 테이블
 
 엑셀에서 편리하게 사용하는 기능 중 하나가 피벗 테이블입니다. pandas로는 피벗 테이블을 어떻게 만들까요?
@@ -485,9 +411,65 @@ tab(df_pv_3.apply(lambda x: round(x, 1)))
 |    2 | 57.0 | 63.3 | 62.0 |
 
 
-** TODO Vlookup
+** Vlookup
 
-엑셀에서 피벗과 더불어 중급 기술로 여겨지는 것 중 하나가 VLookup이죠. 데이터베이스 용어로 하면 JOIN 입니다.
+엑셀에서 피벗과 더불어 중급 기술로 여겨지는 것 중 하나가 ~vlookup~ 이죠. 데이터베이스 용어로 하면 JOIN 입니다.
+
+pandas에서는 ~merge~ 함수를 사용할 수 있습니다.
+
+우선 ~vlookup~ 의 대상이 될 테이블을 만듭니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports code
+  import pandas as pd
+  df_food = pd.DataFrame(['한식', '일식', '중식'], index=[1, 2, 3], columns=['음식이름'])
+  df_food
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :results raw output :exports result
+tab(df_food)
+#+END_SRC
+
+#+RESULTS:
+|   | 음식이름 |
+|---+----------|
+| 1 | 한식     |
+| 2 | 일식     |
+| 3 | 중식     |
+
+#+BEGIN_SRC ipython :session :results raw :exports code
+  df_merged = pd.merge(df, df_food, how='left', left_on='즐기는 음식', right_index=True)
+  df_merged
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :results raw output :exports result
+  tab(df_merged)
+#+END_SRC
+
+#+RESULTS:
+|    | 번호 | 나이 | 성별 | 신장(cm) | 몸무게(kg) | 즐기는 음식 | 음식이름 |
+|----+------+------+------+----------+------------+-------------+----------|
+|  0 |    1 |   30 |    1 |      183 |         82 |           1 | 한식     |
+|  1 |    2 |   28 |    2 |      160 |         62 |           3 | 중식     |
+|  2 |    3 |   27 |    1 |      178 |         77 |           2 | 일식     |
+|  3 |    4 |   23 |    1 |      172 |         70 |           2 | 일식     |
+|  4 |    5 |   25 |    1 |      168 |         72 |           3 | 중식     |
+|  5 |    6 |   27 |    1 |      179 |         77 |           1 | 한식     |
+|  6 |    7 |   26 |    1 |      169 |         71 |           1 | 한식     |
+|  7 |    8 |   29 |    1 |      171 |         75 |           3 | 중식     |
+|  8 |    9 |   34 |    2 |      158 |         60 |           2 | 일식     |
+|  9 |   10 |   31 |    1 |      183 |         77 |           3 | 중식     |
+| 10 |   11 |   26 |    2 |      162 |         59 |           1 | 한식     |
+| 11 |   12 |   26 |    1 |      173 |         70 |           2 | 일식     |
+| 12 |   13 |   35 |    1 |      173 |         68 |           3 | 중식     |
+| 13 |   14 |   24 |    1 |      176 |         66 |           3 | 중식     |
+| 14 |   15 |   29 |    2 |      170 |         70 |           2 | 일식     |
+| 15 |   16 |   33 |    1 |      177 |         72 |           2 | 일식     |
+| 16 |   17 |   38 |    2 |      159 |         55 |           1 | 한식     |
+| 17 |   18 |   26 |    1 |      166 |         69 |           3 | 중식     |
+| 18 |   19 |   26 |    1 |      169 |         66 |           2 | 일식     |
+| 19 |   20 |   28 |    2 |      159 |         60 |           2 | 일식     |
+
+왼쪽 테이블, 즉 ~df~ 의 '즐기는 음식' 컬럼과, 오른쪽 테이블, 즉 ~df_foot~ 테이블의 인덱스 컬럼을 비교하여, 같은 row인 경우 두 row를 결합합니다.
 
 
 ** 그래프 그리기
@@ -663,6 +645,80 @@ tab(pd.pivot_table(df_dtype, index=['성별', '즐기는 음식']))
 | (2, 1) | 32.0000 |    57.0000 |  160.500 |
 | (2, 2) | 30.3333 |    63.3333 |  162.333 |
 | (2, 3) | 28.0000 |    62.0000 |  160.000 |
+
+
+** Row 필터링
+
+값을 기준으로 필터링하고 싶은 경우에는 어떻게 할까요? 너무 특이한 값을 가지는 아웃라이어를 제거한다던지 말이죠.
+
+몸무게가 80 이상인 사람은 제외하도록 해봅시다.
+
+우선, 어떤 사람이 몸무게가 80 이상인지 확인합니다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw
+df_dtype['몸무게(kg)'] < 80
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+번호
+  1     False
+  2      True
+  3      True
+  4      True
+  5      True
+  6      True
+  7      True
+  8      True
+  9      True
+  10     True
+  11     True
+  12     True
+  13     True
+  14     True
+  15     True
+  16     True
+  17     True
+  18     True
+  19     True
+  20     True
+  Name: 몸무게(kg), dtype: bool
+#+END_EXAMPLE
+
+이 boolean 배열을 ~df_dtype~ 에게 전달합니다.
+
+#+BEGIN_SRC ipython :session :exports code :results raw
+df_dtype[df_dtype['몸무게(kg)'] <= 80]
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :exports result :results output raw
+tab(df_dtype[df_dtype['몸무게(kg)'] <= 80])
+#+END_SRC
+
+#+RESULTS:
+| 번호 | 나이 | 성별 | 신장(cm) | 몸무게(kg) | 즐기는 음식 |
+|------+------+------+----------+------------+-------------|
+|    2 |   28 |    2 |      160 |         62 |           3 |
+|    3 |   27 |    1 |      178 |         77 |           2 |
+|    4 |   23 |    1 |      172 |         70 |           2 |
+|    5 |   25 |    1 |      168 |         72 |           3 |
+|    6 |   27 |    1 |      179 |         77 |           1 |
+|    7 |   26 |    1 |      169 |         71 |           1 |
+|    8 |   29 |    1 |      171 |         75 |           3 |
+|    9 |   34 |    2 |      158 |         60 |           2 |
+|   10 |   31 |    1 |      183 |         77 |           3 |
+|   11 |   26 |    2 |      162 |         59 |           1 |
+|   12 |   26 |    1 |      173 |         70 |           2 |
+|   13 |   35 |    1 |      173 |         68 |           3 |
+|   14 |   24 |    1 |      176 |         66 |           3 |
+|   15 |   29 |    2 |      170 |         70 |           2 |
+|   16 |   33 |    1 |      177 |         72 |           2 |
+|   17 |   38 |    2 |      159 |         55 |           1 |
+|   18 |   26 |    1 |      166 |         69 |           3 |
+|   19 |   26 |    1 |      169 |         66 |           2 |
+|   20 |   28 |    2 |      159 |         60 |           2 |
+
+몸무게가 80kg 이상인 항목은 제외된 것을 볼 수 있습니다. (여기서, df_dtype 자체는 변하지 않고, 항목이 제외된 새 DataFrame이 반환된다는 것에 주의하세요)
 
 
 ** 컬럼 추가, 변형
