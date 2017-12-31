@@ -617,66 +617,62 @@ tab(rounded_df)
 
 함수를 잘 만들어 사용하는 것은 복잡한 프로그램을 작성해갈수록 매우 중요한 능력입니다.
 
-앞서 의미망에서 사용한 함수 중, 아래 함수는 아직도 상당히 복잡해보입니다. 조금 더 작고 간단한 함수들로 쪼개보세요.
+~assets~ 디렉토리에는 아래와 같은 대통령 취임사 연설문이 준비되어 있습니다.
+
+ - 19대 문재인 대통령 취임사: moon_speech.txt
+ - 18대 박근혜 대통령 취임사: park_speech.txt
+ - 17대 이명박 대통령 취임사: mb_speech.txt
+ - 16대 노무현 대통령 취임사: mh_speech.txt
+ - 15대 김대중 대통령 취임사: dj_speech.txt
+
+각 취임사에 대해, 가장 많이 사용된 7개의 어절(단어)이 무엇인지, 그 횟수는 얼마나 되는지 출력해보세요. 아, 1글자짜리 어절은 제외할까요?
+
+참고로 ~dict~ 로부터 가장 많은 빈도를 추출하는 코드는 아래와 같습니다:
 
 #+BEGIN_SRC python :exports both :results output
-  def construct_wordnet(text):
-      lines = text.split('\n')      # 줄 단위로 자른다
-
-      word_edges = {}
-
-      for line in lines:
-          _line = line.strip()
-          if not _line:             # 빈줄이면 건너뛴다
-              continue
-          statements = _line.split('.') # 문장 단위로 자른다
-          for statement in statements: # 빈 문장이면 건너뛴다
-              if not statement:
-                  continue
-              words = statement.split(' ') # 단어 단위로 자른다
-              cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
-              cleansed_words_2 = [w for w in cleansed_words if len(w) > 1] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소, 그리고 한글자 단어를 제거한다
-              num_words = len(cleansed_words_2)
-              for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
-                  word_i = cleansed_words_2[index_i]
-                  for index_j in range(index_i+1, num_words):
-                      word_j = cleansed_words_2[index_j]
-                      word_to_word = (word_i, word_j)
-                      word_to_word = tuple(sorted(word_to_word))
-                      word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
-      return word_edges
+  a_dict = {'a': 10, 'b': 5, 'c': 30, 'd': 24, 'e': 9}
+  sorted_list = sorted(a_dict.items(), key=lambda x: x[1], reverse=True)[:3]
+  print(sorted_list)
 #+END_SRC
 
-#+BEGIN_SRC python :exports none :results output
-  def clean_words(words):
-      cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words]
-      cleansed_words_2 = [w for w in cleansed_words if len(w) > 1]
-      return cleansed_words_2
+#+RESULTS:
+: [('c', 30), ('d', 24), ('a', 10)]
 
-  def make_complete_wordnet(words, word_edges):
-      num_words = len(words)
-      for index_i in range(num_words):
-          word_i = words[index_i]
-          for index_j in range(index_i+1, num_words):
-              word_j = words[index_j]
-              word_to_word = (word_i, word_j)
-              word_to_word = tuple(sorted(word_to_word))
-              word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
+#+BEGIN_SRC python :exports result :results output
+  import os
 
-  def construct_wordnet(text):
+  def count_words(text, n=7):
+      word_counts = {}
       lines = text.split('\n')
-      word_edges = {}
-
       for line in lines:
-          _line = line.strip()
-          if not _line:
+          if not line:
               continue
-          statements = _line.split('.')
-          for statement in statements:
-              if not statement:
+
+          striped_line = line.strip()
+          words = striped_line.replace(',', '').replace('.', '').replace('!', '').split()
+          for word in words:
+              if len(word) < 2:
                   continue
-              words = statement.split(' ')
-              cleansed_words = clean_words(words)
-              make_complete_wordnet(cleansed_words, word_edges)
-      return word_edges
+              word_counts[word] = word_counts.setdefault(word, 0) + 1
+      return sorted(word_counts.items(), key=lambda x: x[1], reverse=True)[:n]
+
+  filenames = [
+      ('문재인', 'moon_speech.txt'),
+      ('박근혜', 'park_speech.txt'),
+      ('이명박', 'mb_speech.txt'),
+      ('노무현', 'mh_speech.txt'),
+      ('김대중', 'dj_speech.txt'),
+  ]
+  for name, filename in filenames:
+      with open(os.path.join('assets', filename)) as fin:
+          text = fin.read()
+      freq_words = count_words(text)
+      print(name, freq_words)
 #+END_SRC
+
+#+RESULTS:
+: 문재인 [('대통령이', 16), ('되겠습니다', 12), ('국민', 12), ('새로운', 7), ('대통령', 6), ('것입니다', 6), ('만들겠습니다', 5)]
+: 박근혜 [('국민', 28), ('것입니다', 22), ('새로운', 16), ('우리', 15), ('저는', 13), ('있습니다', 12), ('있도록', 10)]
+: 이명박 [('합니다', 56), ('있습니다', 19), ('국민', 17), ('것입니다', 14), ('나라', 11), ('함께', 10), ('여러분', 10)]
+: 노무현 [('합니다', 34), ('있습니다', 22), ('우리는', 15), ('국민', 11), ('동북아', 9), ('우리', 8), ('저는', 8)]
+: 김대중 [('있습니다', 21), ('합니다', 19), ('국민', 17), ('있는', 15), ('우리', 13), ('저는', 13), ('것입니다', 13)]
