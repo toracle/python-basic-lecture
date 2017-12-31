@@ -1,16 +1,148 @@
 * 큰 코드 관리하기
 
-** TODO Debugger
 
- - Breakpoint 설정하기
- - Step over
- - Step into
- - Step Return
- - Continue
- - ipdb console
+** Debugger
 
-** TODO Refactoring
+코드가 커져가고 로직이 복잡해지면, 단순한 오류를 넘어 논리적인 문제점이 발생할 여지가 커집니다. 그런 경우에는 디버거의 도움을 받아 문제점을 찾아낼 수 있습니다.
 
- - 데이터 처리 전체 과정을 몇 개의 단계로 구획한다
- - 하나의 함수는 하나의 일만 한다
- - 긴 코드를 여러 개의 의미 있는 단위의 함수로 추출하고 의미 있는 이름을 붙인다
+[[file:assets/refactoring-spyder-debugger.png]]
+
+위 화면에서 보면, 코드 에디터 좌측에 행번호가 쓰여져 있는 부분에 빨간 원이 표시되어 있는 것을 볼 수 있습니다. (22행, 39행) 이것은 해당 행에 중단점(breakpoint)이 지정되어 있다는 것을 나타냅니다.
+
+이렇게 중단점을 지정해놓고 ~Ctrl-F5~ 혹은 메뉴에서 ~Debug > Debug~ 를 선택하여 디버그 모드로 실행하면, 현재 탭이 디버그 모드로 실행됩니다. 디버그 모드로 실행되면, 일반 실행과는 달리 실행이 한줄 한줄씩 이루어집니다. 그리고 현재 실행되고 있는 행이 표시됩니다. 위 화면에서는 붉은색으로 표시되어 있는 23행이 현재 실행중입니다. 
+
+디버그 모드에서는 다음 중 하나의 행동을 할 수 있습니다.
+
+ - Step over ~Ctrl-F10~: 현재 행을 실행하고 다음 행으로 넘어갑니다.
+ - Step into ~Ctrl-F11~: 현재 행을 실행하되, 함수를 실행할 차례라면 함수 내부로 이동합니다.
+ - Step Return ~Ctrl-Shift-F11~: 현재 위치가 함수라면, 함수가 반환될 때까지 실행하고 함수를 호출한 부분으로 이동합니다.
+ - Continue ~Ctrl-F12~: 다음 중단점이 나오지 않는 한 계속 실행합니다.
+
+디버그 상태에서는 우측 콘솔 패널에 ~ipdb>~ 라는 커서가 나타납니다. 이 위치에서는 변수의 값을 확인하거나 디버깅을 위한 여러 코드를 실행할 수 있습니다.
+
+
+** Refactoring
+
+디거버를 사용해서 코드에 내재하는 문제점을 찾아낼 수 있지만, 그보다는 코드 자체를 효과적으로 관리하면서 오류가 발생할 여지가 적은 코드를 유지하는 것이 좋습니다.
+
+코드를 작성하면서 아래와 같은 상황이 발견되는 경우에는 좋지 않은 냄새(code smell)로 여기고 개선하는 것이 좋습니다.
+
+ - 3-4단계 이상의 블록이 존재한다.
+ - 특히, if문이 3단계 이상 중첩된다.
+ - 한 함수 내에 코드가 20줄 이상 길어진다 (혹은 함수를 만들지 않은채 20줄 이상 길어진다).
+ - 비슷한 코드가 반복된다.
+
+그러면 어떻게 개선할까요?
+
+ - 비슷한 일을 하는 코드는 모양을 비슷하게 만들고, 할 수 있다면 함수로 만든다.
+ - 데이터 처리 전체 과정을 몇 개의 단계로 구획한다.
+ - 하나의 함수는 하나의 일만 한다.
+ - 긴 코드를 여러 개의 의미 있는 단위의 함수로 추출하고 의미 있는 이름을 붙인다.
+
+
+실제 사례들을 살펴볼까요?
+
+#+BEGIN_SRC python :exports both :results output
+  def construct_wordnet(text):
+      lines = text.split('\n')      # 줄 단위로 자른다
+
+      word_edges = {}
+
+      for line in lines:
+          _line = line.strip()
+          if  _line:             # 값이 있을 때만 수행한다
+              statements = _line.split('.') # 문장 단위로 자른다
+              for statement in statements:
+                  if statement: # 문장이 존재할 때만 수행한다
+                      words = statement.split(' ') # 단어 단위로 자른다
+                      cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
+                      cleansed_words_2 = [w for w in cleansed_words if len(w) > 1] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소, 그리고 한글자 단어를 제거한다
+                      num_words = len(cleansed_words_2)
+                      for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
+                          word_i = cleansed_words_2[index_i]
+                          for index_j in range(index_i+1, num_words):
+                              word_j = cleansed_words_2[index_j]
+                              word_to_word = (word_i, word_j)
+                              word_to_word = tuple(sorted(word_to_word))
+                              word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
+      return word_edges
+#+END_SRC
+
+앞서 사용했던 단어 의미망 추출 코드입니다.
+
+무엇이 보이시나요? 우선, 들여쓰기 단계가 매우 깊습니다. 함수 안에서 6단계의 들여쓰기가 있습니다. 이렇게 들여쓰기 단계가 깊으면 코드를 유지하기가 어렵습니다.
+
+우선, ~if~ 문이, 특정한 조건이 발생한 경우에만 로직이 실행되도록 하는 용도로 사용되었다는 것을 알 수 있습니다. 이것을 반대로 생각해보면, 특정한 조건이 아닐 때는 건너뛰도록 할 수 있겠습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  def construct_wordnet(text):
+      lines = text.split('\n')      # 줄 단위로 자른다
+
+      word_edges = {}
+
+      for line in lines:
+          _line = line.strip()
+          if  not _line:             # 값이 있을 때만 수행한다
+              continue
+
+          statements = _line.split('.') # 문장 단위로 자른다
+          for statement in statements:
+              if not statement: # 문장이 존재할 때만 수행한다
+                  continue
+              words = statement.split(' ') # 단어 단위로 자른다
+              cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
+              cleansed_words_2 = [w for w in cleansed_words if len(w) > 1] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소, 그리고 한글자 단어를 제거한다
+              num_words = len(cleansed_words_2)
+              for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
+                  word_i = cleansed_words_2[index_i]
+                  for index_j in range(index_i+1, num_words):
+                      word_j = cleansed_words_2[index_j]
+                      word_to_word = (word_i, word_j)
+                      word_to_word = tuple(sorted(word_to_word))
+                      word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
+      return word_edges
+#+END_SRC
+
+이렇게 하여 두 단계를 줄일 수 있었습니다.
+
+또 가만히 살펴보니, 단어를 정제하는 부분과, 단어간에 완전 그래프를 만드는 부분은 별도의 함수로 추출할 수 있겠습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  def clean_words(statement):
+      words = statement.split(' ') # 단어 단위로 자른다
+      cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
+      cleansed_words_2 = [w for w in cleansed_words if len(w) > 1] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소, 그리고 한글자 단어를 제거한다
+      return cleansed_words_2
+
+  def make_word_edges(words, word_edges):
+      num_words = len(words)
+      for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
+          word_i = words[index_i]
+          for index_j in range(index_i+1, num_words):
+              word_j = words[index_j]
+              word_to_word = (word_i, word_j)
+              word_to_word = tuple(sorted(word_to_word))
+              word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
+
+  def construct_wordnet(text):
+      lines = text.split('\n')      # 줄 단위로 자른다
+
+      word_edges = {}
+
+      for line in lines:
+          _line = line.strip()
+          if  not _line:             # 값이 있을 때만 수행한다
+              continue
+
+          statements = _line.split('.') # 문장 단위로 자른다
+          for statement in statements:
+              if not statement: # 문장이 존재할 때만 수행한다
+                  continue
+
+              words = clean_words(statement)
+              make_wordS_edges(words, word_edges)
+      return word_edges
+#+END_SRC
+
+각 함수의 들여쓰기 단계가 매우 줄어들었습니다. 직전 단계에서 4단계였던 들여쓰기가, 2단계로 줄어든 것을 알 수 있습니다. 또한, 변수의 이름이 간결해진 것을 알 수 있습니다. 또 각 함수 내에서 코드의 길이가 대폭 줄어들었습니다. 사실 함수로 쪼개져서 그렇지 총 깊이, 총 길이가 줄어든 것은 아닙니다. 하지만 논리적인 흐름을 따라가기 위해서는 함수라는 의미 있고 완결성 있는 일련의 단위로 끊어서 이해하는 것이 좋습니다.
+
