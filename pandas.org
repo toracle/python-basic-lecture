@@ -246,7 +246,7 @@ tab(df_countries)
   df_countries.reset_index().reindex([2, 4, 3, 0, 1], columns=['출산율(1000명당)', '실업율(15-24세)', '인구'])
 #+END_SRC
 
-#+BEGIN_SRC ipython :session :results raw output :exports both
+#+BEGIN_SRC ipython :session :results raw output :exports result
   tab(df_countries.reset_index().reindex([2, 4, 3, 0, 1], columns=['출산율(1000명당)', '실업율(15-24세)', '인구']))
 #+END_SRC
 #+RESULTS:
