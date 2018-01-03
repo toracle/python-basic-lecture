@@ -10,43 +10,6 @@
 
 Pandas는 Python으로 작성된 데이터 분석 도구입니다. Python의 패키지 형태로 제공되어, Python 언어 내에 쉽게 섞어 사용할 수 있습니다.
 
- - [X] Data structure
-   - [X] Series
-   - [X] DataFrame
-     - [X] Creation
-       - [X] from_dict()
-     - [X] .shape
-     - [X] .columns
-     - [X] Sort
-       - [X] sort_index()
-       - [X] sort_values()
-       - [X] rank()
-     - [X] rename()
-   - [X] Index
-     - [X] reindex()
-     - [X] set_index()
-     - [X] reset_index()
- - [X] Row/Column selection
-   - [X] head()
-   - [X] tail()
-   - [X] sampling
-     - [X] sample(n=10)
-     - [X] sample(frac=0.6)
-   - [X] slicing
-   - [X] Boolean indexing
-   - [X] where()
- - [X] Data Transform
-   - [X] map()
-   - [X] apply()
-   - [X] applymap()
- - [ ] Reshaping
-   - [ ] merge()
-   - [ ] melt()
-   - [ ] crosstab()
-   - [ ] pivot_table()
-     - [ ] margins
-   - [ ] groupby()
-
 
 ** Data structure
 
@@ -852,11 +815,7 @@ df_dtype[['신장(cm)', '몸무게(kg)']].applymap(lambda x: round(x, -1))
 
  - merge()
  - pivot_table()
- - crosstab()
- - groupby()
  - melt()
- - stack()
- - unstack()
 
 
 마지막으로, 데이터의 모양을 변경하는 기능을 살펴보겠습니다.
@@ -1114,6 +1073,8 @@ tab(df_right)
 
 다음으로는 ~pivot_table~ 에 대해서 살펴보겠습니다. 여러분도 Excel에서 종종 사용해보았을테지요.
 
+
+
 pivot_table에서는 아래의 세 종류의 축을 지정해야 합니다.
 
  - rows (index)
@@ -1184,6 +1145,7 @@ row나 column 중 하나의 축만 지정해서 볼 수 있습니다. values를 
   pd.pivot_table(df_dtype, index=['성별'], columns=['즐기는 음식'], values='몸무게(kg)')
 #+END_SRC
 
+행과 열로 동시에 펼쳐서 표현할 수 있습니다.
 
 #+BEGIN_SRC ipython :session :results raw output :exports result
   tab(pd.pivot_table(df_dtype, index=['성별'], columns=['즐기는 음식'], values='몸무게(kg)'))
@@ -1266,13 +1228,80 @@ tab(d)
 | B        | N  | N  |
 
 
-*** TODO crosstab
+*** melt
+
+~pivot_table~ 의 반대 행동으로 ~melt~ 가 있습니다.
+
+아래 데이터를 한번 보시죠.
+
+#+BEGIN_SRC ipython :session :results raw :exports code
+  df_pivot = pd.pivot_table(df_dtype, index=['성별'], columns=['즐기는 음식'], values='몸무게(kg)', aggfunc=np.median)
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :results raw output :exports result
+  tab(df_pivot)
+#+END_SRC
+
+#+RESULTS:
+| 성별 |  1 |  2 |    3 |
+|------+----+----+------|
+|    1 | 77 | 70 | 70.5 |
+|    2 | 57 | 60 |   62 |
+
+#+BEGIN_SRC ipython :session :results raw :exports both
+  df_pivot.columns
+#+END_SRC
+
+#+RESULTS:
+: Int64Index([1, 2, 3], dtype='int64', name='즐기는 음식')
+
+성별 컬럼이 컬럼 목록에 들어가 있지 않은걸 보니 인덱스 컬럼으로 지정되어 있는 것 같습니다. 일반 컬럼으로 변형해줍시다.
+
+#+BEGIN_SRC ipython :session :results raw :exports code
+  df_pivot = df_pivot.reset_index()
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC ipython :session :results raw output :exports result
+  tab(df_pivot)
+#+END_SRC
+
+#+RESULTS:
+|   | 성별 |  1 |  2 |    3 |
+|---+------+----+----+------|
+| 0 |    1 | 77 | 70 | 70.5 |
+| 1 |    2 | 57 | 60 |   62 |
+
+성별 컬럼이 일반 컬럼으로 들어왔습니다.
+
+이 데이터를 보면, 성별은 행에 걸쳐서 기재되어 있고, 즐기는 음식은 컬럼에 걸쳐서 기재되어 있습니다. 이것을 아래와 같이 ~melt~ 해서 모두 행에 걸쳐서 기재되도록 변형할 수 있습니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports code
+  pd.melt(df_pivot, id_vars=['성별'])
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :results raw output :exports result
+  tab(pd.melt(df_pivot, id_vars=['성별']))
+#+END_SRC
+
+#+RESULTS:
+|   | 성별 | 즐기는 음식 | value |
+|---+------+-------------+-------|
+| 0 |    1 |           1 |    77 |
+| 1 |    2 |           1 |    57 |
+| 2 |    1 |           2 |    70 |
+| 3 |    2 |           2 |    60 |
+| 4 |    1 |           3 |  70.5 |
+| 5 |    2 |           3 |    62 |
 
 
-*** TODO groupby
+** 참고자료
 
+더 자세한 내용을 알고 싶으면, [[http://pandas.pydata.org/pandas-docs/stable/][Pandas의 공식 문서]]를 참고하세요. 공식문서가 꽤 잘 만들어져 있습니다.
 
-*** TODO melt
+문서는 전반적으로 이렇게 구성되어 있습니다:
 
-
-*** TODO stack / unstack
+ - 앞부분에는 간단한 사용법을 소개하는 튜토리얼이 있고요
+ - 중반에는 각 주제별(인덱스 다루기, 데이터 선택하기, merge, pivot table, 시계열 데이터 등)로 조금 더 자세한 설명과 사용법이 있고요
+ - 후반에는 각 함수의 구체적인 정의를 기재한 레퍼런스 문서가 있습니다
