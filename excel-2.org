@@ -1,4 +1,4 @@
-* TODO 엑셀 파일 다루기 2: 그래프 그리기
+* 엑셀 파일 다루기 2: 그래프 그리기
 
 #+BEGIN_SRC ipython :session :exports none
   %matplotlib inline
@@ -93,8 +93,47 @@
   df_dtype
 #+END_SRC
 
+#+BEGIN_SRC ipython :session :exports none
+  %matplotlib inline
 
-막대그래프를 그려볼까요?
+  import matplotlib
+  import matplotlib.pyplot as plt
+  import matplotlib.font_manager as fm
+
+  matplotlib.rc('font', family='Noto Sans CJK KR')
+#+END_SRC
+
+#+RESULTS:
+
+우선, 무작정 그래프를 그리라고 해봅시다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot1.png
+  df_dtype.plot();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-1-plot1.png]]
+
+나이에 대해서만 그래프를 그려볼까요?
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot2-age.png
+  df_dtype['나이'].plot();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-1-plot2-age.png]]
+
+나이는 막대그래프가 더 어울릴 것 같습니다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot2-age-bar.png
+  df_dtype['나이'].plot.bar();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-1-plot2-age-bar.png]]
+
+
+키에 대한 막대그래프를 그려볼까요?
 
 #+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-2-data-bar-chart.png
   df_dtype['신장(cm)'].plot.bar();
@@ -114,6 +153,38 @@
 #+RESULTS:
 [[file:outputs/excel-2-data-bar-chart-ylim.png]]
 
+두 종류의 컬럼을 함께 그려봅시다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot2-age-and_height-bar.png
+  df_dtype[['나이', '신장(cm)']].plot.bar();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-1-plot2-age-and_height-bar.png]]
+
+
+성별에 따른 몸무게 분포가 어떻게 되는지 살펴볼까요?
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot-sex-weight-scatter.png
+  plt.scatter(df_dtype['성별'], df_dtype['몸무게(kg)']);  # matplotlib를 사용해서 그림
+  # df_dtype.plot.scatter(x='성별', y='몸무게(kg)');  # pandas가 제공하는 scatter plot은 x,y축 모두 numeric이어야 합니다.
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-1-plot-sex-weight-scatter.png]]
+
+
+키와 몸무게간의 scatter plot을 그려봅시다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot-height-weight-scatter.png
+  plt.scatter(df_dtype['신장(cm)'], df_dtype['몸무게(kg)']);  # matplotlib를 사용해서 그림
+  # df_dtype.plot.scatter(x='성별', y='몸무게(kg)');  # pandas가 제공하는 scatter plot은 x,y축 모두 numeric이어야 합니다.
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/excel-1-plot-height-weight-scatter.png]]
+
+
 이번에는 빈도에 대한 그래프를 그려봅시다. 우선 비만도에 대한 빈도를 구해봅시다.
 
 #+BEGIN_SRC ipython :session :exports both :results raw
@@ -123,10 +194,10 @@
 
 #+RESULTS:
 #+BEGIN_EXAMPLE
-비만도
+  비만도
   경도 비만     3
-  과체중      13
-  정상        4
+  과체중       13
+  정상          4
   dtype: int64
 #+END_EXAMPLE
 
@@ -153,59 +224,5 @@
 
 #+RESULTS:
 [[file:outputs/excel-2-data-pivot-bar-chart-sorted.png]]
-
-
-** 엑셀 데이터로 그래프 그리기
-
-이번에는 간단히 그래프를 그려봅시다.
-
-#+BEGIN_SRC ipython :session :exports none
-  %matplotlib inline
-
-  import matplotlib
-  import matplotlib.pyplot as plt
-  import matplotlib.font_manager as fm
-
-  matplotlib.rc('font', family='Noto Sans CJK KR')
-#+END_SRC
-
-#+RESULTS:
-
-#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot1.png
-  df.plot();
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/excel-1-plot1.png]]
-
-나이에 대해서만 그래프를 그려볼까요?
-
-
-#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot2-age.png
-  df['나이'].plot();
-#+END_SRC
-
-#+RESULTS:
-
-[[file:outputs/excel-1-plot2-age.png]]
-
-나이는 막대그래프가 더 어울릴 것 같습니다.
-
-#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot2-age-bar.png
-  df['나이'].plot.bar();
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/excel-1-plot2-age-bar.png]]
-
-
-성별에 따른 몸무게 분포가 어떻게 되는지 살펴볼까요?
-
-#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-1-plot-sex-weight-scatter.png
-df.plot.scatter(x='성별', y='몸무게(kg)');
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/excel-1-plot-sex-weight-scatter.png]]
 
 

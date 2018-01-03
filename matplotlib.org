@@ -1,4 +1,4 @@
-* TODO Matplotlib 소개: 그래프 그리기
+* Matplotlib 소개: 그래프 그리기
 
 
 Matplotlib는 Python에서 그래프를 그릴 때 사용하는 대표적인 라이브러리입니다. Pandas와 기본적으로 통합되어 있는 라이브러리이기도 합니다. Pandas에서 ~Series~ 나 ~DataFrame~ 의 메소드로 제공되는 ~plot()~ 함수는 기본적으로 matplotlib을 사용해서 그래프를 그립니다. 때문에 많은 기능들이 상호 호환됩니다.
@@ -13,13 +13,15 @@ Matplotlib는 Python에서 그래프를 그릴 때 사용하는 대표적인 라
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-first-plot.png
   %matplotlib inline
   import matplotlib.pyplot as plt
-
   plt.plot([1, 3, 2, 5, 4])
   plt.show();
 #+END_SRC
 
 #+RESULTS:
 [[file:outputs/matplotlib-first-plot.png]]
+
+
+앞서 pandas에서 그래프를 그렸을 때와 모양이 비슷합니다. pandas는 기본적으로 matplotlib를 사용해서 그래프를 그립니다. 그래프를 그릴 때, DataFrame에 지정되어 있는 여러 부가 정보들, 즉 컬럼 이름 등을 사용하여 기본적인 그래프의 요소들을 알아서 지정합니다.
 
 NumPy의 ndarray로 그려도 동일합니다.
 
@@ -48,6 +50,7 @@ Pandas의 Series로 그려도 동일합니다.
 
 #+RESULTS:
 [[file:outputs/matplotlib-first-plot-3.png]]
+
 
 x축의 값을 지정하려면 아래와 같이 할 수 있습니다.
 
@@ -150,8 +153,8 @@ x축의 값을 지정하려면 아래와 같이 할 수 있습니다.
   matplotlib.rc('font', family='Noto Sans CJK KR')
 
   x = ['2011', '2012', '2013', '2014', '2015']
-  plt.plot(x, [1, 3, 2, 5, 4], label='서울')
-  plt.plot(x, [2, 1, 3, 1, 1], label='부산')
+  plt.plot(x, [1, 3, 2, 5, 4])
+  plt.plot(x, [2, 1, 3, 1, 1])
   plt.grid()
   plt.show();
 #+END_SRC
@@ -159,6 +162,7 @@ x축의 값을 지정하려면 아래와 같이 할 수 있습니다.
 #+RESULTS:
 [[file:outputs/matplotlib-grid-plot-1.png]]
 
+grid가 너무 촘촘하다면 ~yticks~ 함수를 사용하여 그 정도를 조절할 수 있습니다.
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-grid-plot-2.png
   %matplotlib inline
@@ -168,8 +172,8 @@ x축의 값을 지정하려면 아래와 같이 할 수 있습니다.
   matplotlib.rc('font', family='Noto Sans CJK KR')
 
   x = ['2011', '2012', '2013', '2014', '2015']
-  plt.plot(x, [1, 3, 2, 5, 4], label='서울')
-  plt.plot(x, [2, 1, 3, 1, 1], label='부산')
+  plt.plot(x, [1, 3, 2, 5, 4])
+  plt.plot(x, [2, 1, 3, 1, 1])
   plt.yticks([1, 2, 3, 4, 5])
   plt.grid()
   plt.show();
@@ -178,6 +182,56 @@ x축의 값을 지정하려면 아래와 같이 할 수 있습니다.
 #+RESULTS:
 [[file:outputs/matplotlib-grid-plot-2.png]]
 
+
+** line plot style
+
+선 그래프에서 선의 스타일을 변경하려면 어떻게 할까요?
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-plot-style-1.png
+  %matplotlib inline
+  import pandas as pd
+  import matplotlib
+  import matplotlib.pyplot as plt
+  matplotlib.rc('font', family='Noto Sans CJK KR')
+
+  x = ['2011', '2012', '2013', '2014', '2015']
+  plt.plot(x, [1, 3, 2, 5, 4], 'ro')
+  plt.plot(x, [2, 1, 3, 1, 1], 'b--', linewidth=3)
+  plt.plot(x, [2, 2, 5, 2, 3], 'gs')
+  plt.plot(x, [7, 3, 1, 3, 7], '-o', markersize=10)
+  plt.grid()
+  plt.show();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-plot-style-1.png]]
+
+~plot~ 함수에 데이터의 x축, y축 값을 전달하고, 곧바로 이어지는 위치 인자에 그래프의 스타일을 전달할 수 있습니다. 지정할 수 있는 스타일에는 아래와 같은 것이 있습니다:
+
+ - 선의 스타일: '-', '--', '-.'
+ - 마커(점)의 스타일: '.', ',', 'o', 'v', '^', '<', '>', 's', 'p', '*', 'D', ...
+ - 마커 및 선의 색상: 'b'(lue), 'g'(reen), 'r'(ed), 'c'(yan), 'm'(agenta), 'y'(ellow), 'k'(black), 'w'(white)
+
+또는 아래처럼 키워드 인자로 구분해서 지정할 수도 있습니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-plot-style-2.png
+  %matplotlib inline
+  import pandas as pd
+  import matplotlib
+  import matplotlib.pyplot as plt
+  matplotlib.rc('font', family='Noto Sans CJK KR')
+
+  x = ['2011', '2012', '2013', '2014', '2015']
+  plt.plot(x, [1, 3, 2, 5, 4], color='red', marker='o', linestyle='')
+  plt.plot(x, [2, 1, 3, 1, 1], color='blue', linestyle='--', linewidth=3)
+  plt.plot(x, [2, 2, 5, 2, 3], color='g', marker='s', linestyle='')
+  plt.plot(x, [7, 3, 1, 3, 7], linestyle='-', marker='o', markersize=10)
+  plt.grid()
+  plt.show();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-plot-style-2.png]]
 
 
 ** figure와 axes 소개
@@ -265,3 +319,82 @@ pyplot을 사용한 간략한 스타일의 사용법은, 간단한 용도로 사
 
 #+RESULTS:
 [[file:outputs/matplotlib-subplot-2.png]]
+
+** pandas에서 matplotlib를 사용해 그래프를 정교하게 제어하기
+
+~pandas~ 가 ~matplotlib~ 를 잘 사용하면 ~pandas~ 만 알면 되지 ~matplotlib~ 를 왜 또 알아야 할까요?
+
+아래 그래프에서, 그래프에 grid를 추가하고 싶으면 어떻게 할까요?
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-pandas-1.png
+  import pandas as pd
+  df = pd.DataFrame([(1, 3000), (2, 4021), (3, 4300), (4, 1200)], columns=['A', 'B'])
+  df.plot.line();
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-pandas-1.png]]
+
+
+결국 기본적인 설정은 ~pandas~ 가 해주지만, 세부적인 조정을 하기 위해서는 ~matplotlib~ 를 이해하고 사용해야 합니다.
+
+그러면 ~pandas~ 와 ~matplotlib~ 는 서로 어떻게 연결되어 있을까요?
+
+사실 ~pandas~ 에서 ~plot~ 함수를 사용해서 그래프를 그릴 때, ~plot~ 은 해당 그래프에 대한 ~axes~ 객체를 반환해줍니다. 우리는 그 ~axes~ 객체를 제어하여 기본 설정된 그래프를 변경할 수 있습니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-pandas-2.png
+  import pandas as pd
+  df = pd.DataFrame([(1, 3000), (2, 4021), (3, 4300), (4, 1200)], columns=['A', 'B'])
+  axes = df.plot.line()
+  axes.grid()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-pandas-2.png]]
+
+또는 ~plt~ 접근 방법을 통해 현재 활성화된 ~axes~ 에 접근하여 그래프를 변경할 수도 있습니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-pandas-3.png
+  import matplotlib.pyplot as plt
+  import pandas as pd
+  df = pd.DataFrame([(1, 3000), (2, 4021), (3, 4300), (4, 1200)], columns=['A', 'B'])
+  df.plot.line()
+  plt.grid()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-pandas-3.png]]
+
+
+** Seaborn 사용하기
+
+matplotlib는 정교한 제어를 할 때는 적절한 도구일 수 있지만, 너무 세부적인 사항들을 많이 알아야 합니다. 특히 통계에 필요한 그래프를 그릴 때는, pandas는 너무 간단한 그래프만 그려주고, matplotlib는 너무 복잡합니다. 그 중간을 채워줄 수 있는 도구가 Seaborn입니다. Seaborn 역시 내부적으로는 matplotlib를 사용하며, 통계에 적합한 그래프를 그려줍니다.
+
+앞서 그렸던 몇 가지 그래프를 seaborn을 사용해서 다시 그려보겠습니다.
+
+#+BEGIN_SRC ipython :session :exports code :results raw
+  import pandas as pd
+  df_dtype = pd.read_excel('outputs/실습생_컬럼추가.xlsx', sheet_name='Sheet1',
+                           index_col=0,
+                           dtype={'번호': 'object', '성별': 'object', '즐기는 음식': 'object', '비만도': 'object', '연령대': 'object'})
+  df_dtype
+#+END_SRC
+
+키와 몸무게의 상관관계를 살펴봅시다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-seaborn-plot-1.png
+import seaborn as sns
+sns.regplot(x='신장(cm)', y='몸무게(kg)', data=df_dtype);
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-seaborn-plot-1.png]]
+
+성별에 따른 몸무게의 분포를 살펴봅시다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/matplotlib-seaborn-plot-2.png
+sns.stripplot(x="성별", y="몸무게(kg)", data=df_dtype);
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/matplotlib-seaborn-plot-2.png]]
