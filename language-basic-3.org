@@ -132,6 +132,25 @@ def tab(df):
 : ['안녕 텍스트', 'https://www.wikipedia.org']
 : ['안녕,파이썬', 'https://python.org']
 
+위에서 =os.path.join()= 함수를 사용했는데, 이 함수는 디렉토리 이름을 OS에 맞게 만들어주는 함수입니다. OS마다 디렉토리를 지정하는 방식에 약간씩 차이가 있습니다. 주로는 Windows OS와 Unix 계열의 OS(MacOS도 여기에 포함됩니다)가 서로 크게 차이납니다:
+
+ - Windows: =C:\Users\toracle\anaconda3=
+ - MacOS: =/Users/toracle/anaconda3=
+
+위에서 보듯이, 사소한 차이이긴 하지만, 윈도우에서는 디렉토리 구분자로 \를, MacOS에서는 /를 사용하는 것을 알 수 있습니다. =os.path.join()= 함수를 사용해서 디렉토리를 만들면 실행되는 OS에 적합한 디렉토리 이름을 반환합니다.
+
+#+BEGIN_SRC python :exports both :results output
+import os
+os.path.join('outputs', 'basic-1-csv-writer.txt')
+#+END_SRC
+
+위 함수는, 각각 아래와 같은 경로명을 반환합니다:
+
+ - Windows: =outputs\basic-1-csv-writer.txt=
+ - MacOS: =outputs/basic-1-csv-writer.txt=
+
+하지만 Python 코드상에서 / 를 디렉토리 구분자로 공통적으로 사용해도, 많은 경우 Python이 OS에 알맞게 적절하게 변환해주기는 합니다.
+
 
 ** 함수 (Function)
 
