@@ -131,7 +131,7 @@ print(c)
 #+BEGIN_SRC python :results output :exports both
 # -*- coding: utf-8 -*-
 
-for i in range(10):
+for i in [0, 1, 2, 3, 4, 5, 6, 7, 9]:
    print(i, end='')
    print(',', end=' ')
 #+END_SRC
@@ -139,16 +139,39 @@ for i in range(10):
 #+RESULTS:
 : 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
 
-=for= 문은 =for A in B= 형태로 이루어집니다. =in= 뒤에 오는 B 부분에는 반복할 수 있는 값이 올 수 있고, 각 원소를 반복하며 그 값이 =A= 에 저장됩니다.
+=for= 문은 =for A in B= 형태로 이루어집니다. =in= 뒤에 오는 B 부분에는 순회할 값들이 들어있는 리스트 등이 올 수 있고, 각 원소를 반복하며 그 값이 =A= 변수에 저장됩니다.
+
+#+BEGIN_SRC python :results output :exports code
+1: for i in [0, 1, 2, 3, 4, 5, 6, 7, 9]:
+2:   print(i, end='')
+3:   print(',', end=' ')
+#+END_SRC
+
+편의상 위 코드에 행 번호를 붙여보았습니다. 위 구문은 아래와 같은 순서로 실행됩니다.
+
+ - *1행*: i에 첫번째 원소인 0을 할당
+ - *2행*: i에 대해 print문을 실행. 현재 i에 담긴 값은 0이므로 0이 출력됨
+ - *3행*: 쉼표 출력
+ - *1행*: i에 두번째 원소인 1을 할당
+ - *2행*: i에 대해 print문을 실행. 현재 i에 담긴 값은 1이므로 1이 출력됨
+ - *3행*: 쉼표 출력
+ - *1행*: i에 세번째 원소인 2를 할당
+ - *2행*: i에 대해 print문을 실행. 현재 i에 담긴 값은 2이므로 2가 출력됨
+ - *3행*: 쉼표 출력
+ - ...
+ - *1행*: i에 열번째 원소인 9를 할당
+ - *2행*: i에 대해 print문을 실행. 현재 i에 담긴 값은 9이므로 9가 출력됨
+ - *3행*: 쉼표 출력
+
 
 여기서 처음으로 블럭(block)이 등장했습니다. 위 코드에서 print 구문이 있는 행이 블럭입니다. Python에서 블럭은 들여쓰기로 표현되며, 같은 등위의 명령문들을 표현합니다. 
 
-아래 코드는 위의 코드와 다르게 동작합니다. =for= 구문이 실행되는 동안 =,= 가 매번 출력되지 않고, =for= 문을 벗어난 뒤 한 번만 출력됩니다.
+아래 코드는 위의 코드와 다르게 동작합니다. =for= 구문이 실행되는 동안 , 가 매번 출력되지 않고, =for= 문을 벗어난 뒤 한 번만 출력됩니다. =print= 문이 =for= 문 '바깥에' 있기 때문입니다.
 
 #+BEGIN_SRC python :results output :exports both
 # -*- coding: utf-8 -*-
 
-for i in range(10):
+for i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]:
    print(i, end='')
 print(',', end=' ')
 #+END_SRC
@@ -174,6 +197,37 @@ print(s)
 
 #+RESULTS:
 : 53
+
+반복문 안에 =print= 문을 넣으면 결과만을 출력했던 위의 코드와는 다르게, 각 반복 도중에 변화하는 =s= 값을 관찰할 수 있습니다. =print= 문이 =for= 문 '안에' 있기 때문입니다.
+
+#+BEGIN_SRC python :results output :exports both
+# -*- coding: utf-8 -*-
+
+import random
+s = 0
+
+while s < 10:
+  s = s + 1
+  print(s)
+
+print(s)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+10
+#+end_example
+
 
 만약 =for= 문이나 =while= 문을 수행하는 도중에 반복 구문을 벗어나려면 =break= 구문을 사용합니다. =continue= 구문은 반복 구문을 완전히 벗어나는 대신, 해당 차수의 반복을 건너뜁니다.
 
@@ -212,7 +266,7 @@ print(s)
 
   import random
 
-  for number in range(10):
+  for number in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]:
       if number == 0:
           continue
       if number % 2 == 0:
@@ -240,7 +294,7 @@ print(s)
 
   import random
 
-  for number in range(10):
+  for number in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]:
       if number == 0:
           continue
       elif number % 2 == 0 and number % 3 == 0:
@@ -265,6 +319,34 @@ print(s)
 
 이쯤해서 NetworkX 사용해서 네트워크 그래프를 한번 그려봅시다.
 
+아래는 네트워크 그래프를 그리는 코드입니다.
+
+#+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/day1-example-nx-0.png 
+%matplotlib inline
+# networkx 라이브러리를 불러옵니다. 이때 nx라고 별명을 붙여서, 줄여쓸 수 있게 합니다
+import networkx as nx
+
+# 텅 빈 네트워크를 생성합니다.
+G = nx.Graph()
+
+# 텅 비어있던 네트워크에, 1이라는 ID를 가진 노드를 추가합니다
+G.add_node(1)
+
+# 텅 비어있던 네트워크에, 2라는 ID를 가진 노드를 추가합니다
+G.add_node(2)
+
+pos = nx.spring_layout(G)
+nx.draw_networkx_edges(G, pos, alpha=0.2);
+nx.draw_networkx_nodes(G, pos, node_size=300);
+nx.draw_networkx_labels(G, pos);
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/day1-example-nx-0.png]]
+
+
+여기에 아래와 같이 링크를 추가할 수 있습니다.
+
 #+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/day1-example-nx.png 
 %matplotlib inline
 import networkx as nx
@@ -272,6 +354,8 @@ import networkx as nx
 G = nx.Graph()
 G.add_node(1)
 G.add_node(2)
+
+# 1번 노드와 2번 노드 사이에 링크를 연결합니다
 G.add_edge(1, 2)
 
 pos = nx.spring_layout(G)
@@ -284,8 +368,8 @@ nx.draw_networkx_nodes(G, pos, node_size=50);
 
 위의 예제를 아래와 같이 변경해보세요.
 
- - =for= 문을 사용하여 node를 50개 추가하기
- - =random.randint()= 를 사용하여 edge 100개 추가하기
+ - 현재는 add_node()를 수동으로 2회 호출해서 노드를 2개 그렸는데, =for= 문을 사용하여 node를 50개 추가하기
+ - 현재는 add_edge()를 수동으로 1회 호출해서 링크를 1개 그렸는데,  =random.randint()= 를 사용하여 edge 100개 추가하기
 
 #+BEGIN_SRC ipython :session :exports results :results raw :ipyfile outputs/day1-exercise-1.png
 %matplotlib inline
@@ -308,3 +392,21 @@ nx.draw_networkx_nodes(G, pos, node_size=50);
 
 #+RESULTS:
 [[file:outputs/day1-exercise-1.png]]
+
+
+참고로, =random.randint()= 함수는 아래와 같이 사용할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+import random
+
+print(random.randint(0, 10))
+print(random.randint(0, 10))
+print(random.randint(0, 10))
+print(random.randint(0, 10))
+#+END_SRC
+
+#+RESULTS:
+: 2
+: 1
+: 2
+: 10

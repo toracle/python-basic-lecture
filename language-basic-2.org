@@ -512,6 +512,87 @@ Python에서 byte는 =b'\x01'= 처럼 표시됩니다. 문자열과 비슷한데
 
 원래 의미망 분석을 하려면, 문장에 대해 형태소 분석을 하고, 접속사나 부사 등 불필요한 말들은 제거하는 등의 작업을 거칩니다. 하지만, 여기서는 단순히 어절 단위로만 잘라서, 의미망을 이런 식으로 그리는구나 하는 정도만 맛보도록 하겠습니다.
 
+의미망을 본격적으로 그리기 전에, =for= 구문이 중첩된 경우 어떻게 실행되는지 살펴보겠습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  for i in [0, 1, 2]:
+      for j in [0, 1, 2]:
+          print(i, j)
+#+END_SRC
+
+#+RESULTS:
+: 0 0
+: 0 1
+: 0 2
+: 1 0
+: 1 1
+: 1 2
+: 2 0
+: 2 1
+: 2 2
+
+위 코드의 실행 순서를 살펴볼까요?
+
+#+BEGIN_SRC python :exports both :results output
+1:  for i in [0, 1, 2]:
+2:      for j in [0, 1, 2]:
+3:          print(i, j)
+#+END_SRC
+
+위 코드는 아래와 같은 순서대로 실행됩니다.
+
+ - 1 → 2 → 3 → 2 → 3 → 2 → 3
+ - 1 → 2 → 3 → 2 → 3 → 2 → 3
+ - 1 → 2 → 3 → 2 → 3 → 2 → 3
+
+3행은 총 9번 실행됩니다. 바깥의 i를 가진 for문이 3회, 안쪽의 j를 가진 for문이 3회 순회하기 때문에, 3행은 3*3=9회 실행됩니다.
+
+세번 중첩된 =for= 문은 어떻게 실행될까요?
+
+#+BEGIN_SRC python :exports both :results output
+  for i in [0, 1, 2]:
+      for j in [0, 1, 2]:
+          for k in [0, 1]:
+              print(i, j, k)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0 0 0
+0 0 1
+0 1 0
+0 1 1
+0 2 0
+0 2 1
+1 0 0
+1 0 1
+1 1 0
+1 1 1
+1 2 0
+1 2 1
+2 0 0
+2 0 1
+2 1 0
+2 1 1
+2 2 0
+2 2 1
+#+end_example
+
+위 코드의 실행 순서를 알아볼까요?
+
+#+BEGIN_SRC python :exports both :results output
+1:  for i in [0, 1, 2]:
+2:      for j in [0, 1, 2]:
+3:          for k in [0, 1]:
+4:              print(i, j, k)
+#+END_SRC
+
+ - 1 → 2 → 3 → 4 → 3 → 4 → 2 → 3 → 4 → 3 → 4 → 2 → 3 → 4 → 3 → 4
+ - 1 → 2 → 3 → 4 → 3 → 4 → 2 → 3 → 4 → 3 → 4 → 2 → 3 → 4 → 3 → 4
+ - 1 → 2 → 3 → 4 → 3 → 4 → 2 → 3 → 4 → 3 → 4 → 2 → 3 → 4 → 3 → 4
+
+4행은 총 몇회 실행될까요? 첫번째 =for= 문이 순회할 횟수는 3번, 두번째 =for= 문은 3번, 세번째 =for= 문은 2번, 이렇게 해서 3*3*2 = 18회 실행됩니다.
+
 
 #+BEGIN_SRC ipython :session :exports none
   %matplotlib inline
