@@ -479,6 +479,30 @@ Python에서 byte는 =b'\x01'= 처럼 표시됩니다. 문자열과 비슷한데
 
 위의 예제를 변형해서, 각 단어의 빈도가 어떻게 되는지 세어보는 프로그램을 작성해보세요. ~dict~ 를 활용해보세요.
 
+#+BEGIN_SRC python :exports result :results output
+  # -*- coding: utf-8 -*-
+
+  text = '프로그램 언어를 익히기 위해 책이나 글만 보면서 따라해서는 중간에 막히는 부분들이 발생합니다. 그리고 막연히 어렵게 느껴지기도 하고요. 또 어떤 경우에는 눈으로만 읽는 분들이 있는데, 눈으로만 봐서는 실제로 프로그램을 작성하기가 어렵습니다. 본 과정은 실습을 중심으로 진행합니다. 그래서, 따라할 수 있는 형태의 강의 자료가 제공됩니다. 온라인에 공개되기 때문에 수업을 듣지 않은 분들도 자료를 열람할 수 있지만, 실습을 진행하면서 발생하는 Q&A나 개별 1:1 지도, 각 개인의 프로젝트 목표에 대한 피드백 등은 제한된 메일링 리스트를 사용하여 진행합니다.'
+
+  new_text = text.replace(',', '').replace('.', '')
+  word_list = new_text.split()
+  word_freq_dict = dict()
+
+  for word in word_list:
+      word_freq_dict[word] = word_freq_dict.get(word, 0) + 1
+
+  top_five_words = sorted(word_freq_dict.items(), key=lambda x: x[1], reverse=True)[:5]
+  for word, freq in top_five_words:
+      print(','.join([word, str(freq)]))
+#+END_SRC
+
+#+RESULTS:
+: 실습을,2
+: 진행합니다,2
+: 눈으로만,2
+: 수,2
+: 따라할,1
+
 
 ** 연습문제: 의미망 그리기
 
