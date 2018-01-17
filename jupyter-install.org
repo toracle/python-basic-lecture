@@ -77,5 +77,25 @@ Known labextensions:
  - ~Alt-Enter~: 현재 셀 실행하고 아래에 새 셀 삽입
 
 
-[fn:jupyter-ipython] Jupyter라는 이름은 중간에 바뀐 이름이고, 그 이전에는 IPython (Interactive Python)이라는 이름을 사용했습니다. 그래서 현재 Jupyter에도 IPython 시절의 흔적들이 많이 남아있습니다. Jupyter notebook 파일의 이름도 .ipynb 확장자를 사용하는데, IPython Notebook의 줄임말입니다.
+[fn:jupyter-ipython] Jupyter라는 이름은 중간에 바뀐 이름이고, 그 이전에는 IPython (Interactive Python)이라는 이름을 사용했습니다. 그래서 현재 Jupyter에도 IPython 시절의 흔적들이 많이 남아있습니다. Jupyter notebook 파일의 이름도 =.ipynb= 확장자를 사용하는데, IPython Notebook의 줄임말입니다.
 
+
+** Jupyter Notebook 파일 출력하기
+
+Jupyter Notebook 파일은 =.ipynb= 확장자를 가집니다. 이 파일은 Jupyter Notebook에서 열어서 볼 수 있습니다. 그러나 그 결과를 실제로 어디선가 활용하기 위해서는 일반적인 파일 형식으로 변환하는 것이 필요합니다.
+
+Anaconda Prompt 상에서 아래와 같은 명령을 통해 .ipynb 파일을 HTML 파일로 변환할 수 있습니다. (파일 이름이 [[file:networkx-report.ipynb][networkx-report.ipynb]] 인 경우라고 합시다)
+
+#+BEGIN_SRC sh
+jupyter nbconvert networkx-report.ipynb
+#+END_SRC
+
+위 명령을 실행하면 =networkx-report.html= 이라는 파일이 생성됩니다.
+
+그런데, 생성된 파일에는 코드들도 함께 들어가 있습니다. 코드를 모두 제외하고 출력하고 싶을 때는 =nbconvert= 의 템플릿 기능을 사용하면 되는데, 제가 만들어 놓은 [[file:nbreport.tpl][nbreport.tpl]] 파일을 사용하실 수 있습니다. nbreport.tpl 파일을 다운로드 받은 후, =jupyter nbconvert= 명령을 실행하는 디렉토리로 복사합니다.
+
+#+BEGIN_SRC sh
+jupyter nbconvert networkx-report.ipynb --template=nbreport.tpl
+#+END_SRC
+
+위 명령을 실행하면, 코드가 모두 제외된 결과물만을 얻을 수 있습니다.
