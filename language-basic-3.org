@@ -305,7 +305,7 @@ def 함수이름(인자1, 인자2, 인자3, ...):
 
 위치 인자는 위치에 의해서 변수가 할당됩니다. 아래와 같은 함수가 있다고 할 때, 주어지는 인자의 순서에 따라서 함수를 정의할 때 지정된 변수에 값이 들어갑니다.
 
-#+BEGIN_SRC python :results output :export both
+#+BEGIN_SRC python :results output :exports both
   def positional(arg1, arg2):
       print('I am', arg1, arg2)
 
@@ -320,7 +320,7 @@ def 함수이름(인자1, 인자2, 인자3, ...):
 
 반면, ~alpha~ 와 같은 키워드 인자는 이름을 지정해서 부여할 수 있습니다. 이름을 부여하지 않으면 위치 인자와 동일하게 동작합니다.
 
-#+BEGIN_SRC python :results output :export both
+#+BEGIN_SRC python :results output :exports both
   def keyword(kwarg1=None, kwarg2='girl'):
       print('I am', kwarg1, kwarg2)
 
@@ -342,7 +342,7 @@ def 함수이름(인자1, 인자2, 인자3, ...):
 
 그리고, 위치 인자와 키워드 인자를 하나의 함수 선언에 동시에 사용할 수 있습니다. 하지만 그 경우에는, 위치 인자를 앞쪽에, 그리고 키워드 인자를 뒷쪽에 선언해야 합니다. 키워드 인자가 위치 인자보다 앞에 선언될 수 없습니다.
 
-#+BEGIN_SRC python :results output :export both
+#+BEGIN_SRC python :results output :exports both
 def mixed(arg1, arg2, kwarg1='studying', kwarg2='excel'):
     print(arg1, arg2, kwarg1, kwarg2)
 
@@ -369,7 +369,7 @@ mixed('I', 'am', kwarg2='python')
 
 이런 특성을 활용해서, 인자를 직접 코드에 기재하지 않고도, ~list~ 나 ~tuple~, ~dict~ 를 사용해서 부여할 수 있습니다.
 
-#+BEGIN_SRC python :results output
+#+BEGIN_SRC python :results output :exports both
 def mixed(arg1, arg2, kwarg1='studying', kwarg2='excel'):
     print(arg1, arg2, kwarg1, kwarg2)
 
