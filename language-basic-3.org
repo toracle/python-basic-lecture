@@ -197,19 +197,21 @@ def 함수이름(인자1, 인자2, 인자3, ...):
 
 여기서, 네트워크에 노드와 링크를 추가하는 부분 이외에, 실제로 네트워크를 그리는 부분의 코드가 좀 복잡하여 숨기고 싶을 때, 함수를 사용할 수 있습니다.
 
-#+BEGIN_SRC python :exports code :results raw
+#+BEGIN_SRC ipython :session :exports code :results
   import networkx as nx
 
   def draw_graph(graph):
       pos = nx.spring_layout(graph)
-      nx.draw_networkx_edges(graph, pos, alpha=0.2);
-      nx.draw_networkx_nodes(graph, pos, node_size=50);
+      nx.draw_networkx_edges(graph, pos, alpha=0.2)
+      ax = nx.draw_networkx_nodes(graph, pos, node_size=50)
+      return ax
 
   G = nx.Graph()
   G.add_node(1)
   G.add_node(2)
   G.add_edge(1, 2)
-  draw_graph(G)
+  # 우리가 만든 함수를 호출합니다.
+  draw_graph(G);
 
   G2 = nx.Graph()
   G2.add_node(1)
@@ -218,177 +220,75 @@ def 함수이름(인자1, 인자2, 인자3, ...):
   G2.add_edge(1, 2)
   G2.add_edge(1, 3)
   G2.add_edge(2, 3)
-  draw_graph(G2)
+  # 우리가 만든 함수를 호출합니다.
+  draw_graph(G2);
 #+END_SRC
 
 
-이전에 의미망 예제가 조금 복잡했었죠? 그걸 함수를 사용해서 묶어보겠습니다.
+이제 복잡한 그리기 명령들을 =draw_graph()= 라는 함수를 호출하는 것으로 해결할 수 있습니다.
 
-#+BEGIN_SRC python :results output :exports both
+그런데, 투명도나 노드의 크기를 네트워크마다 다르게 지정하고 싶을 수 있습니다. 하지만 지금은 투명도나 노드의 크기가 함수 안에 고정되어 있어서 네트워크마다 다르게 지정할 수 없네요. 이것을 필요에 따라 변경할 수 있도록 만들어볼까요?
+
+#+BEGIN_SRC python :exports code :results raw :ipyfile outputs/basic-3-nx-func.png
   import networkx as nx
-  import matplotlib.pyplot as plt
 
-  def read_file(path):
-      with open(path) as fin:
-          return fin.read()
+  def draw_graph(graph, alpha, node_size):
+      pos = nx.spring_layout(graph)
+      nx.draw_networkx_edges(graph, pos, alpha=alpha)
+      ax = nx.draw_networkx_nodes(graph, pos, node_size=node_size)
+      return ax
 
-  def construct_wordnet(text):
-      lines = text.split('\n')      # 줄 단위로 자른다
+  G = nx.Graph()
+  G.add_node(1)
+  G.add_node(2)
+  G.add_edge(1, 2)
+  # 우리가 만든 함수를 호출합니다.
+  draw_graph(G, 0.2, 50);
 
-      word_edges = {}
-
-      for line in lines:
-          _line = line.strip()
-          if not _line:             # 빈줄이면 건너뛴다
-              continue
-          statements = _line.split('.') # 문장 단위로 자른다
-          for statement in statements: # 빈 문장이면 건너뛴다
-              if not statement:
-                  continue
-              words = statement.split(' ') # 단어 단위로 자른다
-              cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
-              cleansed_words_2 = [w for w in cleansed_words if len(w) > 1] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소, 그리고 한글자 단어를 제거한다
-              num_words = len(cleansed_words_2)
-              for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
-                  word_i = cleansed_words_2[index_i]
-                  for index_j in range(index_i+1, num_words):
-                      word_j = cleansed_words_2[index_j]
-                      word_to_word = (word_i, word_j)
-                      word_to_word = tuple(sorted(word_to_word))
-                      word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
-      return word_edges
-
-  def remove_low_frequency(word_edges, cutoff=2):
-      # 등장 빈도가 1회인 edge는 제거한다
-      keys = list(word_edges.keys())
-      for key in keys:
-          if word_edges[key] < cutoff:
-              del word_edges[key]
-      return
-
-  def draw_graph(word_edges):
-      G = nx.Graph()
-      for (word_1, word_2), freq in word_edges.items():
-          G.add_edge(word_1, word_2, weight=freq)
-
-      pos = nx.kamada_kawai_layout(G)
-      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
-      widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
-      nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1)
-      nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR') # 각자 시스템에 따라 적절한 폰트 이름으로 변경
-      return
+  G2 = nx.Graph()
+  G2.add_node(1)
+  G2.add_node(2)
+  G2.add_node(3)
+  G2.add_edge(1, 2)
+  G2.add_edge(1, 3)
+  G2.add_edge(2, 3)
+  # 우리가 만든 함수를 호출합니다.
+  draw_graph(G2, 0.5, 100);
 #+END_SRC
 
-크게 세 부분으로 나누었습니다. 
+위와 같이 =draw_graph()= 함수에 =graph= 라는 인자 외에도 =alpha=, =node_size= 라는 인자값을 줄 수 있도록 함수 정의를 확대했습니다. 그런데 이번에는 =draw_graph()= 함수를 호출하여 사용할 때마다 매번 =graph=, =alpha=, =node_size= 세 인자를 꼬박꼬박 넣어줘야 하는 것이 불편합니다. =alpha=, =node_size= 인자는 주로 많이 쓰는 값이 정해져 있고, 예외적인 경우에만 다르게 지정할 수 있게 하면 좋겠습니다.
 
- - 텍스트로부터 의미망 데이터를 만들어내는 부분
- - 빈도가 적은 링크는 제거하는 부분
- - 그래프를 그리는 부분
-
-그리고, 데이터를 파일로부터 읽어들이도록 변경해봅시다.
-
-
-#+BEGIN_SRC python
-  def read_file(path):
-      with open(path) as fin:
-          return fin.read()
-#+END_SRC
-
-#+BEGIN_SRC ipython :results output :exports none
+#+BEGIN_SRC python :exports code :results raw :ipyfile outputs/basic-3-nx-func.png
   import networkx as nx
-  import matplotlib.pyplot as plt
 
-  def read_file(path):
-      with open(path) as fin:
-          return fin.read()
+  def draw_graph(graph, alpha=0.2, node_size=50):
+      pos = nx.spring_layout(graph)
+      nx.draw_networkx_edges(graph, pos, alpha=alpha)
+      ax = nx.draw_networkx_nodes(graph, pos, node_size=node_size)
+      return ax
 
-  def construct_wordnet(text):
-      lines = text.split('\n')      # 줄 단위로 자른다
+  G = nx.Graph()
+  G.add_node(1)
+  G.add_node(2)
+  G.add_edge(1, 2)
+  # 우리가 만든 함수를 호출합니다.
+  draw_graph(G);
 
-      word_edges = {}
-
-      for line in lines:
-          _line = line.strip()
-          if not _line:             # 빈줄이면 건너뛴다
-              continue
-          statements = _line.split('.') # 문장 단위로 자른다
-          for statement in statements: # 빈 문장이면 건너뛴다
-              if not statement:
-                  continue
-              words = statement.split(' ') # 단어 단위로 자른다
-              cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
-              cleansed_words_2 = [w for w in cleansed_words if len(w) > 1] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소, 그리고 한글자 단어를 제거한다
-              num_words = len(cleansed_words_2)
-              for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
-                  word_i = cleansed_words_2[index_i]
-                  for index_j in range(index_i+1, num_words):
-                      word_j = cleansed_words_2[index_j]
-                      word_to_word = (word_i, word_j)
-                      word_to_word = tuple(sorted(word_to_word))
-                      word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
-      return word_edges
-
-  def remove_low_frequency(word_edges, cutoff=2):
-      # 등장 빈도가 1회인 edge는 제거한다
-      keys = list(word_edges.keys())
-      for key in keys:
-          if word_edges[key] < cutoff:
-              del word_edges[key]
-      return
-
-  def draw_graph(word_edges):
-      G = nx.Graph()
-      for (word_1, word_2), freq in word_edges.items():
-          G.add_edge(word_1, word_2, weight=freq)
-
-      pos = nx.kamada_kawai_layout(G)
-      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
-      widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
-      nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1)
-      nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR') # 각자 시스템에 따라 적절한 폰트 이름으로 변경
-      return
+  G2 = nx.Graph()
+  G2.add_node(1)
+  G2.add_node(2)
+  G2.add_node(3)
+  G2.add_edge(1, 2)
+  G2.add_edge(1, 3)
+  G2.add_edge(2, 3)
+  # 우리가 만든 함수를 호출합니다.
+  draw_graph(G2, 0.5, 100);
 #+END_SRC
 
-이제 다양한 문서에 대해서 아래와 같은 몇 줄의 코드만으로 의미망을 출력할 수 있게 되었습니다.
+위와 같이 함수를 선언할 때 인자에 기본값을 부여하면, 함수를 호출할 때 기본값이 부여된 인자들을 생략할 수 있습니다.
 
-#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/moon_speech.png
-  text = read_file('assets/moon_speech.txt')
-  wordnet = construct_wordnet(text)
-  remove_low_frequency(wordnet)
-  draw_graph(wordnet)
-  plt.show()
-#+END_SRC
 
-#+RESULTS:
-[[file:outputs/moon_speech.png]]
-
-박근혜 전 대통령 취임사에 대해서도 의미망을 살펴봅시다.
-
-#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech.png
-  text = read_file('assets/park_speech.txt')
-  wordnet = construct_wordnet(text)
-  remove_low_frequency(wordnet)
-  draw_graph(wordnet)
-  plt.show()
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/park_speech.png]]
-
-박근혜 대통령은 좀 더 다양한 어휘를 사용한 것 같네요. =cutoff= 를 좀 더 강화해봅시다.
-
-#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech_2.png
-  text = read_file('assets/park_speech.txt')
-  wordnet = construct_wordnet(text)
-  remove_low_frequency(wordnet, cutoff=3)
-  draw_graph(wordnet)
-  plt.show()
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/park_speech_2.png]]
-
-함수를 어떤 경우에 많이 사용하는지 실제 사례를 살펴보았습니다.
+함수가 어떤 것인지 실제 사례를 살펴보았습니다.
 
 함수 자체에 대해서 조금 더 살펴봅시다.
 
@@ -397,11 +297,11 @@ def 함수이름(인자1, 인자2, 인자3, ...):
 앞의 예에서, ~remove_low_frequency()~ 함수의 인자 중 ~cutoff~ 인자가 약간 다르게 생긴 것을 볼 수 있습니다.
 
 #+BEGIN_SRC python
-  def remove_low_frequency(word_edges, cutoff=2):
+  def draw_graph(graph, alpha=0.2, node_size=50):
       return
 #+END_SRC
 
-~word_edge~ 와 같은, ~=~ 표시가 없이 정의된 인자를 위치 인자라고 하고, ~cutoff~ 와 같이 ~=~ 표시와 함께 정의된 인자를 키워드 인자라고 합니다.
+~graph~ 와 같은, ~=~ 표시가 없이 정의된 인자를 위치 인자라고 하고, ~alpha~ 와 같이 ~=~ 표시와 함께 값이 정의된 인자를 키워드 인자라고 합니다.
 
 위치 인자는 위치에 의해서 변수가 할당됩니다. 아래와 같은 함수가 있다고 할 때, 주어지는 인자의 순서에 따라서 함수를 정의할 때 지정된 변수에 값이 들어갑니다.
 
@@ -418,7 +318,7 @@ def 함수이름(인자1, 인자2, 인자3, ...):
 : I am boy a
 
 
-반면, ~cutoff~ 와 같은 키워드 인자는 이름을 지정해서 부여할 수 있습니다. 이름을 부여하지 않으면 위치 인자와 동일하게 동작합니다.
+반면, ~alpha~ 와 같은 키워드 인자는 이름을 지정해서 부여할 수 있습니다. 이름을 부여하지 않으면 위치 인자와 동일하게 동작합니다.
 
 #+BEGIN_SRC python :results output
   def keyword(kwarg1=None, kwarg2='girl'):
@@ -577,7 +477,7 @@ tab(rounded_df)
 | 4 | -30.39 |
 
 
-그런데 이렇게 한 번만 사용할 함수를 정의하자니 뭔가 낭비인 것 같습니다. 이럴 때는 람다(lambda) 함수를 사용할 수 있습니다. 람다 함수는, 이름이 없는 함수로, 간편하게 함수를 정의할 수 있습니다. 일반적으로 ~def <funcname>(args...):~ 형태로 함수를 정의하는 대신, 람다 함수는 ~lambda arg...:~ 형태로 함수를 간결하게 정의합니다.
+그런데 이렇게 한 번만 사용할 함수를 정의하자니 함수를 정의하는 구문이 간단하기는 하지만 다소 거추장스럽습니다. 이럴 때는 람다(lambda) 함수를 사용할 수 있습니다. 람다 함수는, 이름이 없는 함수로, 간편하게 함수를 정의할 수 있습니다. 일반적으로 ~def <funcname>(args...):~ 형태로 함수를 정의하는 대신, 람다 함수는 ~lambda arg...:~ 형태로 함수를 간결하게 정의합니다.
 
 위의 코드를 단계적으로 람다 함수로 대체하면 아래와 같습니다.
 
@@ -613,6 +513,176 @@ tab(rounded_df)
 | 4 | -30.39 |
 
 이해가 잘 되지 않으면, 그냥 이름 있는 함수를 사용해도 됩니다.
+
+
+*** 함수를 활용한 코드 정리 사례
+
+이전에 의미망 예제가 조금 복잡했었죠? 그걸 함수를 사용해서 묶어보겠습니다.
+
+#+BEGIN_SRC python :results output :exports both
+  import networkx as nx
+  import matplotlib.pyplot as plt
+
+  def read_file(path):
+      with open(path) as fin:
+          return fin.read()
+
+  def construct_wordnet(text):
+      lines = text.split('\n')      # 줄 단위로 자른다
+
+      word_edges = {}
+
+      for line in lines:
+          _line = line.strip()
+          if not _line:             # 빈줄이면 건너뛴다
+              continue
+          statements = _line.split('.') # 문장 단위로 자른다
+          for statement in statements: # 빈 문장이면 건너뛴다
+              if not statement:
+                  continue
+              words = statement.split(' ') # 단어 단위로 자른다
+              cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
+              cleansed_words_2 = [w for w in cleansed_words if len(w) > 1] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소, 그리고 한글자 단어를 제거한다
+              num_words = len(cleansed_words_2)
+              for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
+                  word_i = cleansed_words_2[index_i]
+                  for index_j in range(index_i+1, num_words):
+                      word_j = cleansed_words_2[index_j]
+                      word_to_word = (word_i, word_j)
+                      word_to_word = tuple(sorted(word_to_word))
+                      word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
+      return word_edges
+
+  def remove_low_frequency(word_edges, cutoff=2):
+      # 등장 빈도가 1회인 edge는 제거한다
+      keys = list(word_edges.keys())
+      for key in keys:
+          if word_edges[key] < cutoff:
+              del word_edges[key]
+      return
+
+  def draw_graph(word_edges):
+      G = nx.Graph()
+      for (word_1, word_2), freq in word_edges.items():
+          G.add_edge(word_1, word_2, weight=freq)
+
+      pos = nx.kamada_kawai_layout(G)
+      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
+      widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
+      nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1)
+      nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR') # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+      return
+#+END_SRC
+
+크게 세 부분으로 나누고 소제목(함수 이름)을 붙여주었습니다. 
+
+ - 텍스트로부터 의미망 데이터를 만들어내는 부분
+ - 빈도가 적은 링크는 제거하는 부분
+ - 그래프를 그리는 부분
+
+그리고, 데이터를 파일로부터 읽어들이는 함수를 하나 추가해봅시다.
+
+
+#+BEGIN_SRC python
+  def read_file(path):
+      with open(path) as fin:
+          return fin.read()
+#+END_SRC
+
+#+BEGIN_SRC ipython :results output :exports none
+  import networkx as nx
+  import matplotlib.pyplot as plt
+
+  def read_file(path):
+      with open(path) as fin:
+          return fin.read()
+
+  def construct_wordnet(text):
+      lines = text.split('\n')      # 줄 단위로 자른다
+
+      word_edges = {}
+
+      for line in lines:
+          _line = line.strip()
+          if not _line:             # 빈줄이면 건너뛴다
+              continue
+          statements = _line.split('.') # 문장 단위로 자른다
+          for statement in statements: # 빈 문장이면 건너뛴다
+              if not statement:
+                  continue
+              words = statement.split(' ') # 단어 단위로 자른다
+              cleansed_words = [w.replace('.', '').replace(',', '').strip() for w in words] # 단어에서 구두점이나 공백을 없앤다
+              cleansed_words_2 = [w for w in cleansed_words if len(w) > 1] # 구두점 및 공백 제거로 인해 빈 문자열이 되어버린 원소, 그리고 한글자 단어를 제거한다
+              num_words = len(cleansed_words_2)
+              for index_i in range(num_words): # 한 문장에 등장한 단어들을 서로 연결한다
+                  word_i = cleansed_words_2[index_i]
+                  for index_j in range(index_i+1, num_words):
+                      word_j = cleansed_words_2[index_j]
+                      word_to_word = (word_i, word_j)
+                      word_to_word = tuple(sorted(word_to_word))
+                      word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
+      return word_edges
+
+  def remove_low_frequency(word_edges, cutoff=2):
+      # 등장 빈도가 1회인 edge는 제거한다
+      keys = list(word_edges.keys())
+      for key in keys:
+          if word_edges[key] < cutoff:
+              del word_edges[key]
+      return
+
+  def draw_graph(word_edges):
+      G = nx.Graph()
+      for (word_1, word_2), freq in word_edges.items():
+          G.add_edge(word_1, word_2, weight=freq)
+
+      pos = nx.kamada_kawai_layout(G)
+      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
+      widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
+      nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1)
+      nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR') # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+      return
+#+END_SRC
+
+이제 다양한 문서에 대해서 아래와 같은 몇 줄의 코드만으로 의미망을 출력할 수 있게 되었습니다.
+
+#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/moon_speech.png
+  text = read_file('assets/moon_speech.txt')
+  wordnet = construct_wordnet(text)
+  remove_low_frequency(wordnet)
+  draw_graph(wordnet)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/moon_speech.png]]
+
+박근혜 전 대통령 취임사에 대해서도 의미망을 살펴봅시다.
+
+#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech.png
+  text = read_file('assets/park_speech.txt')
+  wordnet = construct_wordnet(text)
+  remove_low_frequency(wordnet)
+  draw_graph(wordnet)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/park_speech.png]]
+
+박근혜 대통령은 좀 더 다양한 어휘를 사용한 것 같네요. =cutoff= 를 좀 더 강화해봅시다.
+
+#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech_2.png
+  text = read_file('assets/park_speech.txt')
+  wordnet = construct_wordnet(text)
+  remove_low_frequency(wordnet, cutoff=3)
+  draw_graph(wordnet)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/park_speech_2.png]]
+
 
 
 ** 클래스 (Class)
@@ -706,6 +776,10 @@ tab(rounded_df)
 #+BEGIN_SRC python :exports result :results output
   import os
 
+  def read_file(path):
+      with open(path) as fin:
+          return fin.read()
+
   def count_words(text, n=7):
       word_counts = {}
       lines = text.split('\n')
@@ -718,7 +792,7 @@ tab(rounded_df)
           for word in words:
               if len(word) < 2:
                   continue
-              word_counts[word] = word_counts.setdefault(word, 0) + 1
+              word_counts[word] = word_counts.get(word, 0) + 1
       return sorted(word_counts.items(), key=lambda x: x[1], reverse=True)[:n]
 
   filenames = [
@@ -729,8 +803,7 @@ tab(rounded_df)
       ('김대중', 'dj_speech.txt'),
   ]
   for name, filename in filenames:
-      with open(os.path.join('assets', filename)) as fin:
-          text = fin.read()
+      text = read_file()
       freq_words = count_words(text)
       print(name, freq_words)
 #+END_SRC
@@ -741,3 +814,104 @@ tab(rounded_df)
 : 이명박 [('합니다', 56), ('있습니다', 19), ('국민', 17), ('것입니다', 14), ('나라', 11), ('함께', 10), ('여러분', 10)]
 : 노무현 [('합니다', 34), ('있습니다', 22), ('우리는', 15), ('국민', 11), ('동북아', 9), ('우리', 8), ('저는', 8)]
 : 김대중 [('있습니다', 21), ('합니다', 19), ('국민', 17), ('있는', 15), ('우리', 13), ('저는', 13), ('것입니다', 13)]
+
+
+우선 의사 코드(psudo code)로 살펴볼까요?
+
+#+BEGIN_SRC python :exports both :results output
+# -*- coding: utf-8 -*-
+
+# 파일로부터 내용을 읽어들인다
+# 한 행씩 하나의 리스트가 되도록 나눈다(split)
+# 단어별 빈도를 저장할 빈 dict를 만든다.
+# 한 행씩 순회하면서 수행한다 (for)
+#   해당 행에서 부호(, . ! 등)를 없앤다 (replace)
+#   빈 칸을 기준으로 어절 단위로 분리하여 리스트로 만든다 (split)
+#   단어 리스트를 순회하면서 수행한다 (for)
+#     먄악 단어의 길이가 2보다 작다면 해당 순회를 건너뛴다 (if, continue)
+#     단어 빈도 dict에, 해당 단어의 빈도를 하나 증가시킨다
+# 빈도순으로 내림차순 정렬하고, 상위 7개를 잘라서 반환한다 (sorted, list slicing)
+#+END_SRC
+
+이제 의사 코드에 따라서 하나씩 Python 코드로 표현해보겠습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  # -*- coding: utf-8 -*-
+
+  path = 'assets/moon_speech.txt'
+  text = ''
+  n = 7
+
+  # 파일로부터 내용을 읽어들인다
+  with open(path) as fin:
+      text = fin.read()
+
+  # 한 행씩 하나의 리스트가 되도록 나눈다(split)
+  lines = text.split('\n')
+
+  # 단어별 빈도를 저장할 빈 dict를 만든다.
+  word_counts = {}
+
+  # 한 행씩 순회하면서 수행한다 (for)
+  for line in lines:
+      # 해당 행에서 부호(, . ! 등)를 없앤다 (replace)
+      striped_line = line.strip().replace(',', '').replace('.', '').replace('!', '')
+
+      # 빈 칸을 기준으로 어절 단위로 분리하여 리스트로 만든다 (split)
+      words = striped_line.split()
+
+      # 단어 리스트를 순회하면서 수행한다 (for)
+      for word in words:
+          # 만약 단어의 길이가 2보다 작다면 해당 순회를 건너뛴다 (if, continue)
+          if len(word) < 2:
+              continue
+          # 단어 빈도 dict에, 해당 단어의 빈도를 하나 증가시킨다
+          word_counts[word] = word_counts.get(word, 0) + 1
+
+  # 빈도순으로 내림차순 정렬하고, 상위 7개를 잘라서 반환한다 (sorted, list slicing)
+  result = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)[:n]
+
+  print(result)
+#+END_SRC
+
+이것을 함수로 나타내보겠습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  # -*- coding: utf-8 -*-
+
+  def count_words(path, n=7):
+      # 파일로부터 내용을 읽어들인다
+      with open(path) as fin:
+          text = fin.read()
+
+      # 한 행씩 하나의 리스트가 되도록 나눈다(split)
+      lines = text.split('\n')
+
+      # 단어별 빈도를 저장할 빈 dict를 만든다.
+      word_counts = {}
+
+      # 한 행씩 순회하면서 수행한다 (for)
+      for line in lines:
+          # 해당 행에서 부호(, . ! 등)를 없앤다 (replace)
+          striped_line = line.strip().replace(',', '').replace('.', '').replace('!', '')
+
+          # 빈 칸을 기준으로 어절 단위로 분리하여 리스트로 만든다 (split)
+          words = striped_line.split()
+
+          # 단어 리스트를 순회하면서 수행한다 (for)
+          for word in words:
+              # 만약 단어의 길이가 2보다 작다면 해당 순회를 건너뛴다 (if, continue)
+              if len(word) < 2:
+                  continue
+              # 단어 빈도 dict에, 해당 단어의 빈도를 하나 증가시킨다
+              word_counts[word] = word_counts.get(word, 0) + 1
+
+      # 빈도순으로 내림차순 정렬하고, 상위 7개를 잘라서 반환한다 (sorted, list slicing)
+      result = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)[:n]
+      return result
+
+  print(count_words('assets/moon_speech.txt'))
+#+END_SRC
+
+#+RESULTS:
+: [('대통령이', 16), ('국민', 12), ('되겠습니다', 12), ('새로운', 7), ('것입니다', 6), ('대통령', 6), ('여러분', 5)]
