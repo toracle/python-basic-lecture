@@ -2,6 +2,27 @@
 
 Jupyter notebook은, 대화형으로 데이터 분석 등의 작업을 용이하게 하기 위해서 만들어진 개발 환경입니다.[fn:jupyter-ipython]
 
+Jupyter notebook을 실행하는 방법으로는 아래와 같은 두 가지의 방법이 있습니다:
+
+ - Anaconda Navigator로 실행하기
+ - Anaconda Prompt로 실행하기
+
+Anaconda Navigator로 실행하는 것이 더 편리하나, 후에 nbconvert 같은 것을 실행하여 보고서 문서를 생성할 때는 Prompt를 사용해야 할 경우도 있습니다.
+
+
+** Anaconda Navigator로 실행하기
+
+시작 메뉴에서 Anaconda Navigator를 검색하여 실행합니다.
+
+[[file:assets/python-basic-day1-anaconda-prompt-menu.png]]
+
+Anaconda Navigator에서 Jupyter Notebook을 실행합니다.
+
+[[file:assets/anaconda-navigator.png]]
+
+
+** Anaconda Prompt로 실행하기
+
 우선, Anaconda Prompt를 실행합니다. Anaconda를 설치하면 시작 메뉴에 아래와 같은 메뉴 항목이 등록됩니다.
 
 [[file:assets/python-basic-day1-anaconda-prompt-menu.png]]
