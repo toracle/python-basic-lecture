@@ -603,6 +603,40 @@ Python에서 byte는 =b'\x01'= 처럼 표시됩니다. 문자열과 비슷한데
   matplotlib.rc('font', family='Noto Sans CJK KR')
 #+END_SRC
 
+우선, 의사 코드(psudo code)로 먼저 어떤 작업을 할 것인지 알아보겠습니다.
+
+#+BEGIN_SRC python :exports both :results output
+# 분석할 텍스트를 가져온다
+# 텍스트를 줄 단위로 잘라 리스트로 만든다 (split)
+# 링크(단어,단어)의 빈도를 담을 빈 dict를 만든다
+#
+# 각 행을 돌면서 수행한다 (for)
+#   해당 행에서 앞뒤 공백문자를 제거한다 (strip)
+#   만약 빈 줄이면 건너뛴다 (if, continue)
+#   해당 행을 마침표(.)를 기준으로 문장 단위로 잘라 리스트로 만든다 (split)
+#
+#   각 문장을 돌면서 수행한다 (for)
+#      만약 해당 문장이 빈 문장이면 건너뛴다 (if, continue)
+#      해당 문장을 공백 기준으로 단어 단위로 잘라 리스트로 만든다 (split)
+#      각 단어에서 구두점이나 공백을 없앤다 (replace, strip, list comprehension)
+#      구두점이나 공백 제거로 인해 빈 문자열이 된 단어, 그리고 한글자 단어를 없앤다 (len, list comprehension)
+#
+#      각 단어의 갯수만큼 돌면서 수행한다 (for i)
+#         각 단어의 갯수만큼 돌면서 수행한다 (for j)
+#            단어 i와 단어 j를 튜플로 만들어 링크로 표현한다
+#            단어 i와 단어 j를 정렬하여 링크 표현을 일관되게 한다. ('되겠습니다', '대통령이') => ('대통령이', '되겠습니다')
+#            해당 링크에 대한 빈도를 하나 증가시킨다
+# 
+# 단어 링크 빈도 dict의 모든 key를 가져온다 (dict.keys())
+# 각 key를 돌면서 수행한다 (for)
+#   만약 key에 해당하는 단어의 빈도가 2보다 작다면 (if)
+#     해당 링크 key를 dict에서 제거한다 (del)
+#
+# 단어 링크 빈도 dict의 정보를 graph에 옮겨 담는다
+# 그래프를 그린다
+#+END_SRC
+
+
 본문은 문재인 대통령의 대통령 취임 연설문입니다.
 
 #+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/language-basic-2-word-map.png
