@@ -197,7 +197,7 @@ def 함수이름(인자1, 인자2, 인자3, ...):
 
 여기서, 네트워크에 노드와 링크를 추가하는 부분 이외에, 실제로 네트워크를 그리는 부분의 코드가 좀 복잡하여 숨기고 싶을 때, 함수를 사용할 수 있습니다.
 
-#+BEGIN_SRC ipython :session :exports code :results
+#+BEGIN_SRC python :exports code :results
   import networkx as nx
 
   def draw_graph(graph):
