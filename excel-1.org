@@ -204,7 +204,7 @@ tab(df.sort_values(['신장(cm)', '몸무게(kg)'], ascending=False))
 df.sort_values(['신장(cm)', '몸무게(kg)'], ascending=[False, True])
 #+END_SRC
 
-#+BEGIN_SRC ipython :session :results raw output :exports both
+#+BEGIN_SRC ipython :session :results raw output :exports result
 tab(df.sort_values(['신장(cm)', '몸무게(kg)'], ascending=[False, True]))
 #+END_SRC
 
