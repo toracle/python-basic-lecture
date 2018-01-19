@@ -17,6 +17,7 @@
 
 이번에는 웹페이지를 수집하는 방법을 중점적으로 살펴봅니다.
 
+
 ** 웹페이지 수집 - Crawling & Scraping
 
 #+BEGIN_EXAMPLE
@@ -53,164 +54,286 @@ http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=500
 
 http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&mission=201001&page=1
 
+웹페이지를 가져오기 위해서, 여기서는 ~requests~ 라는 패키지를 사용할 것입니다. 사용법이 어렵거나 복잡한 내장 ~http~ 처리 모듈과는 달리 requests는 편리한 기능들을 많이 제공합니다.
 
-#+BEGIN_SRC python :results output :exports both
-  # -*- coding: utf-8 -*-
+#+BEGIN_SRC python :exports both :results output
   import requests
-
-  def fetch_one_page():
-      response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1')
-      for line in response.iter_lines():
-          decoded_line = line.decode('euc-kr')   # 네이버 영화 웹페이지는 한글이 EUC-KR 인코딩으로 기록되어 있습니다.
-          if not decoded_line.strip():           # 앞뒤 공백을 제거한 후, 빈 줄이면 해당 줄은 건너뜁니다.
-             continue
-          print(decoded_line)
-
-  fetch_one_page()
-#+END_SRC
-
-
-출력된 결과를 자세히 살펴보면, 우리가 뽑아내고 싶은 대상인, 배우들의 목록이 다음과 같은 규칙성을 가진채 출력되고 있음을 알 수 있습니다.
-
-
-#+BEGIN_SRC html
-  <li>
-      <a href="/movie/bi/pi/basic.nhn?code=310941"> 박은선</a>
-      <ul class="detail">
-      <li><a href='?nation=KR' class='green'><b>한국</b></a></li> 
-      </ul>
-  </li>
-
-  <li>
-      <a href="/movie/bi/pi/basic.nhn?code=131804">C.S. 리 (C.S. Lee)</a>
-      <ul class="detail">
-      <li><a href='?nation=KR&year=1970' class='green'>1971</a><a href='?nation=KR&year=19711230' class='green'>.12.30</a></li><li><a href='?nation=KR' class='green'><b>한국</b></a></li> 
-      </ul>
-  </li>
-#+END_SRC
-
-여기서 우리는 배우의 이름이 나와있는 한 줄을 가져오면 됩니다. =str= 에 대해 =in= 연산자를 사용하여, ~<a href="/movie/bi/pi/basic.nhn?code=~ 라는 문자열을 포함하는 줄만을 뽑아낼 수 있습니다.
-
-
-#+BEGIN_SRC python :results output :exports both
-# -*- coding: utf-8 -*-
-import requests
-
-def fetch_one_page():
-    response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1')
-    for line in response.iter_lines():
-        decoded_line = line.decode('euc-kr')
-        if not decoded_line.strip():
-           continue
-        if not '<a href="/movie/bi/pi/basic.nhn?code=' in decoded_line:
-           continue
-        print(decoded_line.strip())
-
-fetch_one_page()
+  response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&mission=201001&page=1')
+  print(response.content.decode('euckr').strip()[:300])
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-<a href="/movie/bi/pi/basic.nhn?code=131804">C.S. 리 (C.S. Lee)</a>
-<a href="/movie/bi/pi/basic.nhn?code=1671">김란</a>
-<a href="/movie/bi/pi/basic.nhn?code=1899">김동주</a>
-<a href="/movie/bi/pi/basic.nhn?code=2311">김윤</a>
-<a href="/movie/bi/pi/basic.nhn?code=54817">김태용</a>
-<a href="/movie/bi/pi/basic.nhn?code=58580">금동현</a>
-<a href="/movie/bi/pi/basic.nhn?code=63528">김동령 (Kim Dong Ryung)</a>
-<a href="/movie/bi/pi/basic.nhn?code=71377">김지아</a>
-<a href="/movie/bi/pi/basic.nhn?code=71547">김은진</a>
-<a href="/movie/bi/pi/basic.nhn?code=74390">김태준 (KIM Tae-joon)</a>
-<a href="/movie/bi/pi/basic.nhn?code=75887">김기훈</a>
-<a href="/movie/bi/pi/basic.nhn?code=75890">김동우</a>
-<a href="/movie/bi/pi/basic.nhn?code=76857">김문일</a>
-<a href="/movie/bi/pi/basic.nhn?code=78312">김정우</a>
-<a href="/movie/bi/pi/basic.nhn?code=80433">김용완 (Kim Yongwan)</a>
-<a href="/movie/bi/pi/basic.nhn?code=81261">김광빈 (KIM Kwang-bin)</a>
-<a href="/movie/bi/pi/basic.nhn?code=83431">권정은</a>
-<a href="/movie/bi/pi/basic.nhn?code=84960">김필재</a>
-<a href="/movie/bi/pi/basic.nhn?code=85457">김선하</a>
-<a href="/movie/bi/pi/basic.nhn?code=86620">김효정</a>
+<Response [200]>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+
+
+
+
+<meta property="me2:image" content="http://imgmovie.naver.com/today/naverme/naverme_profile.jpg"/>
+<meta property="me2:post_tag" 
 #+end_example
 
-사람 이름은 동명이인이 있을 수도 있으니, 사람 일련번호도 함께 추출해야 합니다.
+위와 같이, ~get()~ 함수를 사용해 URL로부터 HTML 문서를 가져오고, 그 결과 객체를 반환합니다. 결과에는 다양한 정보들이 담겨있는데, ~content~ 속성에는 HTML 문서의 내용이 담겨있습니다. (위 코드에서는 강의자료의 가독성을 위해 content 출력 최대 문자 수를 300개로 제한했습니다.)
 
-사람 일련번호는 ~code=~ 라는 문자열부터 처음 ~"~ 라는 문자를 만날 때까지 추출하면 되고, 사람 이름은 ~>~ 라는 문자부터 처음 ~<~ 문자를 만날 때까지 추출하면 됩니다.
+출력된 결과를 자세히 살펴보면, 우리가 뽑아내고 싶은 대상인, 배우들의 목록이 다음과 같은 규칙성을 가진채 출력되고 있음을 알 수 있습니다.
 
-~str~ 에는 ~find~ 라는 메소드가 있습니다. 대상 문자열이 원본 문자열 상에서 몇번째 위치에 등장하는지를 알려주는 메소드입니다.
+#+BEGIN_SRC html
+  <ul class="directory_list">
+    <li>
+      <a href="/movie/bi/pi/basic.nhn?code=310941"> 박은선</a>
+      <ul class="detail">
+        <li><a href='?nation=KR' class='green'><b>한국</b></a></li> 
+      </ul>
+    </li>
+  
+    <li>
+      <a href="/movie/bi/pi/basic.nhn?code=131804">C.S. 리 (C.S. Lee)</a>
+      <ul class="detail">
+        <li><a href='?nation=KR&year=1970' class='green'>1971</a><a href='?nation=KR&year=19711230' class='green'>.12.30</a></li><li><a href='?nation=KR' class='green'><b>한국</b></a></li> 
+      </ul>
+    </li>
+  </ul>
+#+END_SRC
 
+여기서 우리는 배우의 이름이 나와있는 element를 가져오면 됩니다. class가 ~directory_list~ 인 ~ul~ 태그 아래 ~li~ 태그가 있고, 그 아래 ~a~ 태그가 존재합니다.
 
 #+BEGIN_SRC python :results output :exports both
   # -*- coding: utf-8 -*-
   import requests
+  from bs4 import BeautifulSoup
 
-  def fetch_one_page():
-      response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1')
-      actor_id_list = []
-      for line in response.iter_lines():
-          decoded_line = line.decode('euc-kr')
-          if not decoded_line.strip():
-             continue
-          if '<a href="/movie/bi/pi/basic.nhn?code=' not in decoded_line:
-             continue
-          _line = decoded_line.strip()
-          id_start = _line.find('code=')                  # 'code='가 처음 등장하는 위치를 기억
-          id_end = _line.find('"', id_start)              # 'code=' 위치 이후에 처음 "가 등장하는 위치를 기억
-          actor_id = _line[id_start+len('code='):id_end]  # 'code=' 이후부터 처음 " 등장 이전까지 문자열을 slice
-          actor_id_list.append({'id': actor_id, 'name': ''})
-      return actor_id_list
-
-  actor_id_list = fetch_one_page()
-  print(actor_id_list)
+  response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1')
+  soup = BeautifulSoup(response.content.decode('euc-kr'), 'html5lib')
+  actors = soup.select('ul.directory_list > li > a')
+  print(actors)
 #+END_SRC
 
 #+RESULTS:
-: [{'name': '', 'id': '131804'}, {'name': '', 'id': '1671'}, {'name': '', 'id': '1899'}, {'name': '', 'id': '2311'}, {'name': '', 'id': '54817'}, {'name': '', 'id': '58580'}, {'name': '', 'id': '63528'}, {'name': '', 'id': '71377'}, {'name': '', 'id': '71547'}, {'name': '', 'id': '74390'}, {'name': '', 'id': '75887'}, {'name': '', 'id': '75890'}, {'name': '', 'id': '76857'}, {'name': '', 'id': '78312'}, {'name': '', 'id': '80433'}, {'name': '', 'id': '81261'}, {'name': '', 'id': '83431'}, {'name': '', 'id': '84960'}, {'name': '', 'id': '85457'}, {'name': '', 'id': '86620'}]
+: [<a href="/movie/bi/pi/basic.nhn?code=131804">C.S. 리 (C.S. Lee)</a>, <a href="/movie/bi/pi/basic.nhn?code=1671">김란</a>, <a href="/movie/bi/pi/basic.nhn?code=1899">김동주</a>, <a href="/movie/bi/pi/basic.nhn?code=2311">김윤</a>, <a href="/movie/bi/pi/basic.nhn?code=54817">김태용</a>, <a href="/movie/bi/pi/basic.nhn?code=58580">금동현</a>, <a href="/movie/bi/pi/basic.nhn?code=63528">김동령 (Kim Dong Ryung)</a>, <a href="/movie/bi/pi/basic.nhn?code=71377">김지아</a>, <a href="/movie/bi/pi/basic.nhn?code=71547">김은진</a>, <a href="/movie/bi/pi/basic.nhn?code=74390">김태준 (KIM Tae-joon)</a>, <a href="/movie/bi/pi/basic.nhn?code=75887">김기훈</a>, <a href="/movie/bi/pi/basic.nhn?code=75890">김동우</a>, <a href="/movie/bi/pi/basic.nhn?code=76857">김문일</a>, <a href="/movie/bi/pi/basic.nhn?code=78312">김정우</a>, <a href="/movie/bi/pi/basic.nhn?code=80433">김용완 (Kim Yongwan)</a>, <a href="/movie/bi/pi/basic.nhn?code=81261">김광빈 (KIM Kwang-bin)</a>, <a href="/movie/bi/pi/basic.nhn?code=83431">권정은</a>, <a href="/movie/bi/pi/basic.nhn?code=84960">김필재</a>, <a href="/movie/bi/pi/basic.nhn?code=85457">김선하</a>, <a href="/movie/bi/pi/basic.nhn?code=86620">김효정</a>]
 
+사람 이름은 동명이인이 있을 수도 있으니, 사람 일련번호도 함께 추출해야 합니다.
 
-** 연습문제
+사람 일련번호는 ~href~ 속성의 값에서 code= 라는 문자열부터 끝까지 추출하면 됩니다. 
 
-위 코드는 사람 일련번호를 추출하여 출력합니다. 사람 이름은 여러분이 해보세요.
+~str~ 에는 ~find~ 라는 메소드가 있습니다. 대상 문자열이 원본 문자열 상에서 몇번째 위치에 등장하는지를 알려주는 메소드입니다.
 
-그리고 위 코드에서 ~page=1~ 부분을 수정하여, for문을 사용해서 페이지를 1부터 211까지 증가시켜가면서 URL을 요청하도록 해보세요. 그리고 이 작업을 수행하는 부분을 함수로 만들어놓도록 합시다. ~fetch_person_list~ 라고 하면 될 것 같네요.
+각 영화인 정보 URL에서 ~code=~ 위치가 어디로 나오는지 살펴봅시다.
 
-그리고, 목록을 반환하는 대신 =[일련번호,이름]= 의 구조로 텍스트 파일에 저장하게 해보세요.
-
-#+BEGIN_SRC python :results output :exports none
-  # -*- coding: utf-8 -*-
-  import requests
-
-  def get_id(line):
-      id_start = line.find('code=')                  # 'code='가 처음 등장하는 위치를 기억
-      id_end = line.find('"', id_start)              # 'code=' 위치 이후에 처음 "가 등장하는 위치를 기억
-      return line[id_start+len('code='):id_end]      # 'code=' 이후부터 처음 " 등장 이전까지 문자열을 slice
-
-  def get_name(line):
-      name_start = line.find('">')
-      name_end = line.find('<', name_start+1)
-      return line[name_start+2:name_end]
-
-  def fetch_one_page(page, fp):
-      response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page={}'.format(page))
-      for line in response.iter_lines():
-          decoded_line = line.decode('euc-kr')
-          if not decoded_line.strip():
-             continue
-          if '<a href="/movie/bi/pi/basic.nhn?code=' not in decoded_line:
-             continue
-          _line = decoded_line.strip()
-          actor_id = get_id(_line)
-          actor_name = get_name(_line)
-          fp.write('{},{}\n'.format(actor_id, actor_name))
-
-
-  def fetch_actor_list(fp):
-      for i in range(1, 221):
-          fetch_one_page(i, fp)
-
-  with open(os.path.join('kevin-outputs', 'actor_list.txt'), 'w', encoding='utf8') as fout:
-      fetch_actor_list(fout)
+#+BEGIN_SRC python :exports both :results output
+  url = "/movie/bi/pi/basic.nhn?code=131804"
+  print(url.find('code='))
 #+END_SRC
+
+#+RESULTS:
+: 23
+
+~find()~ 결과로 나온 위치부터 문자열의 끝까지 slicing해줍니다.
+
+#+BEGIN_SRC python :exports both :results output
+  url = "/movie/bi/pi/basic.nhn?code=131804"
+  actor_id = url[url.find('code='):]
+  print(actor_id)
+#+END_SRC
+
+#+RESULTS:
+: code=131804
+
+이런, ~code=~ 라는 문자까지 포함되어버렸네요? 그 문자열은 왜 포함되었을까요? ~find()~ 함수의 결과는 검색어 문자열의 맨 처음 위치를 기준으로 반환하는 것 같습니다. 그러면 ~code=~ 라는 문자열의 길이를 더해주면 되겠군요.
+
+#+BEGIN_SRC python :exports both :results output
+  url = "/movie/bi/pi/basic.nhn?code=131804"
+  actor_id = url[url.find('code=')+len('code='):]
+  print(actor_id)
+#+END_SRC
+
+#+RESULTS:
+: 131804
+
+이제 잘 나옵니다. 이 로직은 잊어버리지 않게 함수로 만들어놓겠습니다. 아래처럼 함수로 만들고 또 사용할 수 있습니다.
+
+#+BEGIN_SRC python :session :exports both :results output
+  def extract_id_from_href(url):
+      id = url[url.find('code=')+len('code='):]
+      return id
+
+  actor_id = extract_id_from_href("/movie/bi/pi/basic.nhn?code=131804")
+  print(actor_id)
+#+END_SRC
+
+#+RESULTS:
+: 131804
+
+
+#+BEGIN_SRC python :session :results output :exports both
+  # URL로부터 정보를 가져온다.
+  response = requests.get('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1')
+
+  # HTML 문서를 euc-kr 인코딩으로 읽어들이고, BeautifulSoup을 구성한다.
+  soup = BeautifulSoup(response.content.decode('euc-kr'), 'html5lib')
+
+  # 영화인 정보가 담긴 element를 CSS selector로 지정한다.
+  actor_elements = soup.select('ul.directory_list > li > a')
+
+  # 각 영화인의 정보가 {'name': '<이름>', 'id': '<영화인 번호>'}로 담긴 리스트를 list comprehension으로 생성한다.
+  actor_list = [{'name': element.string, 'id': extract_id_from_href(element['href'])} for element in actor_elements]
+
+  # 내용을 확인해본다.
+  print(actor_list)
+#+END_SRC
+
+#+RESULTS:
+: [{'id': '131804', 'name': 'C.S. 리 (C.S. Lee)'}, {'id': '1671', 'name': '김란'}, {'id': '1899', 'name': '김동주'}, {'id': '2311', 'name': '김윤'}, {'id': '54817', 'name': '김태용'}, {'id': '58580', 'name': '금동현'}, {'id': '63528', 'name': '김동령 (Kim Dong Ryung)'}, {'id': '71377', 'name': '김지아'}, {'id': '71547', 'name': '김은진'}, {'id': '74390', 'name': '김태준 (KIM Tae-joon)'}, {'id': '75887', 'name': '김기훈'}, {'id': '75890', 'name': '김동우'}, {'id': '76857', 'name': '김문일'}, {'id': '78312', 'name': '김정우'}, {'id': '80433', 'name': '김용완 (Kim Yongwan)'}, {'id': '81261', 'name': '김광빈 (KIM Kwang-bin)'}, {'id': '83431', 'name': '권정은'}, {'id': '84960', 'name': '김필재'}, {'id': '85457', 'name': '김선하'}, {'id': '86620', 'name': '김효정'}]
+
+
+위의 내용을 함수로 만들어보겠습니다.
+
+#+BEGIN_SRC python :results output :exports both
+  import requests
+  from bs4 import BeautifulSoup
+
+  def extract_id_from_href(url):
+      id = url[url.find('code=')+len('code='):]
+      return id
+
+  def fetch_actors_list_page(url):
+      # URL로부터 정보를 가져온다.
+      response = requests.get(url)
+
+      # HTML 문서를 euc-kr 인코딩으로 읽어들이고, BeautifulSoup을 구성한다.
+      soup = BeautifulSoup(response.content.decode('euc-kr'), 'html5lib')
+
+      # 영화인 정보가 담긴 element를 CSS selector로 지정한다.
+      actor_elements = soup.select('ul.directory_list > li > a')
+
+      # 각 영화인의 정보가 {'name': '<이름>', 'id': '<영화인 번호>'}로 담긴 리스트를 list comprehension으로 생성한다.
+      actor_list = [{'name': element.string, 'id': extract_id_from_href(element['href'])} for element in actor_elements]
+
+      # 내용을 반환한다.
+      return actor_list
+
+  print(fetch_actors_list_page('http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page=1'))
+#+END_SRC
+
+#+RESULTS:
+: [{'name': 'C.S. 리 (C.S. Lee)', 'id': '131804'}, {'name': '김란', 'id': '1671'}, {'name': '김동주', 'id': '1899'}, {'name': '김윤', 'id': '2311'}, {'name': '김태용', 'id': '54817'}, {'name': '금동현', 'id': '58580'}, {'name': '김동령 (Kim Dong Ryung)', 'id': '63528'}, {'name': '김지아', 'id': '71377'}, {'name': '김은진', 'id': '71547'}, {'name': '김태준 (KIM Tae-joon)', 'id': '74390'}, {'name': '김기훈', 'id': '75887'}, {'name': '김동우', 'id': '75890'}, {'name': '김문일', 'id': '76857'}, {'name': '김정우', 'id': '78312'}, {'name': '김용완 (Kim Yongwan)', 'id': '80433'}, {'name': '김광빈 (KIM Kwang-bin)', 'id': '81261'}, {'name': '권정은', 'id': '83431'}, {'name': '김필재', 'id': '84960'}, {'name': '김선하', 'id': '85457'}, {'name': '김효정', 'id': '86620'}]
+
+
+위 코드에서 URL의 ~page=1~ 부분을 수정하여, ~for~ 문을 사용해서 페이지를 1부터 211까지 증가시켜가면서 URL을 요청하도록 해보겠습니다. 아래처럼 ~for~ 문을 사용하면 각 페이지의 URL을 만들어낼 수 있겠죠?
+
+#+BEGIN_SRC python :exports both :results output
+  base_url = 'http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page={}'
+
+  for page_number in range(1, 212):
+      print(base_url.format(page_number))
+#+END_SRC
+
+위의 ~for~ 문을 사용해서, 각 페이지의 URL을 방문해서 영화인 목록을 가져오도록 합니다. 그리고 이 작업을 수행하는 부분을 함수로 만들어놓도록 합시다. ~fetch_actor_list_pages~ 라고 하면 될 것 같네요.
+
+#+BEGIN_SRC python :exports both :results output
+  import requests
+  from bs4 import BeautifulSoup
+
+  def extract_id_from_href(url):
+      actor_id = url[url.find('code=')+len('code='):]
+      return actor_id
+
+  def fetch_actors_list_page(url):
+      # URL로부터 정보를 가져온다.
+      response = requests.get(url)
+
+      # HTML 문서를 euc-kr 인코딩으로 읽어들이고, BeautifulSoup을 구성한다.
+      soup = BeautifulSoup(response.content.decode('euc-kr'), 'html5lib')
+
+      # 영화인 정보가 담긴 element를 CSS selector로 지정한다.
+      actor_elements = soup.select('ul.directory_list > li > a')
+
+      # 각 영화인의 정보가 {'name': '<이름>', 'id': '<영화인 번호>'}로 담긴 리스트를 list comprehension으로 생성한다.
+      actor_list = [{'name': element.string, 'id': extract_id_from_href(element['href'])} for element in actor_elements]
+
+      # 내용을 반환한다.
+      return actor_list
+
+  def fetch_actors_list_pages():
+      # 기본 URL 템플릿
+      base_url = 'http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page={}'
+
+      # 1~211 페이지까지 순회한다
+      for page_number in range(1, 212):
+          # actor_list 페이지를 추출한다
+          actor_list = fetch_actors_list_page(base_url.format(page_number))
+
+          # 각 actor를 순회한다
+          for actor in actor_list:
+              print(actor)
+
+  fetch_actors_list_pages()
+#+END_SRC
+
+#+RESULTS:
+
+목록을 화면에 출력하는 대신 =[일련번호,이름]= 의 구조로 텍스트 파일에 저장하게 해봅시다. 웹에서 데이터를 가져오는 경우, 시간이 오래 걸리기 때문에, 적절한 지점에서 파일로 저장하게 하고, 이후의 작업은 파일로부터 수행하도록 하면 시간을 아낄 수 있습니다.
+
+
+#+BEGIN_SRC python :results output :exports both
+  import csv
+  import os
+  import requests
+  from bs4 import BeautifulSoup
+
+  def extract_id_from_href(url):
+      id = url[url.find('code=')+len('code='):]
+      return id
+
+  def fetch_actors_list_page(url):
+      # URL로부터 정보를 가져온다.
+      response = requests.get(url)
+
+      # HTML 문서를 euc-kr 인코딩으로 읽어들이고, BeautifulSoup을 구성한다.
+      soup = BeautifulSoup(response.content.decode('euc-kr'), 'html5lib')
+
+      # 영화인 정보가 담긴 element를 CSS selector로 지정한다.
+      actors = soup.select('ul.directory_list > li > a')
+
+      # 각 영화인의 정보가 {'name': '<이름>', 'id': '<영화인 번호>'}로 담긴 리스트를 list comprehension으로 생성한다.
+      actor_id_list = [{'name': element.string, 'id': extract_id_from_href(element['href'])} for element in actors]
+
+      # 내용을 반환한다.
+      return actor_id_list
+
+  def fetch_actors_list_pages():
+      # 기본 URL 템플릿
+      base_url = 'http://movie.naver.com/movie/sdb/browsing/bpeople.nhn?nation=KR&page={}'
+
+      # 출력 파일들을 저장할 디렉토리가 존재하지 않는다면
+      if not os.path.isdir('kevin-outputs'):
+          # 디렉토리를 만든다
+          os.mkdir('kevin-outputs')
+
+      # actor_list.txt 라는 파일을 생성한다
+      with open('kevin-outputs/actor_list.txt', 'w', encoding='utf8') as fout:
+          # CSV writer를 생성한다
+          writer = csv.writer(fout)
+
+          # 1~211 페이지까지 순회한다
+          for page_number in range(1, 212):
+              # actor_list 페이지를 추출한다
+              actor_list = fetch_actors_list_page(base_url.format(page_number))
+
+              # 각 actor에 대해서 순회한다
+              for actor in actor_list:
+                  writer.writerow([actor['name'], actor['id']])
+
+  fetch_actors_list_pages()
+#+END_SRC
+
+위 코드를 실행하면 시간이 약 2~5분 내외로 소요됩니다. ~kevin-outputs~ 라는 하위 디렉토리가 생성되고, 그 안에 ~actor_list.txt~ 라는 파일이 생성됩니다.
 
 
 ** 영화 목록 가져오기
@@ -221,102 +344,326 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
 
 위 URL은, 사람 일련번호가 73436인 배우가 출연한 영화의 목록을 보여줍니다.
 
-여기에서 영화 일련번호와 영화 제목을 추출해보세요.
+여기에서 영화 일련번호와 영화 제목을 추출해보겠습니다. 위 웹페이지에서 영화 정보가 담겨 있는 부분은 아래처럼 생겼습니다.
 
-그리고 여기에서도 URL의 페이지 번호를 증가시켜가면서 요청을 해보세요. (단, 이 경우에는 배우들마다 출연 영화 정보 페이지가 몇 페이지까지 있는지 일일이 미리 알 수 없습니다. 프로그램이 판단하도록 해야 합니다. 마지막 페이지에 도달했을 때를 프로그램이 어떻게 판단할 수 있을지 생각해보세요.)
+#+BEGIN_SRC html
+  <div class="ifr_area" id="iframeDiv">
+    <ul class="lst_pilmo margin_up">
+      <li>
+        <p class="pilmo_thumb"><a href="/movie/bi/mi/basic.nhn?code=169078" target="_blank" onclick="top.clickcr(this, 'fil.img', '', '', event);"><img src="http://movie2.phinf.naver.net/20170922_75/1506041155899ggvnP_JPEG/movie_image.jpg?type=m133_190_2" alt="기묘한 가족" onerror="this.src='http://static.naver.net/movie/2012/06/dft_img133x190.png'"/></a></p>
+        <div class="pilmo_info">
+          <strong class="pilmo_tit">
+            <a href="/movie/bi/mi/basic.nhn?code=169078" target="_blank" onclick="top.clickcr(this, 'fil.title', '', '', event);">기묘한 가족</a>
+          </strong>
+          <div class="star_score b_star">
+            <span class="st_off"><span class="st_on" style="width:100.0%"></span></span><em>10.00</em>
+          </div>
+          <p class="pilmo_genre">
+            <a href="/movie/sdb/browsing/bmovie.nhn?year=2017" target="_top">2017</a>
+            <a href="/movie/sdb/browsing/bmovie.nhn?nation=KR" target="_top">한국</a>
+            <span>
+              <a href="/movie/sdb/browsing/bmovie.nhn?genre=11" target="_top">코미디</a>
+            </span>
+          </p>
+          <p class="pilmo_arr">
+            <span class="no_bg">
+              <a href="/movie/sdb/browsing/bpeople.nhn?mission=201001" target="_top" class="mv_people">주연</a>
+            </span>
+            <em>민걸 역</em>
+          </p>
+          <div class="pilmo_btns">
+          </div>	 
+        </div>
+      </li>
+    </ul>
+  </div>
+#+END_SRC
+
+~pilmo_tit~ 라는 엘리먼트 아래에 있는 ~a~ 태그에 영화의 제목과 코드가 들어있습니다.
 
 
-#+BEGIN_SRC python :results output :exports both
-  # -*- coding: utf-8 -*-
+#+BEGIN_SRC python :exports both :results output
   import requests
+  from bs4 import BeautifulSoup
 
-  def get_id(line):
-      id_start = line.find('code=')                  # 'code='가 처음 등장하는 위치를 기억
-      id_end = line.find('"', id_start)              # 'code=' 위치 이후에 처음 "가 등장하는 위치를 기억
-      return line[id_start+len('code='):id_end]      # 'code=' 이후부터 처음 " 등장 이전까지 문자열을 slice
+  # 영화인 추출할 때도 사용했던 동일한 함수
+  def extract_id_from_href(url):
+      id = url[url.find('code=')+len('code='):]
+      return id
 
-  def get_name(line):
-      name_start = line.find('">')
-      name_end = line.find('<', name_start+1)
-      return line[name_start+2:name_end]
+  actor_id = 73436
+  page = 1
+
+  # actor_id와 page 값을 사용해 URL을 만든다
+  url = 'http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode={}&page={}'.format(actor_id, page)
+
+  # 웹페이지를 가져온다
+  response = requests.get(url)
+
+  # HTML 본문을 디코딩하여 가져온다. 이 웹사이트는 특이하게 영화인 목록은 euckr 인코딩인데 영화 목록은 utf8 인코딩이네요.
+  html = response.content.decode('utf8').strip()
+
+  # BeautifulSoup 사용해서 HTML을 해석한다
+  soup = BeautifulSoup(html, 'html5lib')
+
+  # 영화 정보 엘리먼트들을 가져온다
+  movie_elements = soup.select('.pilmo_tit > a')
+
+  # 각 영화의 정보가 {'name': '<이름>', 'id': '<영화 번호>'}로 담긴 리스트를 list comprehension으로 생성한다.
+  movies = [{'name': element.string, 'id': extract_id_from_href(element['href'])} for element in movie_elements]
+
+  print(movies)
+#+END_SRC
+
+#+RESULTS:
+: [{'id': '169078', 'name': '기묘한 가족'}, {'id': '137890', 'name': '살인자의 기억법'}, {'id': '146544', 'name': '어느날'}, {'id': '132933', 'name': '판도라'}, {'id': '124013', 'name': '도리화가'}, {'id': '44911', 'name': '무뢰한'}, {'id': '123386', 'name': '누구에게나 찬란한'}, {'id': '102817', 'name': '해적: 바다로 간 산적'}]
+
+그리고 여기에서도 URL의 페이지 번호를 증가시켜가면서 요청을 해보겠습니다. 단, 이 경우에는 배우들마다 출연 영화 정보 페이지가 몇 페이지까지 있는지 일일이 미리 알 수 없습니다. 프로그램이 판단하도록 해야 합니다. 마지막 페이지에 도달했을 때를 프로그램이 어떻게 판단할 수 있을지 생각해보세요.
+
+여기서는, '다음' 페이지로 가는 버튼이 존재하는지 아닌지로 판단할 수 있겠습니다. 그래서 매번 새로운 영화 정보 페이지를 가져올 때마다, '다음' 버튼이 있는지를 확인하고, 그에 따라 다음 페이지를 방문할지 결정합니다.
+
+이것을 위해서, ~has_next_page~ 라는 이름의 변수를 도입하고, '다음' 버튼이 있는지를 이 변수에 ~True~ 혹은 ~False~ 로 담습니다. 그리고 ~while~ 문을 ~has_next_page~ 값이 ~True~ 인 동안만, 즉 다음 페이지가 존재하는 동안만 반복합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import requests
+  from bs4 import BeautifulSoup
+
+  # 영화인 추출할 때도 사용했던 동일한 함수
+  def extract_id_from_href(url):
+      id = url[url.find('code=')+len('code='):]
+      return id
+
+  actor_id = 73436
+  has_next_page = True
+  page = 1
+
+  while has_next_page:
+      # actor_id와 page 값을 사용해 URL을 만든다
+      url = 'http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode={}&page={}'.format(actor_id, page)
+
+      # 웹페이지를 가져온다
+      response = requests.get(url)
+
+      # HTML 본문을 디코딩하여 가져온다. 이 웹사이트는 특이하게 영화인 목록은 euckr 인코딩인데 영화 목록은 utf8 인코딩이네요.
+      html = response.content.decode('utf8').strip()
+
+      # BeautifulSoup 사용해서 HTML을 해석한다
+      soup = BeautifulSoup(html, 'html5lib')
+
+      # 영화 정보 엘리먼트들을 가져온다
+      movie_elements = soup.select('.pilmo_tit > a')
+
+      # 각 영화의 정보가 {'name': '<이름>', 'id': '<영화 번호>'}로 담긴 리스트를 list comprehension으로 생성한다.
+      movies = [{'name': element.string, 'id': extract_id_from_href(element['href'])} for element in movie_elements]
+
+      print(movies)
+
+      # pg_next 클래스를 가진 엘리먼트를 모두 가져온다
+      next_elements = soup.select('.pg_next')
+
+      # 다음 페이지가 있는지 여부를 갱신한다. pg_next 클래스를 가진 엘리먼트가 존재한다면 다음 페이지가 있고, 존재하지 않는다면 다음 페이지가 없다.
+      has_next_page = len(next_elements) > 0
+
+      # 페이지 번호를 하나 증가시킨다
+      page = page + 1
+#+END_SRC
+
+#+RESULTS:
+: [{'name': '기묘한 가족', 'id': '169078'}, {'name': '살인자의 기억법', 'id': '137890'}, {'name': '어느날', 'id': '146544'}, {'name': '판도라', 'id': '132933'}, {'name': '도리화가', 'id': '124013'}, {'name': '무뢰한', 'id': '44911'}, {'name': '누구에게나 찬란한', 'id': '123386'}, {'name': '해적: 바다로 간 산적', 'id': '102817'}]
+: [{'name': '상어', 'id': '105501'}, {'name': '앙상블', 'id': '97235'}, {'name': '아마존의 눈물', 'id': '73397'}, {'name': '나쁜 남자', 'id': '73393'}, {'name': '폭풍전야', 'id': '52229'}, {'name': '아마존의 눈물', 'id': '73398'}, {'name': '선덕여왕', 'id': '49084'}, {'name': '핸드폰', 'id': '51124'}]
+: [{'name': '미인도', 'id': '49525'}, {'name': '모던 보이', 'id': '65808'}, {'name': '강철중: 공공의 적 1-1', 'id': '68217'}, {'name': '우리를 행복하게 하는 몇가지 질문', 'id': '68130'}, {'name': '꽃피는 봄이 오면', 'id': '65839'}, {'name': '후회하지 않아', 'id': '50304'}, {'name': '연인', 'id': '64298'}, {'name': '내 청춘에게 고함', 'id': '54445'}]
+: [{'name': '황금어장', 'id': '35003'}, {'name': '굿바이 솔로', 'id': '44862'}, {'name': '내 이름은 김삼순', 'id': '42126'}, {'name': '제5공화국', 'id': '41288'}, {'name': '굳세어라 금순아', 'id': '40180'}, {'name': '하류인생', 'id': '37235'}, {'name': '학교 시즌1', 'id': '38655'}]
+
+위 내용을 함수로 만들어보겠습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import requests
+  from bs4 import BeautifulSoup
+
+  # 영화인 추출할 때도 사용했던 동일한 함수
+  def extract_id_from_href(url):
+      id = url[url.find('code=')+len('code='):]
+      return id
 
   def fetch_movie_list(actor_id):
-      page = 1
       has_next_page = True
+      page = 1
       movie_list = []
-      while has_next_page is True:                   # 다음 페이지로의 링크가 있는 경우에만 반복
-          has_next_page = False
+
+      while has_next_page:
+          # actor_id와 page 값을 사용해 URL을 만든다
           url = 'http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode={}&page={}'.format(actor_id, page)
+
+          # 웹페이지를 가져온다
           response = requests.get(url)
-          for line in response.iter_lines():
-              decoded_line = line.decode('utf8')
-              if '<em>다음</em>' in decoded_line:
-                  has_next_page = True
-              if '<a href="/movie/bi/mi/basic.nhn?code=' not in decoded_line or \
-                 'pilmo_thumb' in decoded_line:
-                  continue
-              _id = get_id(decoded_line)
-              _name = get_name(decoded_line)
-              movie_list.append({'id': _id, 'name': _name})
+
+          # HTML 본문을 디코딩하여 가져온다. 이 웹사이트는 특이하게 영화인 목록은 euckr 인코딩인데 영화 목록은 utf8 인코딩이네요.
+          html = response.content.decode('utf8').strip()
+
+          # BeautifulSoup 사용해서 HTML을 해석한다
+          soup = BeautifulSoup(html, 'html5lib')
+
+          # 영화 정보 엘리먼트들을 가져온다
+          movie_elements = soup.select('.pilmo_tit > a')
+
+          # 각 영화의 정보가 {'name': '<이름>', 'id': '<영화 번호>'}로 담긴 리스트를 list comprehension으로 생성한다.
+          movies = [{'name': element.string, 'id': extract_id_from_href(element['href'])} for element in movie_elements]
+
+          # 기존의 movie_list에 새로 들어온 movies를 추가한다. 왜 여기서는 movie_list.append(movies)를 하지 않고 + 를 사용할까요? 
+          # append를 사용하면 중첩 리스트가 됩니다. 실행해서 차이를 확인해보세요.
+          movie_list = movie_list + movies
+
+          # pg_next 클래스를 가진 엘리먼트를 모두 가져온다
+          next_elements = soup.select('.pg_next')
+
+          # 다음 페이지가 있는지 여부를 갱신한다. pg_next 클래스를 가진 엘리먼트가 존재한다면 다음 페이지가 있고, 존재하지 않는다면 다음 페이지가 없다.
+          has_next_page = len(next_elements) > 0
+
+          # 페이지 번호를 하나 증가시킨다
           page = page + 1
+
       return movie_list
 
   print(fetch_movie_list('1794'))
 #+END_SRC
 
 #+RESULTS:
-: [{'id': '145778', 'name': '동네변호사 조들호'}, {'id': '146940', 'name': '배우학교'}, {'id': '91073', 'name': '박수건달'}, {'id': '80664', 'name': '미쓰GO'}, {'id': '78945', 'name': '싸인'}, {'id': '84275', 'name': '다시 보고 싶은 SBS 드라마 10선'}, {'id': '50216', 'name': '바람의 화원'}, {'id': '68934', 'name': '우린 액션배우다'}, {'id': '65856', 'name': '쩐의 전쟁'}, {'id': '43493', 'name': '눈부신 날에'}, {'id': '37908', 'name': '달마야, 서울 가자'}, {'id': '38814', 'name': '파리의 연인'}, {'id': '37853', 'name': '범죄의 재구성'}, {'id': '35904', 'name': '4인용 식탁'}, {'id': '31922', 'name': '달마야 놀자'}, {'id': '31405', 'name': '인디안 썸머'}, {'id': '29042', 'name': '킬리만자로'}, {'id': '75707', 'name': '깡패와 건달로 본 한국 100년'}, {'id': '23860', 'name': '화이트 발렌타인'}, {'id': '19456', 'name': '약속'}, {'id': '42545', 'name': '내 마음을 뺏어봐'}, {'id': '18611', 'name': '편지'}, {'id': '18592', 'name': '모텔 선인장'}, {'id': '18167', 'name': '쁘아종'}, {'id': '41280', 'name': '사랑한다면'}, {'id': '17195', 'name': '유리'}, {'id': '13591', 'name': '사랑하고 싶은 여자 & 결혼하고 싶은 여자'}, {'id': '47778', 'name': '가변차선'}]
+: [{'name': '동네변호사 조들호', 'id': '145778'}, {'name': '배우학교', 'id': '146940'}, {'name': '박수건달', 'id': '91073'}, {'name': '미쓰GO', 'id': '80664'}, {'name': '싸인', 'id': '78945'}, {'name': '다시 보고 싶은 SBS 드라마 10선', 'id': '84275'}, {'name': '바람의 화원', 'id': '50216'}, {'name': '우린 액션배우다', 'id': '68934'}, {'name': '쩐의 전쟁', 'id': '65856'}, {'name': '눈부신 날에', 'id': '43493'}, {'name': '달마야, 서울 가자', 'id': '37908'}, {'name': '파리의 연인', 'id': '38814'}, {'name': '범죄의 재구성', 'id': '37853'}, {'name': '4인용 식탁', 'id': '35904'}, {'name': '달마야 놀자', 'id': '31922'}, {'name': '인디안 썸머', 'id': '31405'}, {'name': '킬리만자로', 'id': '29042'}, {'name': '깡패와 건달로 본 한국 100년', 'id': '75707'}, {'name': '화이트 발렌타인', 'id': '23860'}, {'name': '약속', 'id': '19456'}, {'name': '내 마음을 뺏어봐', 'id': '42545'}, {'name': '편지', 'id': '18611'}, {'name': '모텔 선인장', 'id': '18592'}, {'name': '쁘아종', 'id': '18167'}, {'name': '사랑한다면', 'id': '41280'}, {'name': '유리', 'id': '17195'}, {'name': '사랑하고 싶은 여자 & 결혼하고 싶은 여자', 'id': '13591'}, {'name': '가변차선', 'id': '47778'}]
 
 
-** 연습문제
-
-위의 코드를 활용하여, 배우 목록을 저장한 파일로부터 배우 ID를 하나씩 읽어들여, =[배우ID,영화ID,영화제목]= 의 구조로 텍스트 파일에 저장해보세요.
+위의 코드를 활용하여, 배우 목록을 저장한 파일로부터 배우 ID를 하나씩 읽어들여, =[배우ID,영화ID,영화제목]= 의 구조로 텍스트 파일에 저장해보겠습니다.
 
 
-#+BEGIN_SRC python :results output :exports none
-  # -*- coding: utf-8 -*-
+#+BEGIN_SRC python :results output :exports both
+  import csv
   import requests
+  from bs4 import BeautifulSoup
 
-  def get_id(line):
-      id_start = line.find('code=')                  # 'code='가 처음 등장하는 위치를 기억
-      id_end = line.find('"', id_start)              # 'code=' 위치 이후에 처음 "가 등장하는 위치를 기억
-      return line[id_start+len('code='):id_end]      # 'code=' 이후부터 처음 " 등장 이전까지 문자열을 slice
+  # 영화인 추출할 때도 사용했던 동일한 함수
+  def extract_id_from_href(url):
+      id = url[url.find('code=')+len('code='):]
+      return id
 
-  def get_name(line):
-      name_start = line.find('">')
-      name_end = line.find('<', name_start+1)
-      return line[name_start+2:name_end]
-
-  def fetch_movie_list(actor_id, fout):
-      page = 1
+  def fetch_movie_list(actor_id):
       has_next_page = True
-      while has_next_page is True:                   # 다음 페이지로의 링크가 있는 경우에만 반복
-          has_next_page = False
+      page = 1
+      movie_list = []
+
+      while has_next_page:
+          # actor_id와 page 값을 사용해 URL을 만든다
           url = 'http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode={}&page={}'.format(actor_id, page)
+
+          # 웹페이지를 가져온다
           response = requests.get(url)
-          for line in response.iter_lines():
-              decoded_line = line.decode('utf8')
-              if '<em>다음</em>' in decoded_line:
-                  has_next_page = True
-              if '<a href="/movie/bi/mi/basic.nhn?code=' not in decoded_line or \
-                 'pilmo_thumb' in decoded_line:
-                  continue
-              _id = get_id(decoded_line)
-              _name = get_name(decoded_line)
-              fout.write('{},{},{}\n'.format(actor_id, _id, _name))
+
+          # HTML 본문을 디코딩하여 가져온다. 이 웹사이트는 특이하게 영화인 목록은 euckr 인코딩인데 영화 목록은 utf8 인코딩이네요.
+          html = response.content.decode('utf8').strip()
+
+          # BeautifulSoup 사용해서 HTML을 해석한다
+          soup = BeautifulSoup(html, 'html5lib')
+
+          # 영화 정보 엘리먼트들을 가져온다
+          movie_elements = soup.select('.pilmo_tit > a')
+
+          # 각 영화의 정보가 {'name': '<이름>', 'id': '<영화 번호>'}로 담긴 리스트를 list comprehension으로 생성한다.
+          movies = [{'name': element.string, 'id': extract_id_from_href(element['href'])} for element in movie_elements]
+
+          # 기존의 movie_list에 새로 들어온 movies를 추가한다. 왜 여기서는 movie_list.append(movies)를 하지 않고 + 를 사용할까요? 
+          # append를 사용하면 중첩 리스트가 됩니다. 실행해서 차이를 확인해보세요.
+          movie_list = movie_list + movies
+
+          # pg_next 클래스를 가진 엘리먼트를 모두 가져온다
+          next_elements = soup.select('.pg_next')
+
+          # 다음 페이지가 있는지 여부를 갱신한다. pg_next 클래스를 가진 엘리먼트가 존재한다면 다음 페이지가 있고, 존재하지 않는다면 다음 페이지가 없다.
+          has_next_page = len(next_elements) > 0
+
+          # 페이지 번호를 하나 증가시킨다
           page = page + 1
 
-  with open(os.path.join('kevin-outputs', 'actor_list.txt'), encoding='utf-8') as fin:
-      for line in fin:
-          _line = line.strip()
-          if not _line:
-              continue
-          actor_id, actor_name = _line.split(',', 1)
-          with open(os.path.join('kevin-outputs', 'actor_{}_movies.txt'.format(actor_id)), 'w', encoding='utf-8') as fout:
-              fetch_movie_list(actor_id, fout)
+      return movie_list
+
+
+  def save_movie_list(actor_id):
+      with open('kevin-outputs/actor_{}_movies.txt'.format(actor_id), 'w', encoding='utf-8') as fout:
+          writer = csv.writer(fout)
+          movie_list = fetch_movie_list(actor_id)
+          for movie in movie_list:
+              row = [actor_id, movie['id'], movie['name']]
+              writer.writerow(row)
+
+  save_movie_list(1794)
 #+END_SRC
 
-#+RESULTS:
+이제 모든 영화인의 목록에 대해서 영화 목록을 저장해봅시다. 모든 영화인 목록은 ~actor_list.txt~ 에 저장해놓았었죠?
+
+#+BEGIN_SRC python :results output :exports both
+  import csv
+  import requests
+  from bs4 import BeautifulSoup
+
+  # 영화인 추출할 때도 사용했던 동일한 함수
+  def extract_id_from_href(url):
+      id = url[url.find('code=')+len('code='):]
+      return id
+
+  def fetch_movie_list(actor_id):
+      has_next_page = True
+      page = 1
+      movie_list = []
+
+      while has_next_page:
+          # actor_id와 page 값을 사용해 URL을 만든다
+          url = 'http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode={}&page={}'.format(actor_id, page)
+
+          # 웹페이지를 가져온다
+          response = requests.get(url)
+
+          # HTML 본문을 디코딩하여 가져온다. 이 웹사이트는 특이하게 영화인 목록은 euckr 인코딩인데 영화 목록은 utf8 인코딩이네요.
+          html = response.content.decode('utf8').strip()
+
+          # BeautifulSoup 사용해서 HTML을 해석한다
+          soup = BeautifulSoup(html, 'html5lib')
+
+          # 영화 정보 엘리먼트들을 가져온다
+          movie_elements = soup.select('.pilmo_tit > a')
+
+          # 각 영화의 정보가 {'name': '<이름>', 'id': '<영화 번호>'}로 담긴 리스트를 list comprehension으로 생성한다.
+          movies = [{'name': element.string, 'id': extract_id_from_href(element['href'])} for element in movie_elements]
+
+          # 기존의 movie_list에 새로 들어온 movies를 추가한다. 왜 여기서는 movie_list.append(movies)를 하지 않고 + 를 사용할까요? 
+          # append를 사용하면 중첩 리스트가 됩니다. 실행해서 차이를 확인해보세요.
+          movie_list = movie_list + movies
+
+          # pg_next 클래스를 가진 엘리먼트를 모두 가져온다
+          next_elements = soup.select('.pg_next')
+
+          # 다음 페이지가 있는지 여부를 갱신한다. pg_next 클래스를 가진 엘리먼트가 존재한다면 다음 페이지가 있고, 존재하지 않는다면 다음 페이지가 없다.
+          has_next_page = len(next_elements) > 0
+
+          # 페이지 번호를 하나 증가시킨다
+          page = page + 1
+
+      return movie_list
+
+  def save_movie_list(actor_id):
+      with open('kevin-outputs/actor_{}_movies.txt'.format(actor_id), 'w', encoding='utf-8') as fout:
+          writer = csv.writer(fout)
+          movie_list = fetch_movie_list(actor_id)
+          for movie in movie_list:
+              row = [actor_id, movie['id'], movie['name']]
+              writer.writerow(row)
+
+  def save_every_movie_list():
+      with open('kevin-outputs/actor_list.txt', encoding='utf8') as fin:
+          reader = csv.reader(fin)
+          for actor_name, actor_id in reader:
+              save_movie_list(actor_id)
+
+  save_every_movie_list()
+#+END_SRC
+
+수행을 하면 시간이 다소 걸립니다. 약 5~10분 정도 걸릴 수 있습니다. 탐색기에서 ~kevin-outputs~ 디렉토리에 파일이 잘 쌓이고 있는지 확인해보세요.
 
 
 ** 배우-영화 데이터로 배우-배우 관계 만들기
@@ -325,14 +672,15 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
 
 
 #+BEGIN_SRC python :results output :exports both
+  import csv
   import os
   import networkx as nx
 
   def construct_actor_info():
       actor_name_to_id = {}
       with open(os.path.join('kevin-outputs', 'actor_list.txt'), encoding='utf8') as fin:
-          for line in fin:
-              actor_id, actor_name = line.strip().split(',', 1)
+          reader = csv.reader(fin)
+          for actor_name, actor_id in reader:
               actor_name_to_id[actor_name] = actor_id
       return actor_name_to_id
 
@@ -343,12 +691,8 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
               continue
 
           with open(os.path.join('kevin-outputs', entry.name), encoding='utf8') as fin:
-              for line in fin:
-                  _line = line.strip()
-                  if not _line:
-                      continue
-
-                  actor_id, movie_id, movie_name = _line.split(',', 2)
+              reader = csv.reader(fin)
+              for actor_id, movie_id, movie_name in reader:
                   movie_to_actors.setdefault(movie_id, []).append(actor_id)
       return movie_to_actors
 
@@ -386,7 +730,3 @@ http://movie.naver.com/movie/bi/pi/filmoMission.nhn?peopleCode=73436&page=1
   print(get_path_length(G, actor_name_to_id, '박신양', '주병진'))
 #+END_SRC
 
-#+RESULTS:
-: 2
-: 2
-: 3
