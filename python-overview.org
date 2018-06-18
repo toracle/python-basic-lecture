@@ -10,7 +10,12 @@ def tab(df):
 
 Python은 범용 프로그래밍 언어 중 하나입니다. Guido van Rossum에 의해 [[http://python-history.blogspot.kr/2009/01/brief-timeline-of-python.html][1990년에 발표]]되었습니다. 처음에는 '[[https://www.python.org/doc/essays/cp4e/][모두를 위한 컴퓨터 프로그래밍]]'을 표방하며 일종의 교육용 언어로 출발했지만, 대중적 인기를 얻으며 범용 프로그래밍 언어로 발달했습니다. 현재는 많은 소프트웨어 개발자들에게 [[https://insights.stackoverflow.com/survey/2017#most-loved-dreaded-and-wanted][사랑받는 언어]] 중 하나이고, 특히 데이터 분석/과학분야에서도 많이 활용되고 있습니다.
 
-특히 Python은 인터프리터 언어로, 별도의 컴파일 과정을 거치지 않고 간편하게 실행할 수 있는 특징을 가지고 있습니다.
+Python은 프로그래밍 초보자들이 접근하기 쉬운 몇 가지 특징을 가지고 있습니다:
+
+ - 문법이 간결하여 읽기가 수월합니다.
+ - 다른 전문 프로그래밍 언어들에 비해 복잡한 문법이 적습니다.
+ - 인터프리터 언어로, 별도의 컴파일 과정을 거치지 않고 간편하게 실행할 수 있습니다.
+
 
 ** 데이터 분석에서 Python이 가지는 장점?
 
