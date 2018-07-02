@@ -383,9 +383,23 @@ print(s)
 
 ** 연습문제
 
-이쯤해서 NetworkX 사용해서 네트워크 그래프를 한번 그려봅시다.
+이쯤해서 NetworkX라는 도구를 사용해서 네트워크 그래프를 한번 그려봅시다.
 
-아래는 네트워크 그래프를 그리는 코드입니다.
+갑자기 약간 복잡하게 느껴질 수 있는데, 시각적인 예제를 다루는 것이 흥미로울 것 같아 마련했습니다.
+
+아래는 네트워크 그래프를 그리는 기초적인 코드입니다. 우선 의사 코드(pseudo code)부터 살펴보겠습니다.
+
+#+BEGIN_EXAMPLE
+# 빈 네트워크 그래프를 생성한다.
+# 네트워크 그래프에 1이라는 ID를 가진 노드를 추가한다.
+# 네트워크 그래프에 2라는 ID를 가진 노드를 추가한다.
+# 네트워크 그래프를 그린다.
+#+END_EXAMPLE
+
+[[file:outputs/day1-example-nx-0.png]]
+
+
+이 의사 코드를 실제 코드로 옮겨보면 아래와 같이 표현할 수 있습니다.
 
 #+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/day1-example-nx-0.png 
 %matplotlib inline
@@ -395,26 +409,34 @@ import networkx as nx
 # 텅 빈 네트워크를 생성합니다.
 G = nx.Graph()
 
-# 텅 비어있던 네트워크에, 1이라는 ID를 가진 노드를 추가합니다
+# 네트워크에 1이라는 ID를 가진 노드를 추가합니다
 G.add_node(1)
 
-# 텅 비어있던 네트워크에, 2라는 ID를 가진 노드를 추가합니다
+# 네트워크에 2라는 ID를 가진 노드를 추가합니다
 G.add_node(2)
 
-# 네트워크를 배치합니다.
-pos = nx.spring_layout(G)
+# 네트워크를 공간상에 배치합니다.
+positions = nx.spring_layout(G)
 
-# 링크와 노드, 라벨을 그립니다.
-nx.draw_networkx_edges(G, pos, alpha=0.2);
-nx.draw_networkx_nodes(G, pos, node_size=300);
-nx.draw_networkx_labels(G, pos);
+# 계산된 위치에 링크와 노드, 라벨을 그립니다.
+nx.draw_networkx_edges(G, positions, alpha=0.2);
+nx.draw_networkx_nodes(G, positions, node_size=300);
+nx.draw_networkx_labels(G, positions);
 #+END_SRC
 
 #+RESULTS:
 [[file:outputs/day1-example-nx-0.png]]
 
 
-여기에 아래와 같이 링크를 추가할 수 있습니다.
+~G = nx.Graph()~ 라는 명령을 통해서 빈 네트워크를 생성하고, =G.add_node()= 라는 명령을 통해서 노드를 추가했습니다. 그리고 뭔가 복잡한 문장들을 입력하니 그래프가 그려진 것을 볼 수 있습니다.
+
+실제로 여러분이 스스로 네트워크 그래프를 그려야 할 상황이라면, Python에서 네트워크 그래프를 그릴 수 있는 방법을 먼저 검색엔진에서 찾아봅니다. 검색엔진에서는 몇 가지의 방법을 제안할테고, 원하는 도구를 결정합니다.
+
+원하는 도구를 결정했다면, 해당하는 도구의 공식 문서를 읽어봅니다. 지금 이 경우에는 NetworkX가 되겠죠. NetworkX의 공식 문서 내용 중에는, 이 도구를 어떻게 사용해야 하는지 설명하는 [[https://networkx.github.io/documentation/stable/tutorial.html][튜토리얼]]이 있습니다. 그 문서를 읽어보면, 네트워크를 어떻게 생성하고 노드와 링크를 어떻게 추가하는지, 그림을 어떻게 그리는지 등의 내용이 설명되어 있습니다. 대부분의 경우에는 이런 튜토리얼을 읽으면서 그 도구를 어떻게 사용해야 할지 파악할 수 있습니다. 
+
+이번에는 링크를 추가해봅시다.
+
+=G.add_edge()= 명령을 사용하면 두 노드 사이에 링크를 만들 수 있습니다.
 
 #+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/day1-example-nx.png 
 %matplotlib inline
@@ -427,13 +449,15 @@ G.add_node(2)
 # 1번 노드와 2번 노드 사이에 링크를 연결합니다
 G.add_edge(1, 2)
 
-pos = nx.spring_layout(G)
-nx.draw_networkx_edges(G, pos, alpha=0.2);
-nx.draw_networkx_nodes(G, pos, node_size=50);
+# 네트워크를 공간상에 배치하고 그립니다.
+positions = nx.spring_layout(G)
+nx.draw_networkx_edges(G, positions, alpha=0.2);
+nx.draw_networkx_nodes(G, positions, node_size=50);
 #+END_SRC
 
 #+RESULTS:
 [[file:outputs/day1-example-nx.png]]
+
 
 위의 예제를 아래와 같이 변경해보세요.
 
@@ -462,8 +486,21 @@ nx.draw_networkx_nodes(G, pos, node_size=50);
 #+RESULTS:
 [[file:outputs/day1-exercise-1.png]]
 
+의사 코드(pseudo code)를 한번 작성해봅시다.
 
-참고로, =random.randint()= 함수는 아래와 같이 사용할 수 있습니다.
+#+BEGIN_EXAMPLE
+빈 네트워크 그래프를 생성한다
+50까지 순회할 동안
+  노드를 추가한다
+
+100까지 순회할 동안
+  50 이하의 랜덤 숫자를 생성한다
+  50 이하의 랜덤 숫자를 생성한다
+  두 랜덤 숫자를 가지고 링크를 추가한다
+#+END_EXAMPLE
+
+
+참고로, 랜덤 숫자는, =random.randint()= 함수를 사용하여 아래와 같이 만들 수 있습니다.
 
 #+BEGIN_SRC python :exports both :results output
 import random
@@ -479,3 +516,12 @@ print(random.randint(0, 10))
 : 1
 : 2
 : 10
+
+
+** 의사 코드(pseudo code) 작성하기
+
+여기까지 살펴보면서, 의사 코드(pseudo code)를 적극적으로 사용한 것을 보셨을겁니다.
+
+프로그래밍은, 내가 달성하고자 하는 바를, 프로그래밍 언어의 규칙과 절차에 따라서 표현하는 것이 핵심입니다. 그런데, 프로그래밍 언어에 익숙치 않을 때에는, 의사 코드(pseudo code)를 먼저 작성해보고, 의사 코드 수준에서 절차를 세분화하여, 최종적으로 프로그래밍 언어로 표현하는 연습을 하는 것이 도움이 되는 경우가 있습니다.
+
+의사 코드는 별달리 정해져 있는 규칙은 없고, 자신이 익숙한 자연어, 즉 한국어로 기술하면 됩니다.
