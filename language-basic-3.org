@@ -9,149 +9,6 @@ def tab(df):
 #+END_SRC
 
 
-** 파일 다루기
-
-이번에는 파일을 읽고 쓰는 방법을 알아봅시다.
-
-#+BEGIN_SRC python :results output :exports both
-  fin = open('assets/day1-example-read.txt')
-  content = fin.read()
-  print(content, end='')
-  fin.close()
-#+END_SRC
-
-#+RESULTS:
-: ID,Sex,Age,Programming?,Python?
-: 1,M,25,T,T
-: 2,F,27,T,F
-: 3,F,24,F,F
-: 4,F,25,T,T
-: 5,M,32,F,F
-: 6,M,39,T,F
-
-위의 코드를 살펴봅시다. ~open()~ 이라는 함수가 있고, 그 인자로 파일 경로를 전달합니다. 그러면 ~open()~ 함수는 파일 객체를 반환합니다. 파일 객체를 ~fin~ 이라는 이름의 변수에 담았고, 파일 객체의 메소드 중 ~read()~ 라는 메소드를 사용하여 파일의 내용을 모두 읽어들여 ~content~ 변수에 저장합니다. 파일을 모두 사용한 후에는 반드시 ~close()~ 메소드를 호출하여 파일을 닫아주어야 합니다.
-
-위 예제는 아래와 같이 줄여서 쓸 수 있습니다.
-
-#+BEGIN_SRC python :results output :exports both
-  with open('assets/day1-example-read.txt') as fin:
-        content = fin.read()
-  print(content, end='')
-#+END_SRC
-
-#+RESULTS:
-: ID,Sex,Age,Programming?,Python?
-: 1,M,25,T,T
-: 2,F,27,T,F
-: 3,F,24,F,F
-: 4,F,25,T,T
-: 5,M,32,F,F
-: 6,M,39,T,F
-
-여기서 =with A as B= 구문이 등장하는데, =with= 구문은 자신의 범위를 벗어난 경우 적절한 리소스 반환 작업을 수행합니다. (모든 리소스에 =with= 구문을 사용할 수 있는 것은 아닙니다.)
-
-파일이 작을 때는 위와 같은 방식으로 읽어들여도 좋지만, 파일이 매우 커서 메모리에 담을 수 없는 경우에는 한줄씩 읽어들여 처리하는 경우가 일반적입니다. 텍스트 파일을 열어 한줄씩 읽어들이는 구문은 아래와 같습니다. (아래 코드를 실행하기 전에, 먼저 파이썬 소스 파일과 같은 디렉토리에 =assets= 디렉토리를 만들고, [[file:assets/day1-example-read.txt][텍스트 파일]]을 =assets= 디렉토리 안에 저장해야 합니다.)
-
-#+BEGIN_SRC python :results output :exports both
-  fin = open('assets/day1-example-read.txt')
-  for line in fin:
-     print(line, end='')
-  fin.close()
-#+END_SRC
-
-#+RESULTS:
-: ID,Sex,Age,Programming?,Python?
-: 1,M,25,T,T
-: 2,F,27,T,F
-: 3,F,24,F,F
-: 4,F,25,T,T
-: 5,M,32,F,F
-: 6,M,39,T,F
-
-=open= 함수에 대해 조금 더 살펴봅시다.
-
-위의 예에서는 파일을 읽는 경우를 다루었는데, 파일에 기록하는 경우는 어떻게 할까요? 그런 경우에는 ~mode~ 인자에 write라는 의미로 ~'w'~ 값을 주면 됩니다. ~open()~ 함수의 도움말을 읽어보면, ~mode~ 의 기본값이 ~'r'~, 즉 read라는 것을 알 수 있습니다.
-
-#+BEGIN_SRC python :results output :exports both
-  with open('outputs/myoutput.txt', 'w') as fout:
-      fout.write('안녕 텍스트')
-#+END_SRC
-
-잠깐, 한글을 출력하면서 어떤 인코딩 방식을 사용하라고 따로 지정하지 않았는데, 그러면 어떤 인코딩을 사용한걸까요? Spyder 편집기로 파일을 열어보면 인코딩을 알 수 있습니다. 기본 인코딩은 사용하는 OS마다 다른데, Windows에서는 아마도 =EUC-KR= 로 저장되었을 것이고, MacOS 등 기타 OS에서는 아마 =UTF-8= 로 저장되었을 것입니다. 확실히 해두기 위해서는 한글을 출력할 때는 항상 ~encoding~ 인자를 명시해주면 좋겠네요.
-
-#+BEGIN_SRC python :results output :exports both
-  with open('outputs/myoutput.txt', 'w', encoding='utf8') as fout:
-      fout.write('안녕 텍스트')
-#+END_SRC
-
-읽을 때 역시 encoding 인자를 줄 수 있습니다. =EUC-KR= 인코딩으로 기록된 파일을 한번 읽어들여봅시다.
-
-#+BEGIN_SRC python :results output :exports both
-  with open('assets/moon_speech_euckr.txt', encoding='euckr') as fin:
-      print(fin.readline())
-#+END_SRC
-
-#+RESULTS:
-: 존경하고 사랑하는 국민 여러분. 감사합니다. 국민 여러분의 위대한 선택에 머리 숙여 깊이 감사드립니다. 저는 오늘 대한민국 제 19대 대통령으로서 새로운 대한민국을 향해 첫걸음을 내딛습니다. 지금 제 두 어깨는 국민 여러분으로부터 부여받은 막중한 소명감으로 무겁습니다. 지금 제 가슴은 한번도 경험하지 못한 나라를 만들겠다는 열정으로 뜨겁습니다. 그리고 지금 제 머리는 통합과 공존의 새로운 세상을 열어갈 청사진으로 가득 차 있습니다.
-
-
-~open()~ 함수를 실행한 결과로는 =File object= 가 반환됩니다. 위의 예에서 ~fin~, ~fout~ 에 담겨 있는 것은 모두 동일하게 =File object= 입니다. =File object= 의 메소드 중 자주 사용하는 것들은 아래와 같습니다:
-
- - read()
- - readline()
- - write(str)
-
-데이터를 다루다보면, CSV 형식의 데이터 파일을 접할 경우가 많습니다. 특히 Excel 프로그램에서 '다른 이름으로 저장'을 통해 생성한 CSV 파일은, 값에 구분자인 =,= 가 포함되어 있는 경우, 값을 따옴표(")로 감싸줍니다. 이런 경우에는 =csv= 모듈을 사용하면 편리합니다.
-
-#+BEGIN_SRC python :exports both :results output
-  import os
-  import csv
-
-  with open(os.path.join('outputs', 'basic-1-csv-writer.txt'), 'w', encoding='utf8') as fout:
-      writer = csv.writer(fout)
-      writer.writerow(['안녕 텍스트', 'https://www.wikipedia.org'])
-      writer.writerow(['안녕,파이썬', 'https://python.org'])
-#+END_SRC
-
-#+BEGIN_EXAMPLE
-안녕 텍스트,https://www.wikipedia.org
-"안녕,파이썬",https://python.org
-#+END_EXAMPLE
-
-#+BEGIN_SRC python :exports both :results output
-  import os
-  import csv
-
-  with open(os.path.join('outputs', 'basic-1-csv-writer.txt'), encoding='utf8') as fin:
-      reader = csv.reader(fin)
-      for row in reader:
-          print(row)
-#+END_SRC
-
-#+RESULTS:
-: ['안녕 텍스트', 'https://www.wikipedia.org']
-: ['안녕,파이썬', 'https://python.org']
-
-위에서 =os.path.join()= 함수를 사용했는데, 이 함수는 디렉토리 이름을 OS에 맞게 만들어주는 함수입니다. OS마다 디렉토리를 지정하는 방식에 약간씩 차이가 있습니다. 주로는 Windows OS와 Unix 계열의 OS(MacOS도 여기에 포함됩니다)가 서로 크게 차이납니다:
-
- - Windows: =C:\Users\toracle\anaconda3=
- - MacOS: =/Users/toracle/anaconda3=
-
-위에서 보듯이, 사소한 차이이긴 하지만, 윈도우에서는 디렉토리 구분자로 \를, MacOS에서는 /를 사용하는 것을 알 수 있습니다. =os.path.join()= 함수를 사용해서 디렉토리를 만들면 실행되는 OS에 적합한 디렉토리 이름을 반환합니다.
-
-#+BEGIN_SRC python :exports both :results output
-import os
-os.path.join('outputs', 'basic-1-csv-writer.txt')
-#+END_SRC
-
-위 함수는, 각각 아래와 같은 경로명을 반환합니다:
-
- - Windows: =outputs\basic-1-csv-writer.txt=
- - MacOS: =outputs/basic-1-csv-writer.txt=
-
-하지만 Python 코드상에서 / 를 디렉토리 구분자로 공통적으로 사용해도, 많은 경우 Python이 OS에 알맞게 적절하게 변환해주기는 합니다.
-
-
 ** 함수 (Function)
 
 지금까지 프로그램을 만들기 위한 하나 하나의 조각들을 살펴봤다면, 이제는 그 조각들을 쌓아올리기 위해, 다시 말해서 구조화를 하기 위해서 필요한 도구들을 살펴봅시다.
@@ -683,8 +540,6 @@ tab(rounded_df)
 #+RESULTS:
 [[file:outputs/park_speech_2.png]]
 
-
-
 ** 클래스 (Class)
 
 다음으로 살펴볼 것은 클래스입니다. 여러분이 직접 클래스를 만들어서 사용할 일은 별로 없을 것이라고 생각합니다. 하지만 외부 라이브러리은 클래스로 작성된 경우가 많습니다. 때문에 간단하게 클래스가 어떤 것인지 살펴보고, 어떻게 이해하고 사용하면 되는지 살펴보겠습니다.
@@ -741,6 +596,149 @@ tab(rounded_df)
 사용하는 측면에서는 이것 자체에 대해 깊이 이해할 필요는 없고, 이 정도만 이해하시면 됩니다. 클래스라는건 '클래스이름을 함수처럼 호출해서 객체를 생성한 뒤에, 객체에 .을 찍어서 메소드, 즉 객체에 속한 함수를 불러서 사용하면 되는구나. 객체를 생성할 때 어떤 인자를 줘야하는지는 =__init__= 함수(메소드)를 보면 되는구나.'
 
 예제 코드를 따라 작성하시다가, '어? 이건 변수인데 그 뒤에 ~.~ 을 찍어서 함수를 호출하네? 아, 이건 어떤 클래스의 객체인가보다'를 알아보실 수 있을겁니다.
+
+
+** 파일 다루기
+
+이번에는 파일을 읽고 쓰는 방법을 알아봅시다.
+
+#+BEGIN_SRC python :results output :exports both
+  fin = open('assets/day1-example-read.txt')
+  content = fin.read()
+  print(content, end='')
+  fin.close()
+#+END_SRC
+
+#+RESULTS:
+: ID,Sex,Age,Programming?,Python?
+: 1,M,25,T,T
+: 2,F,27,T,F
+: 3,F,24,F,F
+: 4,F,25,T,T
+: 5,M,32,F,F
+: 6,M,39,T,F
+
+위의 코드를 살펴봅시다. ~open()~ 이라는 함수가 있고, 그 인자로 파일 경로를 전달합니다. 그러면 ~open()~ 함수는 파일 객체를 반환합니다. 파일 객체를 ~fin~ 이라는 이름의 변수에 담았고, 파일 객체의 메소드 중 ~read()~ 라는 메소드를 사용하여 파일의 내용을 모두 읽어들여 ~content~ 변수에 저장합니다. 파일을 모두 사용한 후에는 반드시 ~close()~ 메소드를 호출하여 파일을 닫아주어야 합니다.
+
+위 예제는 아래와 같이 줄여서 쓸 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+  with open('assets/day1-example-read.txt') as fin:
+        content = fin.read()
+  print(content, end='')
+#+END_SRC
+
+#+RESULTS:
+: ID,Sex,Age,Programming?,Python?
+: 1,M,25,T,T
+: 2,F,27,T,F
+: 3,F,24,F,F
+: 4,F,25,T,T
+: 5,M,32,F,F
+: 6,M,39,T,F
+
+여기서 =with A as B= 구문이 등장하는데, =with= 구문은 자신의 범위를 벗어난 경우 적절한 리소스 반환 작업을 수행합니다. (모든 리소스에 =with= 구문을 사용할 수 있는 것은 아닙니다.)
+
+파일이 작을 때는 위와 같은 방식으로 읽어들여도 좋지만, 파일이 매우 커서 메모리에 담을 수 없는 경우에는 한줄씩 읽어들여 처리하는 경우가 일반적입니다. 텍스트 파일을 열어 한줄씩 읽어들이는 구문은 아래와 같습니다. (아래 코드를 실행하기 전에, 먼저 파이썬 소스 파일과 같은 디렉토리에 =assets= 디렉토리를 만들고, [[file:assets/day1-example-read.txt][텍스트 파일]]을 =assets= 디렉토리 안에 저장해야 합니다.)
+
+#+BEGIN_SRC python :results output :exports both
+  fin = open('assets/day1-example-read.txt')
+  for line in fin:
+     print(line, end='')
+  fin.close()
+#+END_SRC
+
+#+RESULTS:
+: ID,Sex,Age,Programming?,Python?
+: 1,M,25,T,T
+: 2,F,27,T,F
+: 3,F,24,F,F
+: 4,F,25,T,T
+: 5,M,32,F,F
+: 6,M,39,T,F
+
+=open= 함수에 대해 조금 더 살펴봅시다.
+
+위의 예에서는 파일을 읽는 경우를 다루었는데, 파일에 기록하는 경우는 어떻게 할까요? 그런 경우에는 ~mode~ 인자에 write라는 의미로 ~'w'~ 값을 주면 됩니다. ~open()~ 함수의 도움말을 읽어보면, ~mode~ 의 기본값이 ~'r'~, 즉 read라는 것을 알 수 있습니다.
+
+#+BEGIN_SRC python :results output :exports both
+  with open('outputs/myoutput.txt', 'w') as fout:
+      fout.write('안녕 텍스트')
+#+END_SRC
+
+잠깐, 한글을 출력하면서 어떤 인코딩 방식을 사용하라고 따로 지정하지 않았는데, 그러면 어떤 인코딩을 사용한걸까요? Spyder 편집기로 파일을 열어보면 인코딩을 알 수 있습니다. 기본 인코딩은 사용하는 OS마다 다른데, Windows에서는 아마도 =EUC-KR= 로 저장되었을 것이고, MacOS 등 기타 OS에서는 아마 =UTF-8= 로 저장되었을 것입니다. 확실히 해두기 위해서는 한글을 출력할 때는 항상 ~encoding~ 인자를 명시해주면 좋겠네요.
+
+#+BEGIN_SRC python :results output :exports both
+  with open('outputs/myoutput.txt', 'w', encoding='utf8') as fout:
+      fout.write('안녕 텍스트')
+#+END_SRC
+
+읽을 때 역시 encoding 인자를 줄 수 있습니다. =EUC-KR= 인코딩으로 기록된 파일을 한번 읽어들여봅시다.
+
+#+BEGIN_SRC python :results output :exports both
+  with open('assets/moon_speech_euckr.txt', encoding='euckr') as fin:
+      print(fin.readline())
+#+END_SRC
+
+#+RESULTS:
+: 존경하고 사랑하는 국민 여러분. 감사합니다. 국민 여러분의 위대한 선택에 머리 숙여 깊이 감사드립니다. 저는 오늘 대한민국 제 19대 대통령으로서 새로운 대한민국을 향해 첫걸음을 내딛습니다. 지금 제 두 어깨는 국민 여러분으로부터 부여받은 막중한 소명감으로 무겁습니다. 지금 제 가슴은 한번도 경험하지 못한 나라를 만들겠다는 열정으로 뜨겁습니다. 그리고 지금 제 머리는 통합과 공존의 새로운 세상을 열어갈 청사진으로 가득 차 있습니다.
+
+
+~open()~ 함수를 실행한 결과로는 =File object= 가 반환됩니다. 위의 예에서 ~fin~, ~fout~ 에 담겨 있는 것은 모두 동일하게 =File object= 입니다. =File object= 의 메소드 중 자주 사용하는 것들은 아래와 같습니다:
+
+ - read()
+ - readline()
+ - write(str)
+
+데이터를 다루다보면, CSV 형식의 데이터 파일을 접할 경우가 많습니다. 특히 Excel 프로그램에서 '다른 이름으로 저장'을 통해 생성한 CSV 파일은, 값에 구분자인 =,= 가 포함되어 있는 경우, 값을 따옴표(")로 감싸줍니다. 이런 경우에는 =csv= 모듈을 사용하면 편리합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import os
+  import csv
+
+  with open(os.path.join('outputs', 'basic-1-csv-writer.txt'), 'w', encoding='utf8') as fout:
+      writer = csv.writer(fout)
+      writer.writerow(['안녕 텍스트', 'https://www.wikipedia.org'])
+      writer.writerow(['안녕,파이썬', 'https://python.org'])
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+안녕 텍스트,https://www.wikipedia.org
+"안녕,파이썬",https://python.org
+#+END_EXAMPLE
+
+#+BEGIN_SRC python :exports both :results output
+  import os
+  import csv
+
+  with open(os.path.join('outputs', 'basic-1-csv-writer.txt'), encoding='utf8') as fin:
+      reader = csv.reader(fin)
+      for row in reader:
+          print(row)
+#+END_SRC
+
+#+RESULTS:
+: ['안녕 텍스트', 'https://www.wikipedia.org']
+: ['안녕,파이썬', 'https://python.org']
+
+위에서 =os.path.join()= 함수를 사용했는데, 이 함수는 디렉토리 이름을 OS에 맞게 만들어주는 함수입니다. OS마다 디렉토리를 지정하는 방식에 약간씩 차이가 있습니다. 주로는 Windows OS와 Unix 계열의 OS(MacOS도 여기에 포함됩니다)가 서로 크게 차이납니다:
+
+ - Windows: =C:\Users\toracle\anaconda3=
+ - MacOS: =/Users/toracle/anaconda3=
+
+위에서 보듯이, 사소한 차이이긴 하지만, 윈도우에서는 디렉토리 구분자로 \를, MacOS에서는 /를 사용하는 것을 알 수 있습니다. =os.path.join()= 함수를 사용해서 디렉토리를 만들면 실행되는 OS에 적합한 디렉토리 이름을 반환합니다.
+
+#+BEGIN_SRC python :exports both :results output
+import os
+os.path.join('outputs', 'basic-1-csv-writer.txt')
+#+END_SRC
+
+위 함수는, 각각 아래와 같은 경로명을 반환합니다:
+
+ - Windows: =outputs\basic-1-csv-writer.txt=
+ - MacOS: =outputs/basic-1-csv-writer.txt=
+
+하지만 Python 코드상에서 / 를 디렉토리 구분자로 공통적으로 사용해도, 많은 경우 Python이 OS에 알맞게 적절하게 변환해주기는 합니다.
 
 
 ** 연습문제
