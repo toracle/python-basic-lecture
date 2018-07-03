@@ -59,7 +59,6 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
 *** 3일차: 웹페이지 수집하기
 
  - [[file:language-basic-4.org][Python 기초 4]]: 모듈, 예외, 오류
- - [[file:kevin.org][웹문서 수집하기]]: 케빈 베이컨 게임
  - [[file:beautifulsoup.org][웹문서에서 정보 추출하기]]: HTML에서 원하는 정보 가져오기
  - [[file:jupyter-install.org][Jupyter Notebook에 익숙해지기]]
  - [[file:qna.org][Q&A 및 코드리뷰]]
@@ -68,20 +67,20 @@ Python을 5일 과정에 모두 완벽하게 배우는것은 어렵습니다. �
 
  - [[file:excel-1.org][엑셀 파일 다루기 1]]: 데이터 다루기
  - [[file:excel-2.org][엑셀 파일 다루기 2]]: 그래프 그리기
- - [[file:numpy.org][NumPy 소개]]
  - [[file:pandas.org][Pandas 배우기]]
  - [[file:matplotlib.org][Matplotlib 소개]]
  - [[file:qna.org][Q&A 및 코드리뷰]]
 
 *** 5일차: SNA / 커져가는 코드 관리하기
 
- - [[file:networkx.org][NetworkX 소개]]: SNA 분석하기
- - [[file:refactoring.org][큰 코드 관리하기]]: 디버거, 리팩토링
- - 회고 및 평가
 
 *** 후보 주제들
 
+ - [[file:kevin.org][웹문서 수집하기]]: 케빈 베이컨 게임
+ - [[file:numpy.org][NumPy 소개]]
  - [[file:regex.org][정규표현식(Regex)]]: 문자열 능숙하게 다루기
+ - [[file:networkx.org][NetworkX 소개]]: SNA 분석하기
+ - [[file:refactoring.org][큰 코드 관리하기]]: 디버거, 리팩토링
  - 패키지 만들기
  - GitHub 사용하기
  - Jupyter Notebook으로 보고서 만들기
