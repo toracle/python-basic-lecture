@@ -1,0 +1,177 @@
+** 연습문제: 형태소 분석기를 사용하여 의미망 그리기
+
+'[[file:language-basic-4.org][모듈 설치하기]]'에서 설치했던 KoNLPy 엔진을 사용하여 문장을 형태소 단위로 구분하고, 각 요소에 품사를 식별하여 붙여보겠습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  from konlpy.tag import Twitter  # KoNLPy 모듈 하위에 있는 tag라는 모듈에서 Twitter라는 클래스를 가져온다
+  tw = Twitter()                  # Twitter 클래스를 사용하여 객체를 생성한다
+  result = tw.pos('존경하고 사랑하는 국민 여러분, 감사합니다. 국민 여러분의 위대한 선택에 머리숙여 깊이 감사드립니다.') # tw 객체의 pos() 메소드를 실행한다
+  print(result)
+#+END_SRC
+
+#+RESULTS:
+: [('존경하고', 'Verb'), ('사랑하는', 'Verb'), ('국민', 'Noun'), ('여러분', 'Noun'), (',', 'Punctuation'), ('감사합', 'Verb'), ('니다', 'Eomi'), ('.', 'Punctuation'), ('국민', 'Noun'), ('여러분', 'Noun'), ('의', 'Josa'), ('위대한', 'Adjective'), ('선택', 'Noun'), ('에', 'Josa'), ('머리', 'Noun'), ('숙여', 'Verb'), ('깊이', 'Noun'), ('감사', 'Noun'), ('드립니', 'Verb'), ('다', 'Eomi'), ('.', 'Punctuation')]
+
+
+위의 NLP 엔진 사용법을 활용하여 의미망을 다시 그려봅시다.
+
+#+BEGIN_SRC python :results output :exports code
+  import networkx as nx
+  import matplotlib.pyplot as plt
+  from konlpy.tag import Twitter
+
+  def read_file(path):
+      with open(path) as fin:
+          return fin.read()
+
+  def clean_words(words):
+      cleansed_words = [w[0] for w in words if w[1] not in ('Punctuation', 'Josa', 'Eomi') and len(w[0]) > 1]
+      return cleansed_words
+
+  def make_complete_wordnet(words, word_edges):
+      num_words = len(words)
+      for index_i in range(num_words):
+          word_i = words[index_i]
+          for index_j in range(index_i+1, num_words):
+              word_j = words[index_j]
+              word_to_word = (word_i, word_j)
+              word_to_word = tuple(sorted(word_to_word))
+              word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
+
+  def construct_wordnet(text):
+      tw = Twitter()              # 트위터 형태소 분석기 객체를 생성한다
+      lines = text.split('\n')
+      word_edges = {}
+
+      for line in lines:
+          _line = line.strip()
+          if not _line:
+              continue
+          statements = _line.split('.')
+          for statement in statements:
+              if not statement:
+                  continue
+              words = tw.pos(statement) # 문장을 형태소로 구분하고 품사를 부착한다
+              cleansed_words = clean_words(words)
+              make_complete_wordnet(cleansed_words, word_edges)
+      return word_edges
+
+  def remove_low_frequency(word_edges, cutoff=2):
+      # 등장 빈도가 1회인 edge는 제거한다
+      keys = list(word_edges.keys())
+      for key in keys:
+          if word_edges[key] < cutoff:
+              del word_edges[key]
+      return
+
+  def draw_graph(word_edges):
+      G = nx.Graph()
+      for (word_1, word_2), freq in word_edges.items():
+          G.add_edge(word_1, word_2, weight=freq)
+
+      pos = nx.kamada_kawai_layout(G)
+      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
+      widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
+      nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1)
+      nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR') # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+      return
+#+END_SRC
+
+#+BEGIN_SRC ipython :results output :exports none
+  import networkx as nx
+  import matplotlib.pyplot as plt
+  from konlpy.tag import Twitter
+
+  def read_file(path):
+      with open(path) as fin:
+          return fin.read()
+
+  def clean_words(words):
+      cleansed_words = [w[0] for w in words if w[1] not in ('Punctuation', 'Josa', 'Eomi') and len(w[0]) > 1]
+      return cleansed_words
+
+  def make_complete_wordnet(words, word_edges):
+      num_words = len(words)
+      for index_i in range(num_words):
+          word_i = words[index_i]
+          for index_j in range(index_i+1, num_words):
+              word_j = words[index_j]
+              word_to_word = (word_i, word_j)
+              word_to_word = tuple(sorted(word_to_word))
+              word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
+
+  def construct_wordnet(text):
+      tw = Twitter()              # 트위터 형태소 분석기 객체를 생성한다
+      lines = text.split('\n')
+      word_edges = {}
+
+      for line in lines:
+          _line = line.strip()
+          if not _line:
+              continue
+          statements = _line.split('.')
+          for statement in statements:
+              if not statement:
+                  continue
+              words = tw.pos(statement) # 문장을 형태소로 구분하고 품사를 부착한다
+              cleansed_words = clean_words(words)
+              make_complete_wordnet(cleansed_words, word_edges)
+      return word_edges
+
+  def remove_low_frequency(word_edges, cutoff=2):
+      # 등장 빈도가 1회인 edge는 제거한다
+      keys = list(word_edges.keys())
+      for key in keys:
+          if word_edges[key] < cutoff:
+              del word_edges[key]
+      return
+
+  def draw_graph(word_edges):
+      G = nx.Graph()
+      for (word_1, word_2), freq in word_edges.items():
+          G.add_edge(word_1, word_2, weight=freq)
+
+      pos = nx.kamada_kawai_layout(G)
+      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
+      widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
+      nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1)
+      nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR') # 각자 시스템에 따라 적절한 폰트 이름으로 변경
+      return
+#+END_SRC
+
+#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/moon_speech_nlp.png
+  text = read_file('assets/moon_speech.txt')
+  wordnet = construct_wordnet(text)
+  remove_low_frequency(wordnet)
+  draw_graph(wordnet)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/moon_speech_nlp.png]]
+
+
+NLP 엔진을 사용하지 않은 결과와 비교했을 때, 조금 더 단어가 많아진 것처럼 보입니다. 아마도 형태소가 분리되면서 흩어져서 집계되던 어휘들이 모이면서 발생한 현상으로 보입니다. 이를테면, =대통령이=, =대통령은=, =대통령의= 처럼 각각 다른 단어로 여겨지던 것이, =대통령= 이라는 하나의 단어로 모아지게 된 것이죠.
+
+
+#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech_nlp.png
+  text = read_file('assets/park_speech.txt')
+  wordnet = construct_wordnet(text)
+  remove_low_frequency(wordnet)
+  draw_graph(wordnet)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/park_speech_nlp.png]]
+
+#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech_nlp_cutoff_3.png
+  text = read_file('assets/park_speech.txt')
+  wordnet = construct_wordnet(text)
+  remove_low_frequency(wordnet, cutoff=3)
+  draw_graph(wordnet)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+[[file:outputs/park_speech_nlp_cutoff_3.png]]

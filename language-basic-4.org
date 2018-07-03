@@ -6,6 +6,9 @@
 
 초기에는 여러분이 직접 모듈을 만들기보다는 다른 사람들이 만들어놓은 모듈을 사용할 일이 더 많이 있을겁니다.
 
+
+*** 모듈 불러들이기
+
 모듈을 사용하기 위해서는 우선 모듈을 불러들여서 메모리상에 적재해야 합니다.
 
 모듈을 적재하려면 ~import~ 구문을 사용합니다. import된 모듈은 ~.~ 을 통해서 그 안에 포함된 함수, 변수, 클래스 등에 접근할 수 있습니다.
@@ -28,7 +31,9 @@ print(listdir('.'))
 #+RESULTS:
 : ['.git', '.gitignore', '.mypy_cache', 'LICENSE.md', 'README.org', 'assets', 'beautifulsoup.org', 'excel-1.org', 'excel-2.org', 'installation.org', 'jupyter-install.org', 'kevin.org', 'language-basic-1.org', 'language-basic-2.org', 'language-basic-3.org', 'language-basic-4.org', 'obipy-resources', 'outputs', 'pandas.org', 'proficiency.org', 'python-overview.org', 'qna.org', 'refactoring.org', 'regex.org', 'testing.org']
 
-모듈의 이름이 길거나 겹치는 등의 이유로 별칭으로 접근하도록 지정할 수 있습니다.
+앞서 ~import~ 구문만을 사용했을 때는, ~os~ 라는 모듈 안에 있는 ~listdir()~ 함수에 접근하기 위해 ~os.listdir()~ 과 같이 전체 경로를 적어야 했지만, ~from .. import ..~ 구문을 사용하여 ~listdir()~ 함수를 명시적으로 불러들인 경우에는, ~listdir()~ 과 같이 곧바로 접근할 수 있습니다.
+
+모듈의 이름이 길거나 겹치는 경우에는 별칭으로 접근하도록 지정할 수 있습니다.
 
 #+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/basic-4-module-examp-1.png
 from matplotlib import pyplot as plt
@@ -41,56 +46,7 @@ plt.show()
 [[file:outputs/basic-4-module-examp-1.png]]
 
 
-Anaconda가 다양한 패키지들을 미리 포함하고 있기는 하지만, 필요한 패키지가 모두 포함되어있지는 않습니다. 때에 따라서 외부 패키지를 설치해야 합니다.
-
-[[http://arrow.readthedocs.io/en/latest/][arrow]]라는 패키지는 Python에서 날짜를 손쉽게 다룰 수 있게 도와줍니다. 이 패키지는 Anaconda에 기본적으로 포함되어 있지 않습니다. 이 패키지를 설치해봅시다. Anaconda Prompt를 실행하고 아래 명령을 입력해줍니다.
-
-#+BEGIN_SRC sh
-conda install arrow
-#+END_SRC
-
-이제 ~arrow~ 패키지를 사용할 수 있습니다.
-
-#+BEGIN_SRC python :exports both :results output
-import arrow
-print(arrow.get('2018-01-03 09:10:00+09:00'))
-#+END_SRC
-
-#+RESULTS:
-: 2018-01-03T09:10:00+09:00
-
-위에서는 ~conda~ 를 사용하여 패키지를 설치했습니다. ~conda~ 패키지 관리자는 Anaconda에서 관리합니다. 그런데 간혹 Anaconda 저장소에 올라가 있지 않고, Python 자체 저장소인 Pypi([[https://pypi.python.org][pypi.python.org]])에만 올라가 있는 패키지가 있습니다. 대표적으로 한글 형태소 분석기 모음인 [[http://konlpy.org/ko/latest/][KoNLPy]] 패키지가 그렇습니다. 이런 경우에는 ~pip~ 패키지 관리자를 사용하여 설치할 수 있습니다. ~pip~ 패키지 관리자는 Python에 가장 기본적으로 포함되어 있는 도구입니다.
-
-#+BEGIN_SRC sh
-pip install jpype1
-pip install konlpy
-#+END_SRC
-
-(KoNLPy를 사용하기 위해서는 Java Runtime이 설치되어 있어야 합니다.)
-
-간혹 Pypi에도 올라가 있지 않은 패키지도 있습니다. 간단한 패치를 적용하거나 정식으로 공개되지 않은 경우인데, GitHub 등 소스 코드 저장소에 저장되어 있는 경우에는 ~pip~ 명령으로 아래와 같이 설치할 수 있습니다.
-
-[[https://github.com/atizo/PyTagCloud][pytagcloud]]는 워드 클라우드를 그릴 수 있는 패키지입니다. 그런데 한글을 표시하기 위해서는 약간의 수정이 필요합니다. 그런데 [[http://konlpy.org/ko/latest/][KoNLPy]] 패키지의 저자분이 [[https://github.com/e9t/PyTagCloud-CJK][한글 패치를 해서 올려놓은 저장소]]가 있습니다. 이 저장소를 방문하면 저장소를 내려받을 수 있는 URL을 찾을 수 있습니다.
-
-[[file:assets/github-clone-url.png]]
-
-이 주소를 사용하여 패키지를 설치하려면 아래와 같이 실행합니다.
-
-#+BEGIN_SRC sh
-pip install git+https://github.com/e9t/PyTagCloud-CJK.git
-#+END_SRC
-
-이미 설치한 패키지는 아래와 같이 제거할 수 있습니다. ~conda~ 패키지 관리자로 설치한 경우에는 아래와 같이 제거합니다.
-
-#+BEGIN_SRC sh
-conda remove arrow
-#+END_SRC
-
-~pip~ 패키지 관리자로 설치한 경우에는 아래와 같이 제거합니다.
-
-#+BEGIN_SRC sh
-pip remove pytagcloud
-#+END_SRC
+([[file:language-basic-module-install.org][모듈 설치하기]] 참고내용)
 
 
 ** 예외 처리하기
@@ -204,227 +160,9 @@ pip remove pytagcloud
 
 ** 연습문제
 
-'모듈 설치하기'에서 설치했던 KoNLPy 엔진을 사용하여 문장을 형태소 단위로 구분하고, 각 요소에 품사를 식별하여 붙여보겠습니다.
-
-#+BEGIN_SRC python :exports both :results output
-  from konlpy.tag import Twitter  # KoNLPy 모듈 하위에 있는 tag라는 모듈에서 Twitter라는 클래스를 가져온다
-  tw = Twitter()                  # Twitter 클래스를 사용하여 객체를 생성한다
-  result = tw.pos('존경하고 사랑하는 국민 여러분, 감사합니다. 국민 여러분의 위대한 선택에 머리숙여 깊이 감사드립니다.') # tw 객체의 pos() 메소드를 실행한다
-  print(result)
-#+END_SRC
-
-#+RESULTS:
-: [('존경하고', 'Verb'), ('사랑하는', 'Verb'), ('국민', 'Noun'), ('여러분', 'Noun'), (',', 'Punctuation'), ('감사합', 'Verb'), ('니다', 'Eomi'), ('.', 'Punctuation'), ('국민', 'Noun'), ('여러분', 'Noun'), ('의', 'Josa'), ('위대한', 'Adjective'), ('선택', 'Noun'), ('에', 'Josa'), ('머리', 'Noun'), ('숙여', 'Verb'), ('깊이', 'Noun'), ('감사', 'Noun'), ('드립니', 'Verb'), ('다', 'Eomi'), ('.', 'Punctuation')]
-
-
-위의 NLP 엔진 사용법을 활용하여 의미망을 다시 그려봅시다.
-
-#+BEGIN_SRC python :results output :exports code
-  import networkx as nx
-  import matplotlib.pyplot as plt
-  from konlpy.tag import Twitter
-
-  def read_file(path):
-      with open(path) as fin:
-          return fin.read()
-
-  def clean_words(words):
-      cleansed_words = [w[0] for w in words if w[1] not in ('Punctuation', 'Josa', 'Eomi') and len(w[0]) > 1]
-      return cleansed_words
-
-  def make_complete_wordnet(words, word_edges):
-      num_words = len(words)
-      for index_i in range(num_words):
-          word_i = words[index_i]
-          for index_j in range(index_i+1, num_words):
-              word_j = words[index_j]
-              word_to_word = (word_i, word_j)
-              word_to_word = tuple(sorted(word_to_word))
-              word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
-
-  def construct_wordnet(text):
-      tw = Twitter()              # 트위터 형태소 분석기 객체를 생성한다
-      lines = text.split('\n')
-      word_edges = {}
-
-      for line in lines:
-          _line = line.strip()
-          if not _line:
-              continue
-          statements = _line.split('.')
-          for statement in statements:
-              if not statement:
-                  continue
-              words = tw.pos(statement) # 문장을 형태소로 구분하고 품사를 부착한다
-              cleansed_words = clean_words(words)
-              make_complete_wordnet(cleansed_words, word_edges)
-      return word_edges
-
-  def remove_low_frequency(word_edges, cutoff=2):
-      # 등장 빈도가 1회인 edge는 제거한다
-      keys = list(word_edges.keys())
-      for key in keys:
-          if word_edges[key] < cutoff:
-              del word_edges[key]
-      return
-
-  def draw_graph(word_edges):
-      G = nx.Graph()
-      for (word_1, word_2), freq in word_edges.items():
-          G.add_edge(word_1, word_2, weight=freq)
-
-      pos = nx.kamada_kawai_layout(G)
-      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
-      widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
-      nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1)
-      nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR') # 각자 시스템에 따라 적절한 폰트 이름으로 변경
-      return
-#+END_SRC
-
-#+BEGIN_SRC ipython :results output :exports none
-  import networkx as nx
-  import matplotlib.pyplot as plt
-  from konlpy.tag import Twitter
-
-  def read_file(path):
-      with open(path) as fin:
-          return fin.read()
-
-  def clean_words(words):
-      cleansed_words = [w[0] for w in words if w[1] not in ('Punctuation', 'Josa', 'Eomi') and len(w[0]) > 1]
-      return cleansed_words
-
-  def make_complete_wordnet(words, word_edges):
-      num_words = len(words)
-      for index_i in range(num_words):
-          word_i = words[index_i]
-          for index_j in range(index_i+1, num_words):
-              word_j = words[index_j]
-              word_to_word = (word_i, word_j)
-              word_to_word = tuple(sorted(word_to_word))
-              word_edges[word_to_word] = word_edges.setdefault(word_to_word, 0) + 1
-
-  def construct_wordnet(text):
-      tw = Twitter()              # 트위터 형태소 분석기 객체를 생성한다
-      lines = text.split('\n')
-      word_edges = {}
-
-      for line in lines:
-          _line = line.strip()
-          if not _line:
-              continue
-          statements = _line.split('.')
-          for statement in statements:
-              if not statement:
-                  continue
-              words = tw.pos(statement) # 문장을 형태소로 구분하고 품사를 부착한다
-              cleansed_words = clean_words(words)
-              make_complete_wordnet(cleansed_words, word_edges)
-      return word_edges
-
-  def remove_low_frequency(word_edges, cutoff=2):
-      # 등장 빈도가 1회인 edge는 제거한다
-      keys = list(word_edges.keys())
-      for key in keys:
-          if word_edges[key] < cutoff:
-              del word_edges[key]
-      return
-
-  def draw_graph(word_edges):
-      G = nx.Graph()
-      for (word_1, word_2), freq in word_edges.items():
-          G.add_edge(word_1, word_2, weight=freq)
-
-      pos = nx.kamada_kawai_layout(G)
-      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
-      widths = [G[node1][node2]['weight'] for node1, node2 in G.edges()]
-      nx.draw_networkx_edges(G, pos, width=widths, alpha=0.1)
-      nx.draw_networkx_labels(G, pos, font_family='Noto Sans CJK KR') # 각자 시스템에 따라 적절한 폰트 이름으로 변경
-      return
-#+END_SRC
-
-#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/moon_speech_nlp.png
-  text = read_file('assets/moon_speech.txt')
-  wordnet = construct_wordnet(text)
-  remove_low_frequency(wordnet)
-  draw_graph(wordnet)
-  plt.show()
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/moon_speech_nlp.png]]
-
-
-NLP 엔진을 사용하지 않은 결과와 비교했을 때, 조금 더 단어가 많아진 것처럼 보입니다. 아마도 형태소가 분리되면서 흩어져서 집계되던 어휘들이 모이면서 발생한 현상으로 보입니다. 이를테면, =대통령이=, =대통령은=, =대통령의= 처럼 각각 다른 단어로 여겨지던 것이, =대통령= 이라는 하나의 단어로 모아지게 된 것이죠.
-
-
-#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech_nlp.png
-  text = read_file('assets/park_speech.txt')
-  wordnet = construct_wordnet(text)
-  remove_low_frequency(wordnet)
-  draw_graph(wordnet)
-  plt.show()
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/park_speech_nlp.png]]
-
-#+BEGIN_SRC ipython :results raw :exports both :ipyfile outputs/park_speech_nlp_cutoff_3.png
-  text = read_file('assets/park_speech.txt')
-  wordnet = construct_wordnet(text)
-  remove_low_frequency(wordnet, cutoff=3)
-  draw_graph(wordnet)
-  plt.show()
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/park_speech_nlp_cutoff_3.png]]
+(예전 버전, [[file:pracetice-wordnet-konlpy.org][형태소 분석기와 의미망을 사용한 연습문제]])
 
 
 ** 연습문제
 
-의미망 대신에 태그 클라우드를 한번 그려봅시다. [[https://github.com/atizo/PyTagCloud][pytagcloud]]라는 패키지를 사용하면 손쉽게 태그 클라우드를 그릴 수 있습니다. 한글을 사용하기 위해서는 KoNLPy 개발자가 수정해놓은 패키지를 설치하세요. 그리고 해당 패키지의 문서를 보면서 태그 클라우드를 그려보세요.
-
-#+BEGIN_SRC ipython :session :exports result :results raw output
-  import os
-  from pytagcloud import create_tag_image, make_tags
-  from konlpy.tag import Twitter
-
-  def read_file(path):
-      with open(path) as fin:
-          return fin.read()
-
-  def get_tag_counts(text):
-      tw = Twitter()
-      words = tw.pos(text)
-      cleansed_words = [w[0] for w in words if w[1] not in ('Punctuation', 'Josa', 'Eomi') and len(w[0]) > 1]
-      counts = {}
-      for w in cleansed_words:
-          counts[w] = counts.setdefault(w, 0) + 1
-      return sorted(counts.items(), key=lambda x: x[1], reverse=True)
-#+END_SRC
-
-문재인 대통령 연설문에 대한 태그 클라우드
-
-#+BEGIN_SRC ipython :session :exports result :results raw output
-  text = read_file(os.path.join('assets', 'moon_speech.txt'))
-  tags = make_tags(get_tag_counts(text), maxsize=80)
-  create_tag_image(tags, os.path.join('outputs', 'tag_cloud_moon_speech.png'), size=(600, 400), fontname='Noto Sans CJK')
-#+END_SRC
-
-#+RESULTS:
-
-[[file:outputs/tag_cloud_moon_speech.png]]
-
-
-박근혜 대통령 연설문에 대한 태그 클라우드
-
-#+BEGIN_SRC ipython :session :exports result :results raw output
-  text = read_file(os.path.join('assets', 'park_speech.txt'))
-  tags = make_tags(get_tag_counts(text), maxsize=80)
-  create_tag_image(tags, os.path.join('outputs', 'tag_cloud_park_speech.png'), size=(600, 400), fontname='Noto Sans CJK')
-#+END_SRC
-
-#+RESULTS:
-
-[[file:outputs/tag_cloud_park_speech.png]]
+(예전 버전, [[file:practice-nlp-engine-tagcloud.org][형태소 분석기와 태그 클라우드를 사용한 연습문제]])
