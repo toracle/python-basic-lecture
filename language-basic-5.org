@@ -112,3 +112,159 @@ for var in B:
 
 ** 2일차 리뷰
 
+2일차에는 자료형을 중심으로 살펴봤습니다.
+
+
+*** 상수형, 숫자형 자료형
+
+~True~, ~False~, ~None~ 과 같은 참, 거짓, 그리고 없음을 나타내는 상수값이 있다는 것을 배웠습니다.
+
+숫자형 자료형에는 정수(integer), 소숫점을 가지는 실수(float)가 있다는 것을 배웠습니다.
+
+
+*** 리스트
+
+목록을 만들기 위해서는 리스트(list) 자료형을 사용합니다.
+
+#+BEGIN_SRC python :exports both :results output
+[1, 2, 3, 4]
+#+END_SRC
+
+리스트는 위와 같이 대괄호(~[]~) 안에 원소들을 기재합니다.
+
+리스트에 대해서는 아래와 같이 위치 참조, 슬라이싱을 할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+data = [1, 2, 3, 4]
+data[0]          # 맨 첫 원소: 1
+data[-1]         # 맨 끝 원소: 4
+data[:2]         # 맨 처음부터 2번 위치까지: [1, 2]
+data[:-1]        # 맨 뒤 원소 빼고: [1, 2, 3]
+data[2:]         # 2번 위치부터 맨 끝까지: [3, 4]
+5 in data        # 5가 data의 원소인지 여부: False
+#+END_SRC
+
+리스트에 대해 사용할 수 있는 주요 메소드들은 아래와 같은 것들이 있습니다:
+
+ - append(x) :: 리스트의 맨 뒤에 새로운 원소를 추가한다
+
+
+*** 집합 (set)
+
+집합은 유일한 원소들만으로 구성된 자료형입니다.
+
+#+BEGIN_SRC python :exports both :results output
+set()
+set([1, 2, 3, 4])
+#+END_SRC
+
+집합은, 위와 같이 ~set()~ 함수로 빈 집합을 생성하거나, 리스트를 ~set()~ 함수로 감싸서 생성할 수 있습니다.
+
+집합에 대해 사용할 수 있는 주요 메소드들은 아래와 같은 것들이 있습니다:
+
+ - add(x) :: 집합에 새로운 원소를 추가한다
+
+
+*** 사전 (dict)
+
+사전(dict)은 참조 이름과 값으로 이루어진 자료형입니다.
+
+#+BEGIN_SRC python :exports both :results output
+dict()
+{'Tom': 15, 'Mary': 20}
+#+END_SRC
+
+사전은 위와 같이 ~dict()~ 함수로 빈 사전을 만들거나, 중괄호(~{}~)를 사용해서 데이터를 지정하여 생성할 수 있습니다.
+
+사전의 특정 값을 참조할 때는, 리스트에서 했듯이 대괄호(~[]~)로 원소를 참조할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+a = {'Tom': 15, 'Mary': 20}
+a['Tom']         # Tom의 값을 가져온다: 15
+a['John'] = 10   # John에 10을 저장한다
+#+END_SRC
+
+사전에 대해 사용할 수 있는 주요 메소드들은 아래와 같은 것들이 있습니다:
+
+ - keys() :: 사전에 존재하는 모든 키(참조이름) 목록을 가져온다
+ - values() :: 사전에 존재하는 모든 값 목록을 가져온다
+ - items() :: 사전에 존재하는 키, 값 쌍의 목록을 가져온다
+
+
+*** 문자열
+
+문자열은 작은 따옴표(')나 큰 따옴표(")로 둘러싸서 만들 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+data = 'Hello Python'
+data = "Hello Python"
+#+END_SRC
+
+문자열은 리스트와 많은 특징을 공유합니다.
+
+#+BEGIN_SRC python :exports both :results output
+data = 'Hello Python'
+data[0]               # 첫번째 문자: H
+data[-1]              # 마지막 문자: n
+data[:5]              # 처음부터 5번째 원소까지: Hello
+'Hello' in data       # data에 Hello라는 문자열이 포함되어 있는지 여부: True
+#+END_SRC
+
+
+** 3일차 리뷰
+
+3일차에는 함수, 클래스, 파일 입출력을 살펴봤습니다.
+
+
+*** 함수
+
+함수는 다음과 같이 선언할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  def hello(name, subject='Python'):
+      print(name + ' is studing ' + subject)
+#+END_SRC
+
+
+*** 클래스
+
+클래스는 다음과 같이 선언할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  class Person:
+      def __init__(self, name):
+          self.name = name
+
+      def greeting(self):
+          print('Hi, I am ' + self.name)
+#+END_SRC
+
+
+클래스는 다음과 같이 생성하고 사용할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+p1 = Person('Park')
+p1.greeting()
+
+p2 = Person('Kim')
+p2.greeting()
+#+END_SRC
+
+
+*** 파일 입출력
+
+아래와 같이 파일을 읽어들일 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  with open(filepath) as fin:
+      content = fin.read()
+      print(content)
+#+END_SRC
+
+
+~open~ 함수에 'w' 인자를 주면 기록을 위해 파일을 열 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  with open(filepath, 'w') as fout:
+      fout.write('Hello\n')
+#+END_SRC
