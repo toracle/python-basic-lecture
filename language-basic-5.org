@@ -36,6 +36,8 @@
 
 1일차에는 출력문, 변수 할당, 반복문, 조건문을 살펴봤습니다.
 
+*** 출력문
+
 출력문은 ~print()~ 함수를 사용했습니다. 간단하죠.
 
 #+BEGIN_SRC python :exports both :results output
@@ -46,15 +48,67 @@ print('Hello')
 : Hello
 
 
+*** 변수 할당
+
 변수 할당은 ~=~ 기호를 사용합니다.
 
 #+BEGIN_SRC python :exports both :results output
 a = 10
-b = 30
-b = b + 10
-print(a + b)
+a = a + 30
+print(a)
 #+END_SRC
 
 #+RESULTS:
 : 50
+
+
+*** 반복문: for
+
+반복문 중 ~for~ 문은 아래와 같이 사용합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  for i in range(10):
+      print(i)
+#+END_SRC
+
+~for~ 문의 얼개는 다음과 같습니다.
+
+#+BEGIN_EXAMPLE
+for var in B:
+    반복할 동안 수행하고자 하는 명령들
+#+END_EXAMPLE
+
+~for~ 문은 조건에 의해 도중에 중단할 수도 있는데, ~break~ 명령을 사용합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  for i in range(10):
+      if i > 5:
+          break
+#+END_SRC
+
+
+*** 조건문: if
+
+조건문에는 ~if~ 문이 있으며, 아래와 같이 사용합니다.
+
+#+BEGIN_SRC python :exports both :results output
+  if condition:
+      # condition이 참일 경우 수행할 구문들
+      # condition이 참일 경우 수행할 구문들
+#+END_SRC
+
+~condition~ 부분에는 변수나 수식이 올 수 있으며, 참일 경우 하위 구문들을 수행합니다.
+
+~if~ 문은 ~else~ 와 함께 사용할 수 있습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  if condition:
+      # condition이 참일 경우 수행할 구문들
+      # condition이 참일 경우 수행할 구문들
+  else:
+      # condition이 거짓일 경우 수행할 구문들
+#+END_SRC
+
+
+** 2일차 리뷰
 
