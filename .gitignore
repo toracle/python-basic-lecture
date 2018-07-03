@@ -1,3 +1,4 @@
 /outputs/actor_*_movies.txt
 /outputs/actor_list.txt
 kevin-outputs/
+.mypy_cache/
