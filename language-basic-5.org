@@ -27,6 +27,34 @@
  - 웹에서 문서 가져오기: requests
 
 
-** 
+** 퀴즈
 
-우선, 여러분들이 지난 3일간의 내용을 잘 이해하고 있는지 점검해보기 위해, [[https://docs.google.com/forms/d/e/1FAIpQLScy4LJ_ufM7qo0tzDkNAFjhL-M8kkDqKB2CiIVCptcIRyE1UA/viewform][Python 기초 퀴즈]]를 작성했습니다.
+우선, 여러분들이 지난 3일간의 내용을 잘 이해하고 있는지 점검해보기 위해, [[https://docs.google.com/forms/d/e/1FAIpQLScy4LJ_ufM7qo0tzDkNAFjhL-M8kkDqKB2CiIVCptcIRyE1UA/viewform][Python 기초 퀴즈]] 한번 풀어보세요.
+
+
+** 1일차 리뷰
+
+1일차에는 출력문, 변수 할당, 반복문, 조건문을 살펴봤습니다.
+
+출력문은 ~print()~ 함수를 사용했습니다. 간단하죠.
+
+#+BEGIN_SRC python :exports both :results output
+print('Hello')
+#+END_SRC
+
+#+RESULTS:
+: Hello
+
+
+변수 할당은 ~=~ 기호를 사용합니다.
+
+#+BEGIN_SRC python :exports both :results output
+a = 10
+b = 30
+b = b + 10
+print(a + b)
+#+END_SRC
+
+#+RESULTS:
+: 50
+
