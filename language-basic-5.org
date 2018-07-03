@@ -146,7 +146,7 @@ data[2:]         # 2번 위치부터 맨 끝까지: [3, 4]
 
 리스트에 대해 사용할 수 있는 주요 메소드들은 아래와 같은 것들이 있습니다:
 
- - append(x) :: 리스트의 맨 뒤에 새로운 원소를 추가한다
+ - append(x) :: 리스트의 맨 뒤에 새로운 원소를 추가한다.
 
 
 *** 집합 (set)
@@ -186,9 +186,9 @@ a['John'] = 10   # John에 10을 저장한다
 
 사전에 대해 사용할 수 있는 주요 메소드들은 아래와 같은 것들이 있습니다:
 
- - keys() :: 사전에 존재하는 모든 키(참조이름) 목록을 가져온다
- - values() :: 사전에 존재하는 모든 값 목록을 가져온다
- - items() :: 사전에 존재하는 키, 값 쌍의 목록을 가져온다
+ - keys() :: 사전에 존재하는 모든 키(참조이름) 목록을 가져온다.
+ - values() :: 사전에 존재하는 모든 값 목록을 가져온다.
+ - items() :: 사전에 존재하는 키, 값 쌍의 목록을 가져온다.
 
 
 *** 문자열
@@ -210,6 +210,14 @@ data[:5]              # 처음부터 5번째 원소까지: Hello
 'Hello' in data       # data에 Hello라는 문자열이 포함되어 있는지 여부: True
 #+END_SRC
 
+문자열에 대해 사용할 수 있는 주요 메소드들은 아래와 같은 것들이 있습니다:
+
+ - split(delim=' ') :: 문자열을 주어진 구분문자를 기준으로 잘라 리스트로 만든다. 구분문자가 없으면 공백을 사용한다.
+ - join(lst) :: 주어진 리스트의 각 원소를, 원래 문자열을 중간중간 삽입하며 이어붙인다.
+ - replace(orig, new) :: 문자열에서, 특정 문자를 새로운 문자로 치환하여 반환한다.
+ - startswith(s) :: 문자열이, 특정 문자열로 시작하는지 여부를 반환한다.
+ - endswith(s) :: 문자열이, 특정 문자열로 끝나는지 여부를 반환한다.
+ - find(s) :: 문자열에서 특정 문자가 처음 등장하는 위치를 반환한다.
 
 ** 3일차 리뷰
 
@@ -256,7 +264,7 @@ p2.greeting()
 아래와 같이 파일을 읽어들일 수 있습니다.
 
 #+BEGIN_SRC python :exports both :results output
-  with open(filepath) as fin:
+  with open(filepath, encoding='utf8') as fin:
       content = fin.read()
       print(content)
 #+END_SRC
@@ -265,6 +273,6 @@ p2.greeting()
 ~open~ 함수에 'w' 인자를 주면 기록을 위해 파일을 열 수 있습니다.
 
 #+BEGIN_SRC python :exports both :results output
-  with open(filepath, 'w') as fout:
+  with open(filepath, 'w', encoding='utf8') as fout:
       fout.write('Hello\n')
 #+END_SRC
