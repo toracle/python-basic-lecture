@@ -135,3 +135,172 @@
 #+RESULTS:
 # Out[12]:
 [[file:outputs/basic-2-1-for-2.png]]
+
+
+너무 예제 데이터만 다루면 재미가 없으니, 실제 데이터를 한번 다뤄볼까요? 한동안 사회적으로 크게 이슈가 되었던 [[https://api.korbit.co.kr/v1/transactions][비트코인의 시세 데이터]]를 한번 가져와보도록 하겠습니다. 
+
+실제 데이터를 가져오기 위해서, 간단히 웹에서 데이터를 가져오는 방법을 소개하겠습니다. ~requests~ 라는 도구를 사용하면 간편하게 웹에서 데이터를 가져올 수 있습니다.
+
+아래와 같이 사용할 수 있습니다. 원하는 웹 주소를 ~requests.get()~ 함수에 넘겨주면 응답 값(Response class의 객체)을 반환하고, 그 반환 객체 중에 ~.json()~ 이라는 메소드 함수를 호출하면, 파이썬의 list와 dict 등 파이썬의 자료형으로 변환해줍니다.
+
+#+BEGIN_SRC ipython :session :results raw output :exports both
+import requests
+response = requests.get('https://api.korbit.co.kr/v1/transactions')
+print(response.json())
+#+END_SRC
+
+#+RESULTS:
+[{'amount': '0.3299', 'tid': '5726267', 'price': '7297500', 'timestamp': 1530576665493}, {'amount': '0.14873766', 'tid': '5726266', 'price': '7277000', 'timestamp': 1530576640818}, {'amount': '0.00126234', 'tid': '5726265', 'price': '7281000', 'timestamp': 1530576640710}, {'amount': '0.02519729', 'tid': '5726264', 'price': '7289000', 'timestamp': 1530576554490}, {'amount': '0.77665335', 'tid': '5726263', 'price': '7290000', 'timestamp': 1530576545803}, {'amount': '0.112', 'tid': '5726262', 'price': '7290000', 'timestamp': 1530576536947}, {'amount': '0.11134665', 'tid': '5726261', 'price': '7290000', 'timestamp': 1530576504889}, {'amount': '0.365798584684000907', 'tid': '5726260', 'price': '7287000', 'timestamp': 1530576429029}, {'amount': '0.006', 'tid': '5726259', 'price': '7287000', 'timestamp': 1530576411993}, {'amount': '0.00677061', 'tid': '5726258', 'price': '7286000', 'timestamp': 1530576386719}, {'amount': '0.013724010155767515', 'tid': '5726257', 'price': '7286500', 'timestamp': 1530576361324}, {'amount': '0.063', 'tid': '5726256', 'price': '7275500', 'timestamp': 1530576333300}, {'amount': '0.2685', 'tid': '5726255', 'price': '7276000', 'timestamp': 1530576333189}, {'amount': '0.2685', 'tid': '5726254', 'price': '7276500', 'timestamp': 1530576333085}, {'amount': '0.054892273912446823', 'tid': '5726253', 'price': '7287000', 'timestamp': 1530576326462}, {'amount': '0.15514084140355227', 'tid': '5726252', 'price': '7287000', 'timestamp': 1530576171011}, {'amount': '0.42669085859644773', 'tid': '5726251', 'price': '7286500', 'timestamp': 1530576170906}, {'amount': '0.02922249', 'tid': '5726250', 'price': '7288000', 'timestamp': 1530576161316}, {'amount': '1.73079461', 'tid': '5726249', 'price': '7288000', 'timestamp': 1530576149706}, {'amount': '0.55788028', 'tid': '5726248', 'price': '7275500', 'timestamp': 1530576071451}, {'amount': '0.001197613005007202', 'tid': '5726247', 'price': '7289500', 'timestamp': 1530576064636}, {'amount': '0.00119608', 'tid': '5726246', 'price': '7275000', 'timestamp': 1530576018057}, {'amount': '0.012646352166758091', 'tid': '5726245', 'price': '7292000', 'timestamp': 1530575981622}, {'amount': '0.5359', 'tid': '5726244', 'price': '7292000', 'timestamp': 1530575981511}, {'amount': '0.05648091', 'tid': '5726243', 'price': '7293000', 'timestamp': 1530575961419}, {'amount': '0.55639414', 'tid': '5726242', 'price': '7269500', 'timestamp': 1530575927196}, {'amount': '0.00146', 'tid': '5726241', 'price': '7270000', 'timestamp': 1530575927066}, {'amount': '0.32214586', 'tid': '5726240', 'price': '7271000', 'timestamp': 1530575926957}, {'amount': '1.12', 'tid': '5726239', 'price': '7271500', 'timestamp': 1530575926845}, {'amount': '0.02325083', 'tid': '5726238', 'price': '7271500', 'timestamp': 1530575886486}, {'amount': '0.0021', 'tid': '5726237', 'price': '7271000', 'timestamp': 1530575875178}, {'amount': '0.59833067', 'tid': '5726236', 'price': '7271000', 'timestamp': 1530575874835}, {'amount': '0.02555396', 'tid': '5726235', 'price': '7269500', 'timestamp': 1530575778625}, {'amount': '0.19009183', 'tid': '5726234', 'price': '7268000', 'timestamp': 1530575765822}, {'amount': '0.3461', 'tid': '5726233', 'price': '7268500', 'timestamp': 1530575765698}, {'amount': '0.3461', 'tid': '5726232', 'price': '7268500', 'timestamp': 1530575765589}, {'amount': '0.42', 'tid': '5726231', 'price': '7269000', 'timestamp': 1530575760951}, {'amount': '2', 'tid': '5726230', 'price': '7268500', 'timestamp': 1530575753864}, {'amount': '0.94340963', 'tid': '5726229', 'price': '7268500', 'timestamp': 1530575751377}, {'amount': '0.1421643', 'tid': '5726228', 'price': '7268500', 'timestamp': 1530575749168}, {'amount': '0.03218826', 'tid': '5726227', 'price': '7268000', 'timestamp': 1530575744186}, {'amount': '0.0559', 'tid': '5726226', 'price': '7268000', 'timestamp': 1530575744081}, {'amount': '0.0267', 'tid': '5726225', 'price': '7290500', 'timestamp': 1530575695218}, {'amount': '0.23526186100459796', 'tid': '5726224', 'price': '7290500', 'timestamp': 1530575681427}, {'amount': '0.14313813899540204', 'tid': '5726223', 'price': '7290500', 'timestamp': 1530575681251}, {'amount': '0.09921968', 'tid': '5726222', 'price': '7291500', 'timestamp': 1530575606269}, {'amount': '0.01694071', 'tid': '5726221', 'price': '7290000', 'timestamp': 1530575563019}, {'amount': '0.07974687', 'tid': '5726220', 'price': '7290500', 'timestamp': 1530575534205}, {'amount': '0.001778385772913817', 'tid': '5726219', 'price': '7310000', 'timestamp': 1530575262121}, {'amount': '0.184', 'tid': '5726218', 'price': '7290000', 'timestamp': 1530575238322}, {'amount': '0.0812', 'tid': '5726217', 'price': '7293000', 'timestamp': 1530575161590}, {'amount': '0.00001644', 'tid': '5726216', 'price': '7291500', 'timestamp': 1530575144445}, {'amount': '0.04112405', 'tid': '5726215', 'price': '7295000', 'timestamp': 1530575144328}, {'amount': '0.00305951', 'tid': '5726214', 'price': '7298500', 'timestamp': 1530575144221}, {'amount': '0.00576583', 'tid': '5726213', 'price': '7300500', 'timestamp': 1530574825615}, {'amount': '0.04442743', 'tid': '5726212', 'price': '7300500', 'timestamp': 1530574823366}, {'amount': '0.27074707', 'tid': '5726211', 'price': '7301000', 'timestamp': 1530574617977}, {'amount': '0.00797948', 'tid': '5726210', 'price': '7302500', 'timestamp': 1530574617866}, {'amount': '0.07436903', 'tid': '5726209', 'price': '7297000', 'timestamp': 1530574537179}, {'amount': '0.508312243240253977', 'tid': '5726208', 'price': '7323500', 'timestamp': 1530574526311}, {'amount': '0.77059677', 'tid': '5726207', 'price': '7323000', 'timestamp': 1530574526196}, {'amount': '0.1', 'tid': '5726206', 'price': '7320000', 'timestamp': 1530574526091}, {'amount': '0.51006096', 'tid': '5726205', 'price': '7312500', 'timestamp': 1530574525987}, {'amount': '0.06712516', 'tid': '5726204', 'price': '7312000', 'timestamp': 1530574525884}, {'amount': '0.2771', 'tid': '5726203', 'price': '7312000', 'timestamp': 1530574525774}, {'amount': '0.5', 'tid': '5726202', 'price': '7311000', 'timestamp': 1530574525670}, {'amount': '2.03698598', 'tid': '5726201', 'price': '7312500', 'timestamp': 1530574335484}, {'amount': '0.820456720907972104', 'tid': '5726200', 'price': '7313000', 'timestamp': 1530574241970}, {'amount': '0.01367427', 'tid': '5726199', 'price': '7313000', 'timestamp': 1530574239497}, {'amount': '0.00410228', 'tid': '5726198', 'price': '7313000', 'timestamp': 1530574239392}, {'amount': '0.24674662038854836', 'tid': '5726197', 'price': '7315000', 'timestamp': 1530574230079}, {'amount': '1.0404616', 'tid': '5726196', 'price': '7315000', 'timestamp': 1530574202521}, {'amount': '0.73', 'tid': '5726195', 'price': '7315000', 'timestamp': 1530574200125}, {'amount': '0.087', 'tid': '5726194', 'price': '7315000', 'timestamp': 1530574031196}, {'amount': '0.12', 'tid': '5726193', 'price': '7315500', 'timestamp': 1530573969156}, {'amount': '1', 'tid': '5726192', 'price': '7315500', 'timestamp': 1530573969052}, {'amount': '0.15', 'tid': '5726191', 'price': '7318500', 'timestamp': 1530573896793}, {'amount': '0.46255635', 'tid': '5726190', 'price': '7323000', 'timestamp': 1530573791359}, {'amount': '0.3119', 'tid': '5726189', 'price': '7323000', 'timestamp': 1530573746636}, {'amount': '0.0497', 'tid': '5726188', 'price': '7323000', 'timestamp': 1530573731694}, {'amount': '0.30368982', 'tid': '5726187', 'price': '7323000', 'timestamp': 1530573629236}, {'amount': '0.11215413', 'tid': '5726186', 'price': '7323000', 'timestamp': 1530573484018}, {'amount': '0.008', 'tid': '5726185', 'price': '7323000', 'timestamp': 1530573426900}, {'amount': '0.8', 'tid': '5726184', 'price': '7323000', 'timestamp': 1530573418637}, {'amount': '0.03609335', 'tid': '5726183', 'price': '7323000', 'timestamp': 1530573361885}, {'amount': '0.00146978', 'tid': '5726182', 'price': '7323500', 'timestamp': 1530573241653}, {'amount': '0.00257569', 'tid': '5726181', 'price': '7323000', 'timestamp': 1530573111795}]
+
+
+가져온 시세 데이터는 아래와 같은 구조로 되어있습니다.
+
+ - 우선, 가장 겉은 list로 감싸져 있고요.
+ - list의 각 항목은 dict로 이루어져 있습니다.
+ - 각 dict는 아래와 같은 정보를 담고 있습니다.
+   - 수량을 나타내는 ~amount~
+   - 거래의 고유번호(transaction ID)인 ~tid~
+   - 체결 가격을 나타내는 ~price~
+   - 체결 시점을 나타내는 ~timestamp~
+
+
+우선, 모든 거래에 대해서, 체결 가격을 그래프로 나타내봅시다.
+
+의사 코드를 먼저 작성합니다.
+
+#+BEGIN_EXAMPLE
+거래 정보를 가져온다
+체결 가격 정보를 저장할 빈 리스트를 만든다
+
+각 거래 정보에 대해서 (순회한다):
+   거래 정보 중에서, 체결 가격 항목을 가져온다
+   체결 가격 리스트에 체결 가격을 추가한다
+
+체결 가격 리스트를 그래프로 그린다
+#+END_EXAMPLE
+
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/basic-2-1-price-1.png
+  import matplotlib.pyplot as plt
+  import requests
+
+  # 거래 정보를 가져온다.
+  response = requests.get('https://api.korbit.co.kr/v1/transactions?time=day')
+  data = response.json()
+
+  # 체결 가격 정보를 저장할 빈 리스트를 만든다
+  price_list = []
+
+  # 각 거래 정보에 대해서 순회한다
+  for transaction in data:
+      # 거래 정보 중에서, 체결 가격 항목을 가져온다
+      price = transaction['price']
+
+      # 체결 가격 리스트에 체결 가격을 추가한다
+      price_list.append(price)
+
+  plt.plot(price_list)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+# Out[20]:
+[[file:outputs/basic-2-1-price-1.png]]
+
+그런데, 가만 보니 가져온 데이터가 시간순으로 정렬되어 있지 않습니다. 시간 순으로 정렬해볼까요?
+
+리스트를 특정 조건으로 정렬하기 위해서는, ~sorted~ 라는 함수를 사용합니다.
+
+#+BEGIN_SRC python :exports both :results output
+data = [4, 1, 2, 7, 5]
+data_sorted = sorted(data)
+print(data_sorted)
+#+END_SRC
+
+#+RESULTS:
+: [1, 2, 4, 5, 7]
+
+조금 복잡한 경우로, 단순한 숫자를 원소로 가지는 리스트가 아니라, dict를 원소로 가지는 리스트에서, 특정 항목을 기준으로 정렬하려면, ~key~ 인자를 사용합니다.
+
+
+#+BEGIN_SRC python :exports both :results output
+  data = [
+      {'name': 'Tom', 'score': 4},
+      {'name': 'Mary', 'score': 1},
+      {'name': 'Tim', 'score': 2},
+      {'name': 'John', 'score': 7},
+      {'name': 'Mike', 'score': 5}
+  ]
+
+  data_sorted = sorted(data, key=lambda row: row['score'])
+  print(data_sorted)
+
+#+END_SRC
+
+#+RESULTS:
+: [{'name': 'Mary', 'price': 1}, {'name': 'Tim', 'price': 2}, {'name': 'Tom', 'price': 4}, {'name': 'Mike', 'price': 5}, {'name': 'John', 'price': 7}]
+
+
+이 sorted 함수를 사용해서, 데이터를 시간 순서대로 그려보겠습니다. 나머지 부분은 이전 코드와 동일하고, sorted 들어간 부분만 달라집니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/basic-2-1-price-2.png
+  import matplotlib.pyplot as plt
+  import requests
+
+  # 거래 정보를 가져온다.
+  response = requests.get('https://api.korbit.co.kr/v1/transactions?time=day')
+  data = response.json()
+
+  # 시간 순서대로 정렬한다.
+  data = sorted(data, key=lambda row: row['timestamp'])
+
+  # 체결 가격 정보를 저장할 빈 리스트를 만든다
+  price_list = []
+
+  # 각 거래 정보에 대해서 순회한다
+  for transaction in data:
+      # 거래 정보 중에서, 체결 가격 항목을 가져온다
+      price = transaction['price']
+
+      # 체결 가격 리스트에 체결 가격을 추가한다
+      price_list.append(price)
+
+  plt.plot(price_list)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+# Out[21]:
+[[file:outputs/basic-2-1-price-2.png]]
+
+이번에는 체결 수량이 =1 비트코인= 이상인 거래내역만 살펴보겠습니다.
+
+#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/basic-2-1-price-3.png
+  import matplotlib.pyplot as plt
+  import requests
+
+  # 거래 정보를 가져온다.
+  response = requests.get('https://api.korbit.co.kr/v1/transactions?time=day')
+  data = response.json()
+  data = sorted(data, key=lambda row: row['timestamp'])
+
+  # 체결 가격 정보를 저장할 빈 리스트를 만든다
+  price_list = []
+
+  # 각 거래 정보에 대해서 순회한다
+  for transaction in data:
+      # 거래 정보 중에서, 체결 가격 항목을 가져온다
+      price = transaction['price']
+
+      # 만약 거래 수량이 1 이상이면
+      if float(transaction['amount']) > 1:
+          # 체결 가격 리스트에 체결 가격을 추가한다
+          price_list.append(price)
+
+  plt.plot(price_list)
+  plt.show()
+#+END_SRC
+
+#+RESULTS:
+# Out[25]:
+[[file:outputs/basic-2-1-price-3.png]]
