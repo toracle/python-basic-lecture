@@ -298,3 +298,40 @@ print(response.text)
 : 5,M,32,F,F
 : 6,M,39,T,F
 : 
+
+
+** 종합 활용
+
+for문, if문, dict문 등을 종합적으로 활용해보도록 하겠습니다.
+
+우선, 데이터를 아래와 같이 불러오겠습니다.
+
+
+#+BEGIN_SRC python :exports both :results output
+  import requests
+  url = 'https://raw.githubusercontent.com/toracle/python-basic-lecture/master/assets/아파트(매매)__실거래가_20180704110406.csv'
+  response = requests.get(url, stream=True)
+
+  num_lines = 0
+  for line in response.iter_lines():
+      num_lines = num_lines + 1
+
+      if num_lines > 10:
+          break
+
+      print(line.decode('euckr'))
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+"□ 본 서비스에서 제공하는 정보는 법적인 효력이 없으므로 참고용으로만 활용하시기 바라며, 외부 공개시에는 반드시 신고일 기준으로 집계되면 공식통계를 이용하여 주시기 바랍니다."
+"□ 신고정보가 실시간 변경, 해제되어 제공시점에 따라 공개건수 및 내용이 상이할 수 있는 점 참고하시기 바랍니다."
+"□ 본 자료는 계약일 기준입니다. (※ 7월 계약, 8월 신고건 → 7월 거래건으로  제공)"
+"□ 통계자료 활용시에는 수치가 왜곡될 수 있으니 참고자료로만 활용하시기  바라며,  외부 공개시에는 반드시 신고일 기준으로 집계되는 공식통계를 이용하여 주시기 바랍니다."
+"* 주택매매 거래는 부동산 거래신고 등에 관한 법률 제3조에 따라 계약일로부터 60일 이내 신고토록 하고 있습니다."
+"* 국토교통부 실거래가 공개시스템의 궁금하신 점이나 문의사항은 콜센터 1588-0149로 연락 주시기 바랍니다."
+"□ 검색조건"
+"계약일자 : 20180101 ~ 20180630"
+"실거래구분 : 아파트(매매)"
+"주소구분 : 지번주소"
+#+end_example
