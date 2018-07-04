@@ -151,6 +151,9 @@ BeautifulSoup에는 다양한 메소드들이 있는데, CSS selector를 사용�
  2. 글 목록 페이지 자체를, 2페이지, 3페이지 등을 거쳐서 마지막 페이지까지 순회하는 부분
  3. 글의 상세 내용 페이지에서, 원하는 내용 (글 본문 등)을 추출하는 부분
 
+그래서, 글 목록 페이지로부터 수집할 문서들의 목록을 구성하고, 글 목록 페이지를 다음 페이지로 이어가면서 마지막 페이지까지 진행합니다. 그러면 해당 웹사이트의 모든 글 목록을 수집하게 됩니다. 그 후에, 각 글 목록을 순회하면서 글의 상세정보 페이지의 내용으로부터 실제 글 본문에서 필요한 내용들을 추출합니다.
+
+
 우선, 하나의 글 목록 페이지에서 원하는 정보를 가져오려면 아래와 같이 진행합니다.
 
 아래의 URL은 포털 서비스인 다음 아고라 서비스의 주소입니다. 여기에서 글 제목과 글쓴이, 글의 URL 주소를 가져오겠습니다.
@@ -325,119 +328,7 @@ http://bbs3.agora.media.daum.net/gaia/do/petition/read?bbsId=P001&objCate1=1&art
 : 
 
 
-
-아래의 나무위키 URL에 대해서, 위키 내부간의 하이퍼링크 목록을 추출해보세요.
-
-https://namu.wiki/w/Python
-
-
-#+BEGIN_SRC python :results output :exports result 
-  import requests
-  from bs4 import BeautifulSoup
-
-  def visit_page(page):
-      name, href = page
-      url = 'https://namu.wiki' + href
-      response = requests.get(url)
-      soup = BeautifulSoup(response.content, 'html5lib')
-      link_elements = soup.select('.wiki-inner-content .wiki-link-internal')
-      links = set([(elem['title'], elem['href']) for elem in link_elements])
-      return list(links)
-
-  page = ('Python', '/w/Python')
-  print([name for name, page in visit_page(page)])
-#+END_SRC
-
-
-#+BEGIN_EXAMPLE
-['명령어', '코엑스', '페리아 연대기', '국부론', '넘파이', 'Swift(프로그래밍 언어)', '스택', 'C언어', '파일:xkcdpythonko.png', '2015년', '연세대학교', '킹덤 언더 파이어', '한국', '스팸(몬티 파이선 스케치)', 'Bottle', 'Erlang', 'APAC', '파이선', '비단뱀', 'Pygame', '창조', 'Django', '코드', 'JDK', '오라클', '부산대학교', '필로우', 'C#', '아스키', '인천대학교', 'callback 함수', '웹 프레임워크', 'Pillow', '프레임워크', '액션스크립트', 'rm -rf /', '카이스트', '심즈 4', 'scikit-learn', '고자', '드롭박스', '파일:나무위키+유도.png', '파이톤', 'tkinter', 'Flask', 'Lua', '부르즈 할리파', '추가바람', '의사코드', '파이썬', 'JIT', '상암', '라이브러리', '프로세스', 'reddit', '코더', '프로그래밍 언어', '나무위키:프로젝트', 'MATLAB', '시드 마이어의 문명', '2016년', 'Ruby', 'PyPy', 'Perl', 'Linux', '리눅스', 'PyGame', '우분투', 'C', '누리꿈스퀘어', 'C++', 'NumPy', '스레드', 'Haskell', '파이게임', '스크래피', 'Beautiful Soup', '이스터 에그', '파일:external/regmedia.co.uk/swift_benchmark.jpg', 'Scrapy', 'OpenCV', '문명 4', '자바 가상 머신', '기계학습', 'Sublime Text', '통합 개발 환경', '중국', 'Go', '42', '프로그래머', 'EVE 온라인', '2014년', '스택 오버플로우', '뱀', '국민대학교', '구조체', 'Notepad++', '인스타그램', 'IBM', '몬티 파이선', '한글', 'LISP', 'JAVA', 'Java', '유튜브', 'xkcd', 'WOW', 'R(프로그래밍 언어)', '2017년', '객체 지향 프로그래밍', 'UC 버클리', 'JavaScript', '뷰티플 수프', '월드 오브 탱크', '코루틴', '이클립스(통합 개발 환경)', 'C(프로그래밍 언어)', '비주얼 스튜디오', "Ren'Py", '상명대학교', '구글', 'JVM', '매사추세츠 공과대학교']
-#+END_EXAMPLE
-
-이번에는 위의 내용을 응용해서, snowballing 방식으로 웹페이지를 수집해보세요.
-
-#+BEGIN_SRC ipython :session :results output raw :exports none :ipyfile outputs/beautifulsoup-manuwiki-python-map.png
-  %matplotlib inline
-  import os
-  import requests
-  import networkx as nx
-  import matplotlib.pyplot as plt
-  from bs4 import BeautifulSoup
-
-  def visit_page(page):
-      name, href = page
-      url = 'https://namu.wiki' + href
-      response = requests.get(url)
-      soup = BeautifulSoup(response.content, 'html5lib')
-      link_elements = soup.select('.wiki-inner-content .wiki-link-internal')
-      links = set([(elem['title'], elem['href']) for elem in link_elements])
-      return list(links)
-
-  def save_edges(fout, page, links):
-      for link in links:
-          fout.write('\t'.join([page[0], page[1], link[0], link[1]]))
-          fout.write('\n')
-
-  def crawl(seed, fout):
-      visited = set()
-      page = seed.pop()
-      if page not in visited:
-          links = visit_page(page)
-          visited.add(page)
-          save_edges(fout, page, links)
-          seed = seed + links
-
-      while seed:
-          page = seed.pop()
-          if page not in visited and (not page[0].startswith('파일:') and not page[0].startswith('나무위키:')):
-              links = visit_page(page)
-              visited.add(page)
-              save_edges(fout, page, links)
-
-  def load_graph(graph, fin):
-      for line in fin:
-          src_name, _, tgt_name, _ = line.strip().split('\t')
-          graph.add_edge(src_name, tgt_name)
-
-  def remove_zero_outdegree(graph):
-      nodes_to_remove = [name for name, freq in G.out_degree if freq == 0]
-      for node in nodes_to_remove:
-          graph.remove_node(node)
-
-  def remove_one_indegree(graph):
-      nodes_to_remove = [name for name, freq in G.in_degree if freq < 2]
-      for node in nodes_to_remove:
-          graph.remove_node(node)
-
-  def show_graph(graph):
-      pos = nx.kamada_kawai_layout(graph)
-      plt.figure(figsize=(12, 12))    # 결과 이미지 크기를 크게 지정 (12inch * 12inch)
-      nx.draw_networkx_edges(graph, pos, alpha=0.1);
-      nx.draw_networkx_labels(graph, pos, font_family='Noto Sans CJK KR'); # 각자 시스템에 따라 적절한 폰트 이름으로 변경
-      plt.show()
-#+END_SRC
-
-#+BEGIN_SRC ipython :session :results raw :exports none
-  seed = [('Python', '/w/Python')]
-  with open(os.path.join('outputs', 'namuwiki.txt'), 'w', encoding='utf8') as fout:
-      crawl(seed, fout)
-#+END_SRC
-
-#+BEGIN_SRC ipython :session :results raw :exports both :ipyfile outputs/beautifulsoup-namu-pagelinks.png
-  %matplotlib inline
-  import os
-  import networkx as nx
-
-  G = nx.DiGraph()
-  with open(os.path.join('outputs', 'namuwiki.txt'), encoding='utf8') as fin:
-      load_graph(G, fin)
-
-  remove_zero_outdegree(G)
-  remove_one_indegree(G)
-  show_graph(G)
-#+END_SRC
-
-#+RESULTS:
-[[file:outputs/beautifulsoup-namu-pagelinks.png]]
+[[file:beautifulsoup-practice-namuwiki.org][응용문제: 나무위키 페이지 사이의 관계망 그리기]]
 
 
 ** Ajax & JSON
