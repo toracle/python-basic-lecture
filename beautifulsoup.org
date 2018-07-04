@@ -96,6 +96,9 @@ div.article > a
 #+END_SRC
 
 
+태그와 CSS Selector에 대해 얼마나 이해하고 있는지 간단한 퀴즈를 통해 점검하고 지나갈까요?
+
+
 ** BeautifulSoup
 
 [[https://www.crummy.com/software/BeautifulSoup/bs4/doc/][BeautifulSoup]]은 웹 페이지 내에서 원하는 문서 구성 요소를 CSS selector 형식으로 특정할 수 있도록 도와줍니다.
@@ -138,13 +141,16 @@ BeautifulSoup에는 다양한 메소드들이 있는데, CSS selector를 사용�
 각 element에 대해서는 ~string~ 속성을 통해 값을 참조할 수 있고, ~dict~ 처럼 ~[]~ 참조를 통해 각 속성에 접근할 수 있습니다.
 
 
-** 연습문제
+** 응용문제
 
-연습문제로 아래 URL의 HTML에서 정보를 추출해보겠습니다. 아래의 URL은 다음 아고라의 주소입니다. 여기에서 글 제목과 글쓴이, 글의 URL 주소를 가져오겠습니다.
+응용문제로 아래 URL의 HTML에서 정보를 추출해보겠습니다. 아래의 URL은 포털 서비스인 다음 아고라 서비스의 주소입니다. 여기에서 글 제목과 글쓴이, 글의 URL 주소를 가져오겠습니다.
 
 http://bbs3.agora.media.daum.net/gaia/do/petition/list?bbsId=P001&objCate1=1
 
-우선 위의 URL에 접속한 후, Chrome에서 개발자 도구를 엽니다. Ctrl-Shift-I를 누릅니다. Elements 탭에서 돋보기 아이콘을 선택한 후, 확인하고자 하는 HTML 요소를 클릭합니다. 해당 요소를 특정할 수 있는 태그 및 속성을 확인합니다.
+우선 위의 URL에 접속한 후, Chrome에서 개발자 도구를 엽니다. Ctrl-Shift-I를 누릅니다. Elements 탭에서 제일 왼쪽에 있는 마우스 모양 아이콘을 선택한 후, 확인하고자 하는 HTML 요소를 클릭합니다. 지금은 글 제목을 클릭하겠습니다. 해당 요소를 특정할 수 있는 태그 및 속성을 확인합니다.
+
+
+[[file:assets/webscraping-inspector.png]]
 
 글 제목을 클릭해보면, =span= 이라는 태그가 =sbj= 클래스(~<span class="sbj">~)를 가지고 있는 것을 볼 수 있습니다. 그리고 그 아래에 =a= 태그에 제목 문자열이 들어있습니다. 따라서 제목을 지칭하는 CSS selector는 다음과 같이 쓸 수 있습니다.
 
@@ -155,6 +161,8 @@ span.sbj > a
 
 개발자 도구의 Console 탭에서 ~$$('span.sbj > a')~ 라고 입력해봅시다.
 
+[[file:assets/webscraping-jquery.png]]
+
 이와 비슷하게, 글쓴이를 지칭하는 CSS selector는 다음과 같이 쓸 수 있습니다.
 
 #+BEGIN_SRC css
@@ -163,8 +171,15 @@ span.sbj > span.name > a
 
 개발자 도구의 Console 탭에서 ~$$('span.sbj > span.name > a')~ 라고 입력해봅시다.
 
+이러한 CSS selector를 사용하여, 아고라 글의 제목과 글쓴이, 글의 URL 주소를 가져오는 위치는 다음과 같습니다:
 
-이러한 CSS selector를 사용하여, 아고라 글의 제목과 글쓴이, 글의 URL 주소를 가져오는 코드는 다음과 같습니다.
+ - subject :: span.sbj > a
+ - date :: span.date
+ - count :: span.cnt > em
+ - writer :: span.sbj > span.name > a
+
+
+이것을 코드로 옮겨보면 다음과 같습니다:
 
 
 #+BEGIN_SRC python :results output :exports both
@@ -172,49 +187,69 @@ span.sbj > span.name > a
   from bs4 import BeautifulSoup
 
   url = 'http://bbs3.agora.media.daum.net/gaia/do/petition/list?pageIndex=1&bbsId=P001&objCate1=1'
-
   response = requests.get(url)
   soup = BeautifulSoup(response.content)
+
   subjects = soup.select('span.sbj > a')
-  date = soup.select('span.date')
+  dates = soup.select('span.date')
   counts = soup.select('span.cnt > em')
   writers = soup.select('span.sbj > span.name > a')
 
-  entries = zip(subjects, date, counts, writers)
+  entry_size = len(subjects)
 
-  for subject, date, count, writer in entries:
-      _subject = subject.string
-      _date = date.string
-      _writer = writer.string
-      _count = count.string
-      href = subject.attrs['href']
+  for idx in range(entry_size):
+      subject = subjects[idx].string
+      date = dates[idx].string
+      writer = writers[idx].string
+      count = counts[idx].string
+      href = subjects[idx].attrs['href']
 
-      print('|'.join([_subject, _date, _writer, _count, href]))
+      print(subject, date, writer, count, href)
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-문재인 대통령의 파렴치 범죄, 확실한 물증|2017.12.28 11:36|사과사|0|read?bbsId=P001&objCate1=1&articleId=211736&pageIndex=1
-공휴일을 유급휴일로 바꾸어야합니다.|2017.12.28 11:17|한가닥의 빛|0|read?bbsId=P001&objCate1=1&articleId=211735&pageIndex=1
-강경화 딸.. 국적회복 확인하자..|2017.12.28 10:20|정광수|1|read?bbsId=P001&objCate1=1&articleId=211732&pageIndex=1
-벌레같은 교도관들이 뼈를 부러뜨리고 성폭행을 하는 등|2017.12.28 10:06|악덕교도관대청소|2|read?bbsId=P001&objCate1=1&articleId=211731&pageIndex=1
-광명 운산고 김Y숙 선생의 명예퇴직을 반대합니다!|2017.12.28 08:57|RainSun|1|read?bbsId=P001&objCate1=1&articleId=211730&pageIndex=1
-근로복지공단은 당장 꼼수를 멈추라!|2017.12.28 06:16|풍경소리|4|read?bbsId=P001&objCate1=1&articleId=211729&pageIndex=1
-삼성화재보험 중소기업상대로 사기행각|2017.12.28 06:01|이천곤|2|read?bbsId=P001&objCate1=1&articleId=211728&pageIndex=1
-학교 규칙이라는 구실로 휴대폰 수거를 하지 말아주십시오|2017.12.28 02:57|전승훈|0|read?bbsId=P001&objCate1=1&articleId=211726&pageIndex=1
-지배자들|2017.12.28 01:01|deadkillers-society|1|read?bbsId=P001&objCate1=1&articleId=211725&pageIndex=1
-사이보그 이리역 폭파 시멘틱스|2017.12.28 00:11|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211724&pageIndex=1
-사이보그 데이터 베이스 킬 입증|2017.12.28 00:09|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211723&pageIndex=1
-제2 imf, 살인의 추억 재현될 수 있습니다!|2017.12.27 23:40|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211722&pageIndex=1
-[국민감사] 대법원이 국민을 우롱하고 있습니다. 442|2017.12.27 23:33|서재황|0|read?bbsId=P001&objCate1=1&articleId=211721&pageIndex=1
-[국민감사] 대법원이 국민을 우롱하고 있습니다. 441|2017.12.27 23:30|서재황|0|read?bbsId=P001&objCate1=1&articleId=211720&pageIndex=1
-어린이집 평가인증 부모가 할수 있게해주세요 |2017.12.27 22:27|허브향기ㆀ|0|read?bbsId=P001&objCate1=1&articleId=211719&pageIndex=1
-이재용 부회장을 선처해 주십시오. |2017.12.27 21:28|sunny|0|read?bbsId=P001&objCate1=1&articleId=211718&pageIndex=1
-교황님 살펴주세요|2017.12.27 20:16|ww8401|0|read?bbsId=P001&objCate1=1&articleId=211717&pageIndex=1
-무고죄로 처벌해 주세요|2017.12.27 18:44|tiger|0|read?bbsId=P001&objCate1=1&articleId=211716&pageIndex=1
-무고죄로 처벌해 주세요|2017.12.27 18:40|tiger|0|read?bbsId=P001&objCate1=1&articleId=211715&pageIndex=1
-고이와 1987, 이걸 누가 샀을까?! 고이비도요?|2017.12.27 17:35|deadkillers-society|0|read?bbsId=P001&objCate1=1&articleId=211714&pageIndex=1
+국정원 4대강 민간인 사찰 문건 나와있어 진실규명 해야 합니다 2018.07.04 22:49 햇살마당 1 read?bbsId=P001&objCate1=1&articleId=215990&pageIndex=1
+아시아나 기내식 대란.. 사과했지만 엄중히 책임을 물어야 합니다 2018.07.04 22:33 햇살마당 1 read?bbsId=P001&objCate1=1&articleId=215989&pageIndex=1
+공사대금 못받아 건설 하청업체 대표 분신사망 경찰은 조사하라 2018.07.04 22:18 햇살마당 1 read?bbsId=P001&objCate1=1&articleId=215988&pageIndex=1
+ 2018 아시안게임 마장마술 선발전 재심사 청원합니다!적폐청산! 2018.07.04 20:58 쏭쏭쏭 0 read?bbsId=P001&objCate1=1&articleId=215987&pageIndex=1
+양산대방노블랜드 8차 관리사무소에서 유독성 물질보관 2018.07.04 13:57 햇님이 방긋 0 read?bbsId=P001&objCate1=1&articleId=215985&pageIndex=1
+[국민감사] '민생' 문제를 청와대 와 거래한 대법관을  2018.07.04 13:08 서재황 0 read?bbsId=P001&objCate1=1&articleId=215984&pageIndex=1
+난민이 제주도 출도제한 소송. 이거 막아야하고 관련법개정촉구 2018.07.04 12:59 색불루 6 read?bbsId=P001&objCate1=1&articleId=215983&pageIndex=1
+[국민감사] 청와대 게시글을 '통편집' 한 청와대직원을  2018.07.04 12:09 서재황 0 read?bbsId=P001&objCate1=1&articleId=215982&pageIndex=1
+여고생 2명 서울 아파트 옥상 동반 투신.. 진상규명 해야 합니다 2018.07.03 22:23 햇살마당 1 read?bbsId=P001&objCate1=1&articleId=215981&pageIndex=1
+홍준표 전 경남지사 채무제로 표지석 철거해야 합니다 2018.07.03 22:12 햇살마당 1 read?bbsId=P001&objCate1=1&articleId=215980&pageIndex=1
+ [국민감사] 대법관 조재연,고영한,김소영,권순일 을 직권남용,  2018.07.03 21:24 서재황 0 read?bbsId=P001&objCate1=1&articleId=215979&pageIndex=1
+트럼프대통령님 저의집 인권좀 살펴주세요  2018.07.03 21:23 ww8401 0 read?bbsId=P001&objCate1=1&articleId=215978&pageIndex=1
+세월호 유가족 조직적 사찰한 기무사.. 사과로 끝날일이 아니다 2018.07.03 16:37 햇살마당 4 read?bbsId=P001&objCate1=1&articleId=215977&pageIndex=1
+국민의 적 금융감독원 임흥진 이와 조현재  2018.07.03 16:24 이천곤 0 read?bbsId=P001&objCate1=1&articleId=215976&pageIndex=1
+무소속 3인방 더불어민주당 입당설.. 받아들이면 절대 안됩니다 2018.07.03 16:18 햇살마당 1 read?bbsId=P001&objCate1=1&articleId=215975&pageIndex=1
+[국민감사] 서울고등법원 2018초재1814 사건관련 제30형사부 를  2018.07.03 13:22 서재황 0 read?bbsId=P001&objCate1=1&articleId=215973&pageIndex=1
+[국민감사] 서울고등법원 2018초재1798 사건관련 제30형사부 를  2018.07.03 13:19 서재황 0 read?bbsId=P001&objCate1=1&articleId=215972&pageIndex=1
+자신의 잘못을 모르는 교사에게 죄를 묻습니다 2018.07.03 12:27 천사들의둥지 20 read?bbsId=P001&objCate1=1&articleId=215971&pageIndex=1
+언론과 표현의자유 탄압 국가인권정책 기본계획 철회해야합니다  2018.07.03 11:43 색불루 3 read?bbsId=P001&objCate1=1&articleId=215970&pageIndex=1
+[국민감사] '민생' 문제를 청와대 와 거래한 대법관을  2018.07.03 10:39 서재황 0 read?bbsId=P001&objCate1=1&articleId=215969&pageIndex=1
 #+end_example
+
+코드 줄 수는 여러줄이지만, 핵심 내용은 간단합니다. 의사 코드로 한번 살펴볼까요?
+
+#+BEGIN_EXAMPLE
+글 목록 URL을 변수에 넣는다
+해당 URL에서 값을 가져온다
+BeautifulSoup으로 파서를 준비한다
+
+제목, 작성일시, 청원수, 작성자 목록을 CSS Selector로 가져온다
+
+CSS Selector로 가져온 목록을 순회하면서
+    제목, 작성일시, 청원수, 작성자를 출력한다
+#+END_EXAMPLE
+
+
+글의 목록은 이렇게 가져올 수 있고, 이번에는 특정한 게시물 하나를 방문해보겠습니다.
+
+
+
+
 
 아래의 나무위키 URL에 대해서, 위키 내부간의 하이퍼링크 목록을 추출해보세요.
 
