@@ -215,7 +215,7 @@ CSS Selector로 가져온 목록을 순회하면서
 
   url = 'http://bbs3.agora.media.daum.net/gaia/do/petition/list?pageIndex=1&bbsId=P001&objCate1=1'
   response = requests.get(url)
-  soup = BeautifulSoup(response.content)
+  soup = BeautifulSoup(response.text, 'html5lib')
 
   subjects = soup.select('span.sbj > a')
   dates = soup.select('span.date')
@@ -258,6 +258,46 @@ CSS Selector로 가져온 목록을 순회하면서
 [국민감사] '민생' 문제를 청와대 와 거래한 대법관을  2018.07.03 10:39 서재황 0 read?bbsId=P001&objCate1=1&articleId=215969&pageIndex=1
 #+end_example
 
+우선, 위에서 글 하나의 링크 주소(href)를 살펴봅시다.
+
+#+BEGIN_EXAMPLE
+read?bbsId=P001&objCate1=1&articleId=215978&pageIndex=1
+#+END_EXAMPLE
+
+이 주소는 상대주소입니다. 이것에 아고라 주소를 이어붙여서 절대경로로 만들면 아래와 같이 될겁니다.
+
+#+BEGIN_EXAMPLE
+http://bbs3.agora.media.daum.net/gaia/do/petition/read?bbsId=P001&objCate1=1&articleId=215978&pageIndex=1
+#+END_EXAMPLE
+
+그래서, 기존의 href 앞에 http 경로를 붙여서 반환해줍니다.
+
+#+BEGIN_SRC python :results output :exports both
+  import requests
+  from bs4 import BeautifulSoup
+
+  url = 'http://bbs3.agora.media.daum.net/gaia/do/petition/list?pageIndex=1&bbsId=P001&objCate1=1'
+  response = requests.get(url)
+  soup = BeautifulSoup(response.text, 'html5lib')
+
+  subjects = soup.select('span.sbj > a')
+  dates = soup.select('span.date')
+  counts = soup.select('span.cnt > em')
+  writers = soup.select('span.sbj > span.name > a')
+
+  entry_size = len(subjects)
+
+  for idx in range(entry_size):
+      subject = subjects[idx].string
+      date = dates[idx].string
+      writer = writers[idx].string
+      count = counts[idx].string
+      href = subjects[idx].attrs['href']
+
+      print(subject, date, writer, count, 'http://bbs3.agora.media.daum.net/gaia/do/petition/' + href)
+#+END_SRC
+
+
 글의 목록은 이렇게 가져올 수 있고, 다음 페이지의 글 목록을 가져오려면 어떻게 해야 할까요? 다음 페이지 링크를 어떻게 구할 수 있는지 살펴봅시다.
 
 개발자 도구에서 살펴보니, ~#num > a~ 라는 CSS selector로 페이지 지시자를 가져올 수 있을 것 같습니다.
@@ -268,7 +308,7 @@ CSS Selector로 가져온 목록을 순회하면서
 
   url = 'http://bbs3.agora.media.daum.net/gaia/do/petition/list?bbsId=P001&objCate1=1'
   response = requests.get(url)
-  soup = BeautifulSoup(response.content)
+  soup = BeautifulSoup(response.text, 'html5lib')
 
   next_urls = soup.select('#num > a')
 
@@ -292,22 +332,36 @@ CSS Selector로 가져온 목록을 순회하면서
 
 ~pageIndex~ 가 ~2, 3, 4, ... 10~ 인 URL을 얻었습니다.
 
+여기서 역시 절대 경로로 만들어주기 위해 경로 앞에 http 주소를 붙입니다.
+
+#+BEGIN_SRC python :results output :exports both
+  import requests
+  from bs4 import BeautifulSoup
+
+  url = 'http://bbs3.agora.media.daum.net/gaia/do/petition/list?bbsId=P001&objCate1=1'
+  response = requests.get(url)
+  soup = BeautifulSoup(response.text, 'html5lib')
+
+  next_urls = soup.select('#num > a')
+
+  entry_size = len(next_urls)
+
+  for idx in range(entry_size):
+      next_url = next_urls[idx].attrs['href']
+      print('http://bbs3.agora.media.daum.net/gaia/do/petition/' + next_url)
+#+END_SRC
+
 
 이번에는 특정한 게시물 하나를 방문해보겠습니다.
 
-우선, 윗 글에서 글 하나의 링크 주소(href)를 살펴봅시다.
 
-#+BEGIN_EXAMPLE
-read?bbsId=P001&objCate1=1&articleId=215978&pageIndex=1
-#+END_EXAMPLE
-
-이 주소는 상대주소입니다. 이것에 아고라 주소를 이어붙여서 절대경로로 만들면 아래와 같이 될겁니다.
+게시물 주소 하나를 웹브라우저로 열고 개발자 도구를 띄워서, 본문 및 원하는 정보를 어떻게 추출할 수 있는지 살펴봅니다. 
 
 #+BEGIN_EXAMPLE
 http://bbs3.agora.media.daum.net/gaia/do/petition/read?bbsId=P001&objCate1=1&articleId=215978&pageIndex=1
 #+END_EXAMPLE
 
-이 주소를 웹브라우저로 열고 개발자 도구를 띄워서, 본문 및 원하는 정보를 어떻게 추출할 수 있는지 살펴봅니다. 그렇게 살펴보니, 아고라 글에서는 ~.article~ 이라는 CSS selector로 본문을 추출할 수 있을 것으로 보입니다.
+그렇게 살펴보니, 아고라 글에서는 ~.article~ 이라는 CSS selector로 본문을 추출할 수 있을 것으로 보입니다.
 
 
 #+BEGIN_SRC python :results output :exports both
@@ -316,7 +370,7 @@ http://bbs3.agora.media.daum.net/gaia/do/petition/read?bbsId=P001&objCate1=1&art
 
   url = 'http://bbs3.agora.media.daum.net/gaia/do/petition/read?bbsId=P001&objCate1=1&articleId=215978&pageIndex=1'
   response = requests.get(url)
-  soup = BeautifulSoup(response.content)
+  soup = BeautifulSoup(response.text, 'html5lib')
   contents = soup.select('.article')
   content = contents[0].text
   print(content)
@@ -329,7 +383,147 @@ http://bbs3.agora.media.daum.net/gaia/do/petition/read?bbsId=P001&objCate1=1&art
 
 여기까지 해서, 글 목록 가져오기, 글 목록 페이지의 다음 페이지로 계속 진행하기, 특정 글 페이지에서 원하는 정보 가져오기를 각각 살펴보았습니다. 웹 스크래핑 프로그램은 대부분의 경우 이 틀을 크게 벗어나지 않습니다. 이것들을 유기적으로 조합해서, 해당 웹사이트의 전체 글을 가져오는 프로그램을 작성할 수 있습니다. 
 
-이것들을 조합해서 유기적으로 돌아가도록 만드는 것까지는 조금 더 복잡한 작업을 필요로 합니다. 더 궁금하신 분들은 제가 작성했던 스크래핑 코드 [[https://github.com/toracle/kasr-seminar/blob/master/kasr/sermons/crawlers/base.py][1]], [[https://github.com/toracle/kasr-seminar/blob/master/kasr/news/crawlers/chtoday.py][2]]를 참고하세요.
+위에서 작성한 코드를 함수로 한번 만들어보겠습니다.
+
+#+BEGIN_SRC python :session :results output :exports both
+  import requests
+  from bs4 import BeautifulSoup
+
+  def get_article_list(list_url):
+      response = requests.get(list_url)
+      soup = BeautifulSoup(response.text, 'html5lib')
+
+      subjects = soup.select('span.sbj > a')
+      dates = soup.select('span.date')
+      counts = soup.select('span.cnt > em')
+      writers = soup.select('span.sbj > span.name > a')
+
+      entry_size = len(subjects)
+
+      result = []
+
+      for idx in range(entry_size):
+          subject = subjects[idx].string
+          date = dates[idx].string
+          writer = writers[idx].string
+          count = counts[idx].string
+          href = subjects[idx].attrs['href']
+
+          result.append([subject, date, writer, count, 'http://bbs3.agora.media.daum.net/gaia/do/petition/' + href])
+
+      return result
+
+
+  def get_next_pages(list_url):
+      response = requests.get(list_url)
+      soup = BeautifulSoup(response.text, 'html5lib')
+
+      next_urls = soup.select('#num > a')
+
+      entry_size = len(next_urls)
+
+      result = []
+      for idx in range(entry_size):
+          next_url = next_urls[idx].attrs['href']
+          result.append('http://bbs3.agora.media.daum.net/gaia/do/petition/' + next_url)
+
+      return result
+
+
+  def get_article_content(content_url):
+      response = requests.get(content_url)
+      soup = BeautifulSoup(response.text, 'html5lib')
+      contents = soup.select('.article')
+      content = contents[0].text
+      return content
+#+END_SRC
+
+
+이것들을 조합해서 유기적으로 돌아가도록 만드는 것까지는 조금 더 복잡한 작업을 필요로 합니다. 
+
+#+BEGIN_EXAMPLE
+첫 시작 목록 URL (seed URL)을 입력한다
+방문할 글 목록 URL 리스트를 저장할 빈 리스트를 만든다
+방문한 글 목록 URL 리스트를 저장할 빈 셋을 만든다
+
+현재 목록 페이지에 대해 순회한다
+     만약 목록 페이지가 이전에 방문한 적이 있다면
+          이번 순회는 건너뛴다
+     글 목록을 추출한다
+     각 글에 대해서 순회한다
+          글 URL에 방문해서 글 내용을 가져온다
+          글 내용을 파일에 기록한다
+
+     다음 목록 페이지 URL들을 추출한다
+     방문한 글 목록 URL 셋에 추가한다
+#+END_EXAMPLE
+
+이걸 코드로 한번 옮겨보겠습니다.
+
+#+BEGIN_SRC python :session :exports both :results output
+  def scrape(seed_url):
+      # 방문할 글 목록 URL 리스트를 저장할 빈 리스트를 만든다
+      waiting_article_list = [seed_url]
+
+      # 방문한 글 목록 URL 리스트를 저장할 빈 셋을 만든다
+      visited_article_list = set()
+
+      # 현재 목록 페이지에 대해 순회한다
+      while len(waiting_article_list):
+          # 현재 목록 페이지에 대해 순회한다
+          current_list_url = waiting_article_list.pop(0)
+
+          print(current_list_url)
+
+          # 만약 목록 페이지가 이전에 방문한 적이 있다면
+          if current_list_url in visited_article_list:
+              # 이번 순회는 건너뛴다
+              continue
+
+          # 글 목록을 추출한다
+          article_info_list = get_article_list(current_list_url)
+
+          # 각 글에 대해서 순회한다
+          for article_info in article_info_list:
+              # 글 URL에 방문해서 글 내용을 가져온다
+              subject, date, count, writer, article_url = article_info
+
+              # 글 내용을 파일에 기록한다
+              content = get_article_content(article_url)
+
+              with open('agora.txt', 'a', encoding='utf8') as fout:
+                  fout.write('Subject: ' + subject)
+                  fout.write('\n')
+                  fout.write('Date: ' + date)
+                  fout.write('\n')
+                  fout.write('Count: ' + count)
+                  fout.write('\n')
+                  fout.write('Writer: ' + writer)
+                  fout.write('\n')
+                  fout.write(content)
+                  fout.write('\n')
+
+          next_page_urls = get_next_pages(current_list_url)
+          waiting_article_list = waiting_article_list + next_page_urls
+          visited_article_list.add(current_list_url)
+#+END_SRC
+
+
+#+BEGIN_SRC python :session :exports both :results output
+# 첫 시작 목록 URL (seed URL)을 입력한다
+seed_url = 'http://bbs3.agora.media.daum.net/gaia/do/petition/list?pageIndex=1&bbsId=P001&objCate1=1'
+scrape(seed_url)
+#+END_SRC
+
+
+이렇게, 간단하게나마 전체 게시글을 순회하면서 내용을 가져올 수 있는 기초적인 코드를 완성했습니다.
+
+여기서 조금 더 나아가자면:
+
+ - 현재는 프로그램이 중간에 문제(오류 등)가 생겨서 중단하면, 처음부터 다시 수행하게 됩니다. 현재 방문하는 URL을 파일에 기록하거나 하여, 프로그램 중단시에도 이전에 수행하던 작업을 이어서 진행할 수 있게 합니다.
+ - 현재는 문제를 간소화하기 위해 하나의 파일에 모든 결과를 이어붙이고 있습니다. 실제의 경우에는 하나의 파일에는 하나의 URL 내용만 기록하는 것이 활용성이 더 좋습니다.
+
+더 궁금하신 분들은 제가 작성했던 스크래핑 코드 [[https://github.com/toracle/kasr-seminar/blob/master/kasr/sermons/crawlers/base.py][1]], [[https://github.com/toracle/kasr-seminar/blob/master/kasr/news/crawlers/chtoday.py][2]]를 참고하세요.
 
 
 [[file:beautifulsoup-practice-namuwiki.org][응용문제: 나무위키 페이지 사이의 관계망 그리기]]
