@@ -304,21 +304,29 @@ print(response.text)
 
 for문, if문, dict문 등을 종합적으로 활용해보도록 하겠습니다.
 
-우선, 데이터를 아래와 같이 불러오겠습니다.
+이번에는, 국토교통부에서 배포하는 주택 실거래가 데이터를 가져와서 사용하겠습니다.
 
+먼저 [[https://github.com/toracle/python-basic-lecture/blob/master/assets/%25EC%2595%2584%25ED%258C%258C%25ED%258A%25B8(%25EB%25A7%25A4%25EB%25A7%25A4)__%25EC%258B%25A4%25EA%25B1%25B0%25EB%259E%2598%25EA%25B0%2580_20180704110406.csv][데이터]]를 한번 살펴볼까요?
+
+파일 상단에 여러 안내 문구가 들어있고, 좀더 아래로 내려가면 실제 데이터가 등장합니다.
+
+#+BEGIN_EXAMPLE
+"시군구","번지","본번","부번","단지명","전용면적(㎡)","계약년월","계약일","거래금액(만원)","층","건축년도","도로명"
+"서울특별시 송파구 가락동","166-2","0166","0002","sk파크타워","84.35","201801","11~20","63,000","13","2003","오금로"
+"서울특별시 송파구 가락동","166-2","0166","0002","sk파크타워","84.85","201801","21~31","64,000","5","2003","오금로"
+"서울특별시 송파구 가락동","166-2","0166","0002","sk파크타워","84.35","201803","21~31","69,500","17","2003","오금로"
+#+END_EXAMPLE
+
+이 데이터를 가지고, 면적별, 계약연월별, 단지별 등으로 평균 가격을 살펴보고, 그래프로 그려보는 작업을 해보겠습니다.
+
+우선, 이 데이터를 아래와 같이 불러오겠습니다.
 
 #+BEGIN_SRC python :exports both :results output
   import requests
   url = 'https://raw.githubusercontent.com/toracle/python-basic-lecture/master/assets/아파트(매매)__실거래가_20180704110406.csv'
   response = requests.get(url, stream=True)
 
-  num_lines = 0
   for line in response.iter_lines():
-      num_lines = num_lines + 1
-
-      if num_lines > 10:
-          break
-
       print(line.decode('euckr'))
 #+END_SRC
 
@@ -335,3 +343,73 @@ for문, if문, dict문 등을 종합적으로 활용해보도록 하겠습니다
 "실거래구분 : 아파트(매매)"
 "주소구분 : 지번주소"
 #+end_example
+
+
+~open~ 함수를 통해 파일을 불러들일 때는 단지 ~for line fin:~ 명령만으로 한 줄씩 순회할 수 있었는데, ~requests~ 에서 내용을 한줄씩 순회하려면, ~iter_lines()~ 메소드를 사용해야 합니다.
+
+그리고, 그렇게 읽어들인 각 line은 인코딩이 지정되어 있지 않아서 한글이 깨지는 상태이기 때문에, ~euc-kr~ 인코딩으로 한글을 올바로 읽어들입니다.
+
+
+파일 상단에는 불필요한 내용들이 들어가 있습니다. 이런 내용들은 분석에 사용하지 않으려 합니다. 17행 미만은 처리하지 않습니다.
+
+#+BEGIN_SRC python :exports both :results output
+  import requests
+  url = 'https://raw.githubusercontent.com/toracle/python-basic-lecture/master/assets/아파트(매매)__실거래가_20180704110406.csv'
+  response = requests.get(url, stream=True)
+
+  num_lines = 0
+
+  for line in response.iter_lines():
+      num_lines = num_lines + 1
+
+      if num_lines < 17:
+          continue
+
+      print(line.decode('euckr'))
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+"서울특별시 송파구 가락동","166-2","0166","0002","sk파크타워","84.35","201801","11~20","63,000","13","2003","오금로"
+"서울특별시 송파구 가락동","166-2","0166","0002","sk파크타워","84.85","201801","21~31","64,000","5","2003","오금로"
+"서울특별시 송파구 가락동","166-2","0166","0002","sk파크타워","84.35","201803","21~31","69,500","17","2003","오금로"
+"서울특별시 송파구 가락동","166-2","0166","0002","sk파크타워","84.88","201804","1~10","64,900","3","2003","오금로"
+"서울특별시 송파구 가락동","140","0140","0000","가락(1차)쌍용아파트","59.92","201801","1~10","60,800","24","1997","동남로"
+"서울특별시 송파구 가락동","140","0140","0000","가락(1차)쌍용아파트","59.92","201801","1~10","62,700","4","1997","동남로"
+#+end_example
+
+
+이제 이 중에서, 가장 처음 등장하는 ~sk파크타워~ 아파트의 가격을 한번 수집해볼까요?
+
+#+BEGIN_SRC python :exports both :results output
+  import requests
+  url = 'https://raw.githubusercontent.com/toracle/python-basic-lecture/master/assets/아파트(매매)__실거래가_20180704110406.csv'
+  response = requests.get(url, stream=True)
+
+  num_lines = 0
+
+  price_list = []
+
+  for line in response.iter_lines():
+      num_lines = num_lines + 1
+
+      if num_lines < 17:
+          continue
+
+      cols = line.decode('euckr').split(',', 8)
+      apt_name = cols[4].replace('"', '')
+      area = cols[5].replace('"', '')
+      yearmonth = cols[6].replace('"', '')
+      price = cols[8].replace('"', '')
+
+      print(apt_name, area, yearmonth, price)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+sk파크타워 84.35 201801 63,000,13,2003,오금로
+sk파크타워 84.85 201801 64,000,5,2003,오금로
+sk파크타워 84.35 201803 69,500,17,2003,오금로
+sk파크타워 84.88 201804 64,900,3,2003,오금로
+#+end_example
+
