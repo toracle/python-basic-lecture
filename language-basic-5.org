@@ -276,3 +276,25 @@ p2.greeting()
   with open(filepath, 'w', encoding='utf8') as fout:
       fout.write('Hello\n')
 #+END_SRC
+
+
+*** 웹에서 데이터 가져오기
+
+웹에서 데이터를 가져오는 방법을 간단히 소개했습니다. ~requests~ 라는 모듈을 불러들여 사용했지요.
+
+#+BEGIN_SRC python :exports both :results output
+import requests
+url = 'https://raw.githubusercontent.com/toracle/python-basic-lecture/master/assets/day1-example-read.txt'
+response = requests.get(url)
+print(response.text)
+#+END_SRC
+
+#+RESULTS:
+: ID,Sex,Age,Programming?,Python?
+: 1,M,25,T,T
+: 2,F,27,T,F
+: 3,F,24,F,F
+: 4,F,25,T,T
+: 5,M,32,F,F
+: 6,M,39,T,F
+: 
