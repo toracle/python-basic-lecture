@@ -46,6 +46,8 @@ plt.show()
 [[file:outputs/basic-4-module-examp-1.png]]
 
 
+[[https://docs.python.org/ko/3/library/index.html][파이썬 표준 모듈 라이브러리]]도 참고하시면, 파이썬이 기본적으로 내장하고 있는 기능들을 살펴볼 수 있습니다.
+
 ([[file:language-basic-module-install.org][모듈 설치하기]] 참고내용)
 
 
