@@ -106,6 +106,7 @@ x축의 값을 지정하려면 아래와 같이 할 수 있습니다.
 #+RESULTS:
 [[file:outputs/matplotlib-title-plot-1.png]]
 
+
 ** 범례 표시하기
 
 범례를 표시하기 위해서는 아래와 같이 각 계열에 이름을 부여하고, ~plt.legend()~ 를 호출한 뒤 그래프를 그립니다.
@@ -142,6 +143,7 @@ x축의 값을 지정하려면 아래와 같이 할 수 있습니다.
 
 #+RESULTS:
 [[file:outputs/matplotlib-legend-plot-2.png]]
+
 
 ** Grid 그리기
 
@@ -319,6 +321,7 @@ pyplot을 사용한 간략한 스타일의 사용법은, 간단한 용도로 사
 
 #+RESULTS:
 [[file:outputs/matplotlib-subplot-2.png]]
+
 
 ** pandas에서 matplotlib를 사용해 그래프를 정교하게 제어하기
 
