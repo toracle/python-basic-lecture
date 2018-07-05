@@ -132,7 +132,7 @@ BeautifulSoup에는 다양한 메소드들이 있는데, CSS selector를 사용�
   </html>
   '''
 
-  soup = BeautifulSoup(html)      # BeautifulSoup에 문서를 적재합니다
+  soup = BeautifulSoup(html, 'html5lib')      # BeautifulSoup에 문서를 적재합니다
   print(soup.select('#main-container')[0].string)
   print(soup.select('#main-container')[0]['style'])
   print(soup.select('.article')[0].string)
