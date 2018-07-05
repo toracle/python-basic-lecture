@@ -53,7 +53,7 @@ HTML은 전반적으로 태그로 이루어져 있습니다. 태그란 =<html></
  - ~div.header~: =div= 중, =class= 가 =header= 인 =div= 들만을 선택
  - ~div[style="color: black;"]~: =div= 중, =style= 이라는 속성이 =color: black;= 이라는 값을 가지는 =div= 만을 선택
 
-그런데, 위의 selector만으로는 지정하기 어려운 경우가 있습니다. 아래와 같은 [[https://www.w3.org/TR/css3-selectors/#combinators][combinator selector]]를 사용하면, 웬만한 경우는 처리할 수 있습니다:
+그런데, 위의 selector만으로는 지정하기 어려운 경우가 있습니다. 하나의 태그 정보만으로는 지정하기 어려운 경우에는, 두세개의 태그의 연관관계를 이용합니다. 아래와 같은 [[https://www.w3.org/TR/css3-selectors/#combinators][combinator selector]]를 사용하면, 웬만한 경우는 처리할 수 있습니다:
 
  - ~div.header li~: =div.header= 태그 하위에 있는 모든 =li= 를 선택
  - ~div.header > ul~: =div.header= 태그의 1단계 하위에 있는 모든 =ul= 를 선택
