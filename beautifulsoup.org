@@ -96,7 +96,7 @@ div.article > a
 #+END_SRC
 
 
-태그와 CSS Selector에 대해 얼마나 이해하고 있는지 간단한 퀴즈를 통해 점검하고 지나갈까요?
+태그와 CSS Selector에 대해 얼마나 이해하고 있는지 [[https://docs.google.com/forms/d/e/1FAIpQLSdJApu3Q_voE9bWBWVZRW4U_dvECQoBN0Xo-sflpDKTTyRLuw/viewform][간단한 퀴즈]]를 통해 점검하고 지나갈까요?
 
 
 ** BeautifulSoup
