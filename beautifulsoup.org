@@ -22,6 +22,8 @@ HTML의 구조를 이해하면 필요한 정보를 추출하는데 도움이 됩
 </html>
 #+END_SRC
 
+[[file:assets/website-example-layout.png]]
+
 
 ** 태그
 
