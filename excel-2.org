@@ -145,6 +145,7 @@
 키가 기본적으로 100cm 이상이라서, 잘 구별되지 않습니다. y축의 기준을 변경해봅시다.
 
 #+BEGIN_SRC ipython :session :exports both :results raw :ipyfile outputs/excel-2-data-bar-chart-ylim.png
+  import matplotlib.pyplot as plt
   axes = df_dtype['신장(cm)'].plot.bar()
   axes.set_ylim((150, 190))
   plt.show()
