@@ -26,6 +26,31 @@ def tab(df):
  - 특정 컬럼에 특정 값을 가지는 row들만 보기
 
 
+** 함수 목록
+
+이번 실습에서 사용할 함수/메소드들을 미리 살펴보겠습니다.
+
+Pandas의 일반 함수들 ([[https://pandas.pydata.org/pandas-docs/stable/api.html#input-output][전체 목록]])
+
+ - read_excel(path, sheet_name=0) :: 엑셀 파일을 읽어들인다.
+ - pivot_table(data_frame) :: 피벗 테이블을 만든다.
+ - merge(data_frame_1, data_frame_2) :: 두 데이터 프레임을 병합한다.
+
+DataFrame의 메소드들 ([[https://pandas.pydata.org/pandas-docs/stable/api.html#dataframe][전체 목록]])
+
+ - DataFrame(series_list, index=index_list) :: DataFrame 생성 함수.
+ - sort_values(column_name, ascending=True) :: 특정 컬럼(또는 컬럼들)을 기준으로 정렬한다.
+ - describe() :: 데이터의 요약 정보를 가져온다.
+ - apply(func) :: DataFrame의 모든 셀에 함수를 적용하여 새 DataFrame을 반환한다.
+ - corr() :: 변수들간의 상관관계 테이블을 구한다.
+ - to_excel(path) :: 엑셀 파일로 저장한다.
+
+Series의 메소드들 ([[https://pandas.pydata.org/pandas-docs/stable/api.html#series][전체 목록]])
+
+ - describe() :: 데이터의 요약 정보를 가져온다.
+ - value_counts(normalize=False) :: 값의 빈도 분포를 가져온다.
+
+
 ** 엑셀 파일 읽어들이기
 
 우선, 데이터로 사용할 엑셀 파일을 jupyter notebook으로 읽어들입니다.
@@ -265,7 +290,7 @@ df['신장(cm)'].describe()
 우선 성별 비율이 어떻게 되는지 살펴봅니다. 성별 각각의 빈도는 아래와 같이 살펴볼 수 있습니다.
 
 #+BEGIN_SRC ipython :session :exports both :results raw
-pd.value_counts(df['성별'])
+df['성별'].value_counts()
 #+END_SRC
 
 #+RESULTS:
@@ -278,7 +303,7 @@ pd.value_counts(df['성별'])
 빈도 대신 비율을 살펴보려면 아래와 같이 ~normalize~ 옵션을 추가합니다. 최대 1의 값을 가지는 소숫점이 나오고, 100을 곱하면 퍼센트로 나타낼 수 있습니다.
 
 #+BEGIN_SRC ipython :session :exports both :results raw
-pd.value_counts(df['성별'], normalize=True)
+df['성별'].value_counts(normalize=True)
 #+END_SRC
 
 #+RESULTS:
@@ -289,7 +314,7 @@ pd.value_counts(df['성별'], normalize=True)
 #+END_EXAMPLE
 
 #+BEGIN_SRC ipython :session :exports both :results raw
-pd.value_counts(df['성별'], normalize=True) * 100
+df['성별'].value_counts(normalize=True) * 100
 #+END_SRC
 
 #+RESULTS:
@@ -302,8 +327,8 @@ pd.value_counts(df['성별'], normalize=True) * 100
 성별에 대한 빈도와 비율을 함께 표시해봅시다.
 
 #+BEGIN_SRC ipython :session :exports code :results raw
-freq = pd.value_counts(df['성별'])
-ratio = pd.value_counts(df['성별'], normalize=True) * 100
+freq = df['성별'].value_counts()
+ratio = df['성별'].value_counts(normalize=True) * 100
 df_freq = pd.DataFrame([freq, ratio], index=['빈도', '비율(%)'])
 df_freq
 #+END_SRC
